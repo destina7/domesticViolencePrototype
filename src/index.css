@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@font-face { font-family: "Inter:Regular"; src: url("https://static.figma.com/font/Inter_1") format("woff2"); font-style: normal; font-weight: 400; }
+@font-face { font-family: "Inter:Medium"; src: url("https://static.figma.com/font/Inter_1") format("woff2"); font-style: normal; font-weight: 500; }
+@font-face { font-family: "Inter:Semi Bold"; src: url("https://static.figma.com/font/Inter_1") format("woff2"); font-style: normal; font-weight: 600; }
+@font-face { font-family: "Inter:Bold"; src: url("https://static.figma.com/font/Inter_1") format("woff2"); font-style: normal; font-weight: 700; }
+
+.f-r { font-family: "Inter:Regular", sans-serif; font-weight: 400; }
+.f-m { font-family: "Inter:Medium", sans-serif; font-weight: 500; }
+.f-s { font-family: "Inter:Semi Bold", sans-serif; font-weight: 600; }
+.f-b { font-family: "Inter:Bold", sans-serif; font-weight: 700; }
+
+body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #fff; }
+
+.hatch {
+  background-image: repeating-linear-gradient(
+    157.87deg, #1a1a1a 0 4px, #fff 4px 8px
+  );
+}
