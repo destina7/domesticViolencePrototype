@@ -12,8 +12,7 @@
 
 body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #fff; }
 
-.hatch {
-  background-image: repeating-linear-gradient(
-    157.87deg, #1a1a1a 0 4px, #fff 4px 8px
-  );
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.45); }
+  50% { transform: scaleY(1); }
 }
