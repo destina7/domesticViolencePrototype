@@ -78,7 +78,7 @@ export function WayIn({ onContinue }: { onContinue: () => void }) {
   const [gesture, setGesture] = useState(false);
   const [pin, setPin] = useState(false);
   const [mine, setMine] = useState("1234");
-  const [panic, setPanic] = useState("123");
+  const [panic, setPanic] = useState("4321");
   return (
     <>
       <TopBar title="Nura" />
