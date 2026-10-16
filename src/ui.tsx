@@ -122,6 +122,16 @@ export function Card({ children, strong }: { children: ReactNode; strong?: boole
   return <div className={`border-[1.5px] flex flex-col gap-[6px] items-start p-[12px] rounded-[16px] w-full shrink-0 ${strong ? "border-[#1a1a1a]" : "border-[#c7c7c7]"}`}>{children}</div>;
 }
 
+/** Emergency block shared by the setup screen and Resources. Deliberately not a tel: link, so testers on a real phone never dial 112. */
+export function DangerCard({ onCall }: { onCall: () => void }) {
+  return (
+    <div className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[10px] p-[12px] rounded-[16px] shrink-0">
+      <p className="f-s text-[15px]">In danger now?</p>
+      <Button onClick={onCall}>Call 112</Button>
+    </div>
+  );
+}
+
 export function TextLine({ w }: { w: number }) {
   return <div className="bg-[#ebebeb] h-[8px] rounded-[4px] max-w-full" style={{ width: w }} />;
 }

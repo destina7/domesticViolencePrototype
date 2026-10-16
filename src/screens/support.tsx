@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Body, Button, Chevron, Chip, Label, ListItem, Switch, TopBar } from "../ui";
+import { Body, Chevron, Chip, DangerCard, Label, ListItem, Switch, TopBar } from "../ui";
 
 const SOON = "Not part of this test";
 
@@ -15,12 +15,7 @@ export function Resources({ exit, toast }: { exit: ReactNode; toast: (t: string)
     <>
       <TopBar title="Resources" right={exit} />
       <Body>
-        <div className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[6px] p-[12px] rounded-[16px] shrink-0">
-          <p className="f-s text-[15px]">In danger now</p>
-          <p className="f-r text-[13px] text-[#666]">Call 112.</p>
-          {/* Deliberately not a tel: link, so testers on a real phone never dial the emergency number. */}
-          <Button onClick={() => toast("Prototype: no call is made")}>Call 112</Button>
-        </div>
+        <DangerCard onCall={() => toast("Prototype: no call is made")} />
         {items.map((i) => <ListItem key={i.t} title={i.t} sub={i.s} trail={<Chip quiet>{i.c}</Chip>} onClick={() => toast(SOON)} />)}
       </Body>
     </>

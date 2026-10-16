@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Body, Button, Card, Chip, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
+import { Body, Button, Card, Chip, DangerCard, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
 import { COVERS } from "../data";
 
 // Setup screens only collect choices for the test. Nothing is saved or applied.
 
-export function Warning({ onContinue }: { onContinue: () => void }) {
+export function Warning({ onContinue, toast }: { onContinue: () => void; toast: (t: string) => void }) {
   return (
     <>
       <TopBar title="Nura" />
@@ -15,10 +15,7 @@ export function Warning({ onContinue }: { onContinue: () => void }) {
           <p className="f-s text-[14px]">Someone who checks your phone could find this app.</p>
           <TextLine w={290} /><TextLine w={230} />
         </Card>
-        <Card>
-          <p className="f-s text-[14px]">In danger right now?</p>
-          <p className="f-r text-[12px] text-[#999]">Call 112. No setup needed.</p>
-        </Card>
+        <DangerCard onCall={() => toast("Prototype: no call is made")} />
         <Spacer />
         <Button onClick={onContinue}>Continue</Button>
         <Foot>Setup screen for this device</Foot>

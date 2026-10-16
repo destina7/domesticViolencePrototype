@@ -117,7 +117,7 @@ export default function App() {
 
   let view: ReactNode = null;
   switch (screen) {
-    case "warn": view = <Warning onContinue={() => go("cover")} />; break;
+    case "warn": view = <Warning onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
     case "way": view = <WayIn onContinue={() => go("signin")} />; break;
     case "signin":
