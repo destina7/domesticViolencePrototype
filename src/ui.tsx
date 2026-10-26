@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 export function QuickExit({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} aria-label="Quick exit"
+    <button onClick={onClick} aria-label="Quick exit" data-quick-exit
       className="bg-white border-[#1a1a1a] border-[2.5px] flex items-center px-[12px] min-h-[36px] rounded-[12px] shrink-0 f-b text-[13px] text-[#1a1a1a] whitespace-nowrap hover:bg-[#f5f5f5] active:scale-95 transition-transform">
       Quick exit
     </button>
@@ -162,7 +162,7 @@ export function BottomNav({ tabs, active, onSelect, onHide }: { tabs: string[]; 
           );
         })}
         {onHide && (
-          <button onClick={onHide} aria-label="Hide (quick exit)" className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0 bg-[#1a1a1a] rounded-[16px] active:scale-95 transition-transform">
+          <button onClick={onHide} aria-label="Hide (quick exit)" data-quick-exit className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0 bg-[#1a1a1a] rounded-[16px] active:scale-95 transition-transform">
             <span className="border-white border-[1.5px] rounded-[6px] size-[22px]" />
             <span className="f-s text-[11px] text-white whitespace-nowrap">Hide</span>
           </button>

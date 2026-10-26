@@ -12,6 +12,11 @@
 
 body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #fff; }
 
+@keyframes cue-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 @keyframes wave {
   0%, 100% { transform: scaleY(0.45); }
   50% { transform: scaleY(1); }

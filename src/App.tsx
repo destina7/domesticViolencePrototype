@@ -4,6 +4,8 @@ import { BottomNav, Button, Card, Heading, Label, NAV_HEIGHT, QuickExit, Spacer,
 import { DEFAULT_OPTIONS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
+import { useExitTest } from "./exittest";
+import type { Hand } from "./testing";
 import type { Jump } from "./proto";
 import { CoverChoice, SignIn, Warning, WayIn } from "./screens/setup";
 import { AddSheet, HomeA, HomeB, HomeC } from "./screens/home";
@@ -54,6 +56,10 @@ export default function App() {
   };
   const clearSim = () => setOpt({ ...opt, sim: "off" });
 
+  // Quick-exit speed test (started from the hidden menu). Cues only appear while the participant is inside the app.
+  const inAppNow = MAIN.includes(screen) || CAPTURE_SCREENS.includes(screen);
+  const test = useExitTest({ screen, canCue: inAppNow, opt, setOpt });
+
   /* ---------- navigation ---------- */
 
   const go = (s: Screen) => {
@@ -66,7 +72,7 @@ export default function App() {
     setHistory((h) => { const p = h[h.length - 1] ?? "home"; setScreen(p); return h.slice(0, -1); });
   };
   const tab = (t: string) => { setHistory([]); setScreen(TAB_SCREEN[t]); setSheet(false); };
-  const quickExit = () => { setHistory([]); setSheet(false); setScreen("exited"); };
+  const quickExit = () => { test.onQuickExit(); setHistory([]); setSheet(false); setScreen("exited"); };
   const homeToAdd = () => { setHistory([]); setScreen("home"); setSheet(opt.home === "B"); };
   const openEntry = (id: number) => { setDetailId(id); go("entry"); };
 
@@ -111,7 +117,19 @@ export default function App() {
     if (entries.length === 0) setEntries(SEED);
     setScreen(j);
   };
-  const reset = () => { setEntries(SEED); setCover("Bloom"); setHistory([]); setSheet(false); setScreen("warn"); };
+  const startTest = (hand: Hand) => {
+    test.start(hand);
+    if (!inAppNow) { setHistory([]); setSheet(false); setScreen("home"); }
+  };
+  // Back to a clean slate for the next participant. Layout options used to be left out of this, and because they are
+  // saved in the browser they survived the reset. Now they go back to the defaults too, and recorded test data is wiped.
+  const reset = () => {
+    test.wipe();
+    setOpt(DEFAULT_OPTIONS);
+    setEntries(SEED); setCover("Bloom"); setDetailId(null);
+    setDraft({ kind: "Voice note", seconds: 0, incident: null }); setMic(false);
+    setHistory([]); setSheet(false); setScreen("warn");
+  };
 
   /* ---------- screens ---------- */
 
@@ -152,8 +170,8 @@ export default function App() {
 
   return (
     <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#f2f2f2] sm:py-[24px]">
-      <HiddenMenu opt={opt} setOpt={setOpt} jump={jump} reset={reset} />
-      <div className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
+      <HiddenMenu opt={opt} setOpt={setOpt} jump={jump} reset={reset} test={test} onStartTest={startTest} />
+      <div data-phone className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
         {screen !== "exited" && <StatusBar mic={mic} />}
         {view}
         {/* Fixed mode: a reserved strip, so the button sits in the same spot on every screen and the content stops above it. */}
@@ -172,6 +190,7 @@ export default function App() {
         {showNav && <BottomNav tabs={TABS} active={ACTIVE_TAB[screen] ?? "Home"} onSelect={tab} onHide={opt.exit === "nav" ? quickExit : undefined} />}
         {sheet && <AddSheet onClose={() => setSheet(false)} start={(c: Capture) => go(c)} keepNav={opt.exit === "nav"} />}
         <Toast text={toastText} />
+        {test.overlay}
       </div>
     </div>
   );
