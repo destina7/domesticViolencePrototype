@@ -6,8 +6,8 @@ import type { ExitPlace } from "./data";
 
 export const CUES_PER_BLOCK = 4; // cues per exit position
 export const PRACTICE_CUES = 1; // the first cue(s) of every block are practice and left out of the stats by default
-export const MIN_GAP_MS = 15_000; // shortest wait before the next cue
-export const MAX_GAP_MS = 30_000; // longest wait before the next cue
+export const MIN_GAP_MS = 5_000; // shortest wait before the next cue
+export const MAX_GAP_MS = 15_000; // longest wait before the next cue
 
 export const POSITIONS: ExitPlace[] = ["top", "bottom", "float", "nav"];
 export const POSITION_LABEL: Record<ExitPlace, string> = {
