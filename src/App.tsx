@@ -28,6 +28,7 @@ const ACTIVE_TAB: Partial<Record<Screen, string>> = {
 };
 const MAIN: Screen[] = ["home", "case", "entry", "resources", "settings"];
 const CAPTURE_SCREENS: Screen[] = ["note", "voice", "camera", "check", "saved", "micDenied", "uploadFailed"];
+const KIND_SCREEN: Record<Kind, Capture> = { "Voice note": "voice", "Written note": "note", "Photo, 2 items": "camera" };
 const STORAGE_KEY = "nura-prototype-options";
 
 function loadOptions(): Options {
@@ -88,6 +89,8 @@ export default function App() {
     const d = { kind, seconds, incident: null };
     if (opt.capture === "2") { setDraft(d); go("check"); } else commit(d);
   };
+  // "Add another" on Saved reopens the same kind of capture. History is cleared so Back from there goes to Home, not Saved.
+  const addAnother = () => { go(KIND_SCREEN[draft.kind]); setHistory([]); };
 
   /* ---------- quick exit placement ---------- */
 
@@ -157,7 +160,7 @@ export default function App() {
       view = <Check kind={draft.kind} seconds={draft.seconds} exit={exitTop}
         onSave={(incident) => commit({ ...draft, incident })} onDiscard={() => tab("Home")} />;
       break;
-    case "saved": view = <Saved exit={exitTop} onAnother={homeToAdd} onDone={() => tab("Home")} />; break;
+    case "saved": view = <Saved exit={exitTop} onAnother={addAnother}onDone={() => tab("Home")} />; break;
     case "micDenied":
       view = <MicDenied exit={exitTop} onBack={back} onAllow={() => setScreen("voice")} onNote={() => setScreen("note")} />;
       break;
