@@ -166,7 +166,7 @@ export function useExitTest({ screen, canCue, opt, setOpt }: { screen: string; c
     const order = orderFor(participantNo);
     const p: Participant = {
       id: participantNo, startedAt: Date.now(), endedAt: null, status: "running", hand, order,
-      homeLayout: optRef.current.home, captureDesign: optRef.current.capture,
+      homeLayout: optRef.current.home, captureDesign: optRef.current.capture, voiceDesign: optRef.current.voice,
       viewport: { w: window.innerWidth, h: window.innerHeight },
       touch: navigator.maxTouchPoints > 0, userAgent: navigator.userAgent, trials: [], unprompted: [],
     };

@@ -196,7 +196,7 @@ function ParticipantBar({ p }: { p: Participant }) {
       <span><b className="f-s text-[#1a1a1a]">Participant {p.id}</b> · {status} · {done}/{CUES_PER_BLOCK * 4} cues</span>
       <span>Thumb: {p.hand === "unknown" ? "not noted" : p.hand}</span>
       <span>Order: {p.order.map((o) => POSITION_LABEL[o]).join(" → ")}</span>
-      <span>Home {p.homeLayout} · capture {p.captureDesign}</span>
+      <span>Home {p.homeLayout} · capture {p.captureDesign}{p.voiceDesign ? ` · voice ${p.voiceDesign}` : ""}</span>
       <span>{p.touch ? "Touch device" : "No touch input (mouse?)"} · {p.viewport.w}×{p.viewport.h}</span>
       <span>{new Date(p.startedAt).toLocaleString()}</span>
     </div>

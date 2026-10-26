@@ -107,7 +107,7 @@ export default function App() {
       case "check": return 120;
       case "camera": return 84;
       case "saved": return 140;
-      case "voice": return opt.capture === "1" ? 130 : 0;
+      case "voice": return opt.voice === "1" ? 130 : 0;
       default: return 0;
     }
   })();
@@ -154,7 +154,7 @@ export default function App() {
     case "resources": view = <Resources exit={exitTop} toast={toast} />; break;
     case "settings": view = <Settings exit={exitTop} cover={cover} toast={toast} />; break;
     case "note": view = <Note design={opt.capture} exit={exitTop} onBack={back} onSave={() => finish("Written note")} />; break;
-    case "voice": view = <Voice design={opt.capture} exit={exitTop} onBack={back} onMic={setMic} onDone={(s) => finish("Voice note", s)} />; break;
+    case "voice": view = <Voice design={opt.voice} saveOnStop={opt.capture === "1"} exit={exitTop} onBack={back} onMic={setMic} onDone={(s) => finish("Voice note", s)} />; break;
     case "camera": view = <Camera exit={exitTop} onBack={back} onShutter={() => finish("Photo, 2 items")} />; break;
     case "check":
       view = <Check kind={draft.kind} seconds={draft.seconds} exit={exitTop}

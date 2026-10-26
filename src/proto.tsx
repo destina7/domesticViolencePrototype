@@ -13,6 +13,7 @@ const ROWS: Row<keyof Options>[] = [
   { key: "home", title: "Home layout", choices: [["A", "A · Action first"], ["B", "B · One button"], ["C", "C · Capture first"]] },
   { key: "exit", title: "Quick exit position", choices: [["top", "Top right"], ["bottom", "Bottom right · fixed"], ["float", "Bottom right · floating"], ["nav", "Nav bar"]] },
   { key: "capture", title: "Capture design", choices: [["1", "1 · Direct save"], ["2", "2 · Check first"]] },
+  { key: "voice", title: "Voice recording", choices: [["1", "1 · Tap to record"], ["2", "2 · Starts straight away"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 

@@ -35,10 +35,12 @@ export type HomeLayout = "A" | "B" | "C";
 // bottom = fixed spot above the nav bar, content stops above it. float = floats over the content and moves up to clear each screen's buttons.
 export type ExitPlace = "top" | "bottom" | "float" | "nav";
 export type CaptureDesign = "1" | "2";
+// 1 = tap Record to start, tap again to stop. 2 = starts recording as soon as the screen opens, big Stop button.
+export type VoiceDesign = "1" | "2";
 export type Sim = "off" | "mic" | "upload" | "password";
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; sim: Sim };
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", sim: "off" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

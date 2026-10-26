@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Body, Button, Card, CheckMark, Chip, Foot, Heading, Label, Placeholder, Spacer, TextLine, TopBar, fmtTime, useTimer } from "../ui";
 import { INCIDENTS } from "../data";
-import type { CaptureDesign, Kind } from "../data";
+import type { CaptureDesign, Kind, VoiceDesign } from "../data";
 
 type Common = { exit: ReactNode; onBack: () => void };
 
@@ -34,8 +34,11 @@ export function Note({ design, exit, onBack, onSave }: Common & { design: Captur
 
 const BARS = [10, 18, 28, 20, 34, 44, 30, 40, 26, 36, 46, 32, 22, 38, 28, 16, 24, 12];
 
-/** Design 1: tap Record, then tap again. Design 2: starts recording straight away, big Stop button. */
-export function Voice({ design, exit, onBack, onDone, onMic }: Common & { design: CaptureDesign; onDone: (seconds: number) => void; onMic: (on: boolean) => void }) {
+/**
+ * Design 1: tap Record, then tap again. Design 2: starts recording straight away, big Stop button.
+ * `saveOnStop` is true when the capture design saves directly, false when a check screen follows.
+ */
+export function Voice({ design, saveOnStop, exit, onBack, onDone, onMic }: Common & { design: VoiceDesign; saveOnStop: boolean; onDone: (seconds: number) => void; onMic: (on: boolean) => void }) {
   const [rec, setRec] = useState(design === "2");
   const [paused, setPaused] = useState(false);
   const sec = useTimer(rec && !paused);
@@ -90,7 +93,7 @@ export function Voice({ design, exit, onBack, onDone, onMic }: Common & { design
           {rec ? "Stop" : "Record"}
         </button>
         <p className="f-m text-[28px] tabular-nums">{fmtTime(sec)}</p>
-        <p className="f-r text-[13px] text-[#666] text-center w-[240px]">Tap to start. Tap again to stop and save.</p>
+        <p className="f-r text-[13px] text-[#666] text-center w-[240px]">{saveOnStop ? "Tap to start. Tap again to stop and save." : "Tap to start. Tap again to stop."}</p>
         <Spacer />
         <Card>
           <Label>After saving</Label>

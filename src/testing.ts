@@ -63,6 +63,7 @@ export type Participant = {
   order: ExitPlace[];
   homeLayout: string;
   captureDesign: string;
+  voiceDesign?: string; // missing on participants recorded before this option existed
   viewport: { w: number; h: number };
   touch: boolean;
   userAgent: string;
@@ -138,7 +139,7 @@ const row = (cells: unknown[]) => cells.map(esc).join(",");
 
 export function trialsCsv(ps: Participant[]): string {
   const head = [
-    "participant", "hand", "touch_device", "viewport_w", "viewport_h", "home_layout", "capture_design",
+    "participant", "hand", "touch_device", "viewport_w", "viewport_h", "home_layout", "capture_design", "voice_design",
     "block", "position", "cue_in_block", "practice", "screen", "gap_ms", "cue_time",
     "first_touch_ms", "exit_ms", "first_tap_hit", "miss_taps", "avg_miss_distance_px",
     "exit_x", "exit_y", "exit_w", "exit_h", "frame_w", "frame_h",
@@ -148,7 +149,7 @@ export function trialsCsv(ps: Participant[]): string {
     for (const t of p.trials) {
       const d = t.missTaps.map((m) => m.dist).filter((x): x is number => x !== null);
       lines.push(row([
-        p.id, p.hand, p.touch, p.viewport.w, p.viewport.h, p.homeLayout, p.captureDesign,
+        p.id, p.hand, p.touch, p.viewport.w, p.viewport.h, p.homeLayout, p.captureDesign, p.voiceDesign,
         t.block, t.position, t.cueIndex, t.practice, t.screen, t.gapMs, new Date(t.cueAt).toISOString(),
         t.firstTouchMs, t.exitMs, t.firstTapHit, t.missTaps.length, d.length ? Math.round(mean(d) as number) : "",
         t.exitRect?.x.toFixed(0), t.exitRect?.y.toFixed(0), t.exitRect?.w.toFixed(0), t.exitRect?.h.toFixed(0), t.frameW, t.frameH,
