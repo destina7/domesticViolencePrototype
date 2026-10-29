@@ -38,9 +38,11 @@ export type CaptureDesign = "1" | "2";
 // 1 = tap Record to start, tap again to stop. 2 = starts recording as soon as the screen opens, big Stop button.
 export type VoiceDesign = "1" | "2";
 export type Sim = "off" | "mic" | "upload" | "password";
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim };
+// Colour themes for user testing. "none" is the black-and-white wireframe. The colours live in index.css.
+export type Theme = "none" | "research" | "quiet" | "sunset" | "rose" | "butter" | "sage" | "sky" | "lavender";
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

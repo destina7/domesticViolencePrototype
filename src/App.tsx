@@ -174,7 +174,7 @@ export default function App() {
   return (
     <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#f2f2f2] sm:py-[24px]">
       <HiddenMenu opt={opt} setOpt={setOpt} jump={jump} reset={reset} test={test} onStartTest={startTest} />
-      <div data-phone className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
+      <div data-phone data-theme={opt.theme === "none" ? undefined : opt.theme} className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
         {screen !== "exited" && <StatusBar mic={mic} />}
         {view}
         {/* Fixed mode: a reserved strip, so the button sits in the same spot on every screen and the content stops above it. */}

@@ -33,7 +33,7 @@ export function Case({ entries, exit, open, onAdd }: { entries: Entry[]; exit: R
     <>
       <TopBar title="Your case" right={exit} />
       <Body>
-        <div className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
+        <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
           <Label>Your case</Label>
           <p className="f-b text-[16px]">{entries.length} entries · {incidents} incidents</p>
           <p className="f-r text-[11px] text-[#666]">First entry 1 Oct · all encrypted</p>
@@ -64,7 +64,7 @@ export function EntryDetail({ entry, exit, onBack }: { entry: Entry; exit: React
         </div>
         {entry.kind === "Voice note" && (
           <>
-            <div className="border-[#1a1a1a] border-[1.5px] flex items-center gap-[12px] p-[12px] rounded-[16px] shrink-0">
+            <div data-t="card" className="border-[#1a1a1a] border-[1.5px] flex items-center gap-[12px] p-[12px] rounded-[16px] shrink-0">
               <span className="border-[#1a1a1a] border-[1.5px] rounded-full size-[36px] flex items-center justify-center f-s text-[12px]">▶</span>
               <div className="bg-[#ebebeb] h-[5px] rounded-full flex-1" />
               <span className="f-r text-[11px] text-[#666]">3:12</span>

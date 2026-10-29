@@ -19,7 +19,7 @@ export function Note({ design, exit, onBack, onSave }: Common & { design: Captur
           <p className="f-s text-[14px]">Tue 13 Oct, 21:14</p>
           <p className="f-r text-[12px] text-[#666]">Set automatically</p>
         </Card>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Write what happened, in your own words."
+        <textarea data-t="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Write what happened, in your own words."
           className="border-[#c7c7c7] border-[1.5px] rounded-[16px] p-[14px] flex-1 min-h-[160px] f-r text-[14px] placeholder:text-[#666] outline-none focus:border-[#1a1a1a] resize-none" />
         <p className="f-r text-[12px] text-[#666]">
           {design === "1" ? "Saved as you type. Nothing is sent until you choose." : "✓ Saved as you type. Nothing is shared."}
@@ -61,13 +61,13 @@ export function Voice({ design, saveOnStop, exit, onBack, onDone, onMic }: Commo
             ))}
           </div>
           <p className="f-r text-[12px] text-[#666] text-center">Saved inside the app while you record.</p>
-          <div className="border-[#c7c7c7] border-[1.5px] border-dashed rounded-[12px] px-[12px] py-[10px] w-full">
+          <div data-t="placeholder" className="border-[#c7c7c7] border-[1.5px] border-dashed rounded-[12px] px-[12px] py-[10px] w-full">
             <p className="f-r text-[12px] text-[#666]">Your phone shows a dot while the mic is on.</p>
           </div>
           <Spacer />
           <div className="flex items-end justify-center gap-[44px] pb-[14px]">
             <button onClick={() => setPaused(!paused)} className="flex flex-col items-center gap-[4px]">
-              <span className="border-[#1a1a1a] border-[1.5px] rounded-full size-[48px] flex items-center justify-center f-s text-[14px] hover:bg-[#f5f5f5]">{paused ? "▶" : "II"}</span>
+              <span data-t="round" className="border-[#1a1a1a] border-[1.5px] rounded-full size-[48px] flex items-center justify-center f-s text-[14px] hover:bg-[#f5f5f5]">{paused ? "▶" : "II"}</span>
               <span className="f-m text-[11px]">{paused ? "Resume" : "Pause"}</span>
             </button>
             <button onClick={() => onDone(sec)} aria-label="Stop" className="flex flex-col items-center gap-[4px] active:scale-95 transition-transform">
@@ -88,7 +88,7 @@ export function Voice({ design, saveOnStop, exit, onBack, onDone, onMic }: Commo
       <TopBar title="Voice note" onBack={onBack} right={exit} />
       <Body center>
         <Spacer />
-        <button onClick={() => (rec ? onDone(sec) : setRec(true))}
+        <button data-t="record" onClick={() => (rec ? onDone(sec) : setRec(true))}
           className={`border-[#1a1a1a] border-[2.5px] flex items-center justify-center rounded-full size-[128px] shrink-0 f-s text-[15px] transition-colors ${rec ? "bg-[#1a1a1a] text-white" : "hover:bg-[#f5f5f5]"}`}>
           {rec ? "Stop" : "Record"}
         </button>
@@ -110,7 +110,7 @@ export function Voice({ design, saveOnStop, exit, onBack, onDone, onMic }: Commo
 export function Camera({ exit, onBack, onShutter }: Common & { onShutter: () => void }) {
   const [mode, setMode] = useState<"Photo" | "Video">("Photo");
   const modeBtn = (m: "Photo" | "Video") => (
-    <button onClick={() => setMode(m)}
+    <button data-t="choice" onClick={() => setMode(m)}
       className={`border-[1.5px] rounded-[16px] w-[76px] h-[44px] f-s text-[14px] ${mode === m ? "border-[#1a1a1a]" : "border-[#c7c7c7] text-[#666]"}`}>{m}</button>
   );
   return (
@@ -144,8 +144,8 @@ export function Check({ kind, seconds, exit, onSave, onDiscard }: { kind: Kind; 
       <TopBar title="Check before saving" right={exit} />
       <Body>
         {kind === "Voice note" ? (
-          <div className="border-[#1a1a1a] border-[1.5px] flex items-center gap-[12px] p-[12px] rounded-[16px] shrink-0">
-            <button onClick={() => setPlaying(!playing)} aria-label={playing ? "Pause" : "Play"}
+          <div data-t="card" className="border-[#1a1a1a] border-[1.5px] flex items-center gap-[12px] p-[12px] rounded-[16px] shrink-0">
+            <button data-t="round" onClick={() => setPlaying(!playing)} aria-label={playing ? "Pause" : "Play"}
               className="border-[#1a1a1a] border-[1.5px] rounded-full size-[40px] flex items-center justify-center shrink-0 hover:bg-[#f5f5f5] f-s text-[13px]">{playing ? "II" : "▶"}</button>
             <div className="flex-1 flex flex-col gap-[6px]">
               <div className="bg-[#ebebeb] h-[6px] rounded-full overflow-hidden"><div className="bg-[#1a1a1a] h-full transition-all" style={{ width: `${Math.min(100, (Math.min(played, total) / total) * 100)}%` }} /></div>
@@ -169,7 +169,7 @@ export function Check({ kind, seconds, exit, onSave, onDiscard }: { kind: Kind; 
           <Chip solid={sel === null} onClick={() => setSel(null)}>Not now</Chip>
         </div>
         <p className="f-s text-[13px] text-center mt-[4px]">A few words (optional)</p>
-        <input placeholder="For example where you were"
+        <input data-t="field" placeholder="For example where you were"
           className="border-[#c7c7c7] border-[1.5px] rounded-[14px] px-[14px] min-h-[44px] f-r text-[13px] placeholder:text-[#666] outline-none focus:border-[#1a1a1a]" />
         <Spacer />
         <Button onClick={() => onSave(sel)}>Save</Button>

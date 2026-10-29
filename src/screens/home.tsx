@@ -65,7 +65,7 @@ export function HomeC({ entries, exit, open, start }: Common & { start: (c: Capt
     <>
       <TopBar title="Home" right={exit} />
       <Body>
-        <div className="border-[#1a1a1a] border-[1.5px] flex gap-[12px] items-center p-[14px] rounded-[16px] shrink-0">
+        <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex gap-[12px] items-center p-[14px] rounded-[16px] shrink-0">
           <CheckMark size={36} />
           <div className="flex flex-col gap-[2px]">
             <p className="f-s text-[15px]">Everything is saved</p>

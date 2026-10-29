@@ -21,3 +21,138 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   0%, 100% { transform: scaleY(0.45); }
   50% { transform: scaleY(1); }
 }
+
+/* ---------- Colour themes (facilitator menu → Themes) ----------
+   The wireframe stays black and white. When a theme is picked, App puts data-theme on the phone frame and the rules
+   below recolour it. No layout, spacing or sizes change: only colours, fills and borders.
+   These rules sit outside Tailwind's layers, so they win over the utility classes without !important.
+   The facilitator menu is outside the phone frame, so it is never themed.
+   Components carry a data-t="…" hook (row, card, chip, field, …) so each kind of element can be styled on purpose.
+
+   Per theme:
+   --t-bg1/2/3   background gradient (top, middle, bottom)      --t-surface   cards, rows, fields, nav bar
+   --t-ink       main text                                       --t-soft      secondary text
+   --t-accent    icons, outlines, active tab, small marks        --t-line      thin borders and dividers
+   --t-tint      quiet fills (placeholders, hovers, text lines)  --t-panel     highlighted cards (summary, info)
+   --t-fill1/2/3 the big action buttons; in a run of buttons the 2nd and 3rd get fill2 and fill3
+   --t-fill-border, --t-on-fill, --t-fill-icon   border, text and icon of those buttons
+   --t-chip, --t-chip-ink   "Saved"-style chips                  --t-exit, --t-exit-ink   quick exit */
+
+[data-phone][data-theme="research"] {
+  --t-bg1: #F3EFE9; --t-bg2: #F3EFE9; --t-bg3: #F3EFE9; --t-surface: #FBFAF7; --t-ink: #26343A; --t-soft: #55676A;
+  --t-accent: #406690; --t-line: #E2DBD0; --t-tint: #ECE6DD; --t-panel: #E3EAF3;
+  --t-fill1: #406690; --t-fill2: #406690; --t-fill3: #406690; --t-fill-border: #406690; --t-on-fill: #FFFFFF; --t-fill-icon: #FFFFFF;
+  --t-chip: #DDE7E1; --t-chip-ink: #2F6A53; --t-exit: #2B373C; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="quiet"] {
+  --t-bg1: #F3E8DC; --t-bg2: #F4EFE9; --t-bg3: #F3EFEA; --t-surface: #FCFBF8; --t-ink: #26343A; --t-soft: #55676A;
+  --t-accent: #3F6690; --t-line: #E4DCD0; --t-tint: #F1EBE3; --t-panel: #EFE8DE;
+  --t-fill1: #FCFBF8; --t-fill2: #FCFBF8; --t-fill3: #FCFBF8; --t-fill-border: #E4DCD0; --t-on-fill: #26343A; --t-fill-icon: #3F6690;
+  --t-chip: #E3EEE8; --t-chip-ink: #2F6A53; --t-exit: #2B373C; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="sunset"] {
+  --t-bg1: #FDDCB5; --t-bg2: #F9D3D3; --t-bg3: #FDF4EE; --t-surface: #FFFAF7; --t-ink: #3E2230; --t-soft: #6B5560;
+  --t-accent: #8E3A5C; --t-line: #EED3CC; --t-tint: #FCE3D5; --t-panel: #FDEBB4;
+  --t-fill1: #FDEBB4; --t-fill2: #FCD8C2; --t-fill3: #F8D4DF; --t-fill-border: transparent; --t-on-fill: #3E2230; --t-fill-icon: #8E3A5C;
+  --t-chip: #F8D4DF; --t-chip-ink: #8E3A5C; --t-exit: #3E2230; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="rose"] {
+  --t-bg1: #FAE6E1; --t-bg2: #FCEFEB; --t-bg3: #FDF7F4; --t-surface: #FFFBFA; --t-ink: #3D2422; --t-soft: #6E5450;
+  --t-accent: #A8473F; --t-line: #EED6CF; --t-tint: #F9E2DC; --t-panel: #F6D8D0;
+  --t-fill1: #F6D8D0; --t-fill2: #F9E2DC; --t-fill3: #FBEAE5; --t-fill-border: transparent; --t-on-fill: #3D2422; --t-fill-icon: #A8473F;
+  --t-chip: #F6D8D0; --t-chip-ink: #8E3A33; --t-exit: #4A2A27; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="butter"] {
+  --t-bg1: #FBEFD2; --t-bg2: #FCF5E6; --t-bg3: #FDFAF2; --t-surface: #FFFDF8; --t-ink: #3A2E1A; --t-soft: #6A5C45;
+  --t-accent: #946010; --t-line: #ECDFC2; --t-tint: #F9EAC6; --t-panel: #F8E3AE;
+  --t-fill1: #F8E3AE; --t-fill2: #F9EAC6; --t-fill3: #FBF0D8; --t-fill-border: transparent; --t-on-fill: #3A2E1A; --t-fill-icon: #946010;
+  --t-chip: #F3E3B8; --t-chip-ink: #7A4F0C; --t-exit: #3A2E1A; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="sage"] {
+  --t-bg1: #E3EEE5; --t-bg2: #EEF3EC; --t-bg3: #F6F5EF; --t-surface: #FCFCF9; --t-ink: #213A31; --t-soft: #52665D;
+  --t-accent: #3E7A63; --t-line: #D6E1D6; --t-tint: #E2EDE2; --t-panel: #D8E8DC;
+  --t-fill1: #D8E8DC; --t-fill2: #E2EDE2; --t-fill3: #E9F1E8; --t-fill-border: transparent; --t-on-fill: #213A31; --t-fill-icon: #3E7A63;
+  --t-chip: #D6E8DC; --t-chip-ink: #2F6A53; --t-exit: #213A31; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="sky"] {
+  --t-bg1: #E2ECF5; --t-bg2: #EEF3F8; --t-bg3: #F7F5F1; --t-surface: #FCFDFE; --t-ink: #1F3044; --t-soft: #50627A;
+  --t-accent: #3F6690; --t-line: #D6E0EA; --t-tint: #E2ECF5; --t-panel: #D9E6F2;
+  --t-fill1: #D9E6F2; --t-fill2: #E2ECF5; --t-fill3: #EAEFF5; --t-fill-border: transparent; --t-on-fill: #1F3044; --t-fill-icon: #3F6690;
+  --t-chip: #DCE8F2; --t-chip-ink: #335A82; --t-exit: #1F3044; --t-exit-ink: #FFFFFF;
+}
+[data-phone][data-theme="lavender"] {
+  --t-bg1: #ECE5F3; --t-bg2: #F3EFF7; --t-bg3: #F8F6F2; --t-surface: #FDFCFE; --t-ink: #2E2840; --t-soft: #625C74;
+  --t-accent: #5E5390; --t-line: #E1DAEB; --t-tint: #E9E2F3; --t-panel: #E2D9F0;
+  --t-fill1: #E2D9F0; --t-fill2: #E9E2F3; --t-fill3: #EFEAF6; --t-fill-border: transparent; --t-on-fill: #2E2840; --t-fill-icon: #5E5390;
+  --t-chip: #E2D9F0; --t-chip-ink: #4F4580; --t-exit: #2E2840; --t-exit-ink: #FFFFFF;
+}
+
+/* ---------- 1. Base: recolour the wireframe greys everywhere in the phone ---------- */
+
+[data-phone][data-theme] { background: linear-gradient(180deg, var(--t-bg1) 0%, var(--t-bg2) 50%, var(--t-bg3) 100%); color: var(--t-ink); }
+[data-phone][data-theme] .text-\[\#1a1a1a\] { color: var(--t-ink); }
+[data-phone][data-theme] :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--t-soft); }
+[data-phone][data-theme] :is(.placeholder\:text-\[\#666\])::placeholder { color: var(--t-soft); }
+[data-phone][data-theme] .bg-white { background-color: var(--t-surface); }
+[data-phone][data-theme] :is(.bg-\[\#ebebeb\], .bg-\[\#f5f5f5\], .bg-\[\#f7f7f7\]) { background-color: var(--t-tint); }
+[data-phone][data-theme] :is(.hover\:bg-\[\#f5f5f5\], .hover\:bg-\[\#ebebeb\], .hover\:bg-\[\#f7f7f7\]):hover { background-color: var(--t-tint); }
+[data-phone][data-theme] .bg-\[\#c7c7c7\] { background-color: var(--t-line); }
+[data-phone][data-theme] .border-\[\#c7c7c7\] { border-color: var(--t-line); }
+[data-phone][data-theme] .border-\[\#1a1a1a\] { border-color: var(--t-accent); }
+[data-phone][data-theme] .hover\:border-\[\#1a1a1a\]:hover { border-color: var(--t-accent); }
+[data-phone][data-theme] :is(.focus\:border-\[\#1a1a1a\]:focus, .focus-within\:border-\[\#1a1a1a\]:focus-within) { border-color: var(--t-accent); }
+[data-phone][data-theme] svg[stroke="#1a1a1a"] { stroke: var(--t-accent); }
+/* Small solid marks: active tab, toast, PIN dots, recording dot, progress bar, stop button */
+[data-phone][data-theme] .bg-\[\#1a1a1a\] { background-color: var(--t-accent); }
+/* Waveform bars while recording */
+[data-phone][data-theme] .w-\[4px\].bg-\[\#c7c7c7\] { background-color: var(--t-accent); opacity: 0.45; }
+
+/* ---------- 2. Components ---------- */
+
+/* Cards and list rows: a light surface with a thin border, so they stand out from the gradient */
+[data-phone][data-theme] :is([data-t="row"], [data-t="card"]) { background-color: var(--t-surface); border-color: var(--t-line); }
+[data-phone][data-theme] [data-t="row"]:is([role="button"]):hover { background-color: var(--t-tint); }
+[data-phone][data-theme] [data-t="row"].border-\[\#1a1a1a\] { border-color: var(--t-accent); }
+/* Highlighted cards (case summary, setup message, date and time, error): a soft colour panel without a heavy border */
+[data-phone][data-theme] [data-t="card-strong"] { background-color: var(--t-panel); border-color: var(--t-panel); }
+[data-phone][data-theme] [data-t="card-strong"] .bg-\[\#ebebeb\] { background-color: var(--t-surface); opacity: 0.8; }
+/* Emergency block: surface card; its call button is the only muted-red element, as the colour research recommends */
+[data-phone][data-theme] [data-t="danger"] { background-color: var(--t-surface); border-color: var(--t-line); }
+
+/* Chips: "Saved"-style pills, quiet outline pills, and the selected (solid) pill */
+[data-phone][data-theme] [data-t="chip"] { background-color: var(--t-chip); border-color: var(--t-chip); color: var(--t-chip-ink); }
+[data-phone][data-theme] [data-t="chip-quiet"] { background-color: var(--t-surface); border-color: var(--t-line); color: var(--t-soft); }
+[data-phone][data-theme] [data-t="chip-solid"] { background-color: var(--t-accent); border-color: var(--t-accent); color: #FFFFFF; }
+
+/* Text fields, PIN fields and the note area */
+[data-phone][data-theme] [data-t="field"] { background-color: var(--t-surface); border-color: var(--t-line); color: var(--t-ink); }
+[data-phone][data-theme] [data-t="field"]:is(:focus, :focus-within) { border-color: var(--t-accent); box-shadow: 0 0 0 1.5px var(--t-accent); }
+
+/* Selectable cards (way in, photo / video) */
+[data-phone][data-theme] [data-t="choice"] { background-color: var(--t-surface); border-color: var(--t-line); }
+[data-phone][data-theme] [data-t="choice"].border-\[\#1a1a1a\] { background-color: var(--t-panel); border-color: var(--t-accent); }
+
+/* Placeholders (illustration, camera view, photo preview, info notes) */
+[data-phone][data-theme] [data-t="placeholder"] { background-color: var(--t-tint); border-color: var(--t-line); }
+
+/* Round controls: play / pause buttons and the big record button */
+[data-phone][data-theme] [data-t="round"] { background-color: var(--t-surface); }
+[data-phone][data-theme] [data-t="record"] { background-color: var(--t-fill1); border-color: var(--t-accent); color: var(--t-on-fill); }
+[data-phone][data-theme] [data-t="record"].bg-\[\#1a1a1a\] { background-color: var(--t-accent); color: #FFFFFF; }
+
+/* Buttons. Primary: soft tiles with dark text and a coloured icon, as in the colour designs. */
+[data-phone][data-theme] [data-t="btn-primary"] { background-color: var(--t-fill1); border-color: var(--t-fill-border); color: var(--t-on-fill); }
+[data-phone][data-theme] [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill2); }
+[data-phone][data-theme] [data-t="btn-primary"] + [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill3); }
+[data-phone][data-theme] [data-t="btn-primary"]:hover { filter: brightness(0.97); }
+[data-phone][data-theme] [data-t="btn-primary"] .border-white { border-color: var(--t-fill-icon); }
+[data-phone][data-theme] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: var(--t-surface); border-color: var(--t-line); color: var(--t-ink); }
+[data-phone][data-theme] [data-t="btn-outline"] { border-color: var(--t-accent); }
+[data-phone][data-theme] :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background-color: var(--t-tint); }
+[data-phone][data-theme] [data-t="danger"] [data-t="btn-primary"] { background-color: #B23A3A; border-color: #B23A3A; color: #FFFFFF; }
+
+/* Quick exit: a dark button, as in the colour designs (top-right button and the nav bar "Hide" tab) */
+[data-phone][data-theme] [data-quick-exit] { background-color: var(--t-exit); border-color: var(--t-exit); color: var(--t-exit-ink); }
+[data-phone][data-theme] [data-quick-exit]:hover { filter: brightness(1.15); }
+[data-phone][data-theme] [data-quick-exit] .border-white { border-color: var(--t-exit-ink); }
+[data-phone][data-theme] [data-quick-exit] .text-white { color: var(--t-exit-ink); }

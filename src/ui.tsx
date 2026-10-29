@@ -13,7 +13,8 @@ export function QuickExit({ onClick }: { onClick: () => void }) {
 export function Chip({ children, quiet, solid, onClick }: { children: ReactNode; quiet?: boolean; solid?: boolean; onClick?: () => void }) {
   const cls = `border-[1.5px] flex items-center px-[10px] py-[2px] rounded-full shrink-0 f-m text-[12px] whitespace-nowrap ${
     solid ? "bg-[#1a1a1a] border-[#1a1a1a] text-white" : quiet ? "border-[#c7c7c7] text-[#666]" : "border-[#1a1a1a] text-[#1a1a1a]"}`;
-  return onClick ? <button onClick={onClick} className={`${cls} min-h-[32px] px-[12px]`}>{children}</button> : <span className={cls}>{children}</span>;
+  const t = solid ? "chip-solid" : quiet ? "chip-quiet" : "chip";
+  return onClick ? <button data-t={t} onClick={onClick} className={`${cls} min-h-[32px] px-[12px]`}>{children}</button> : <span data-t={t} className={cls}>{children}</span>;
 }
 
 export function StatusBar({ mic }: { mic?: boolean }) {
@@ -72,7 +73,7 @@ export function Button({ children, onClick, variant = "primary", icon, size = "n
   }[variant];
   const h = { tall: "min-h-[64px]", mid: "min-h-[54px]", normal: "min-h-[52px]" }[size];
   return (
-    <button onClick={onClick}
+    <button onClick={onClick} data-t={`btn-${variant}`}
       className={`border-2 flex items-center ${icon ? "justify-start gap-[10px]" : "justify-center"} ${h} px-[16px] py-[6px] rounded-[16px] w-full shrink-0 f-s text-[15px] transition-colors active:scale-[0.99] ${styles}`}>
       {icon && <span className={`border-[1.5px] size-[20px] shrink-0 ${variant === "primary" ? "border-white" : "border-[#1a1a1a]"} ${icon === "round" ? "rounded-[10px]" : "rounded-[6px]"}`} />}
       {children}
@@ -82,7 +83,7 @@ export function Button({ children, onClick, variant = "primary", icon, size = "n
 
 export function Placeholder({ children, className = "" }: { children?: ReactNode; className?: string }) {
   return (
-    <div className={`bg-[#ebebeb] border-[#c7c7c7] border-[1.5px] border-dashed flex flex-col items-center justify-center p-[6px] rounded-[16px] shrink-0 ${className}`}>
+    <div data-t="placeholder" className={`bg-[#ebebeb] border-[#c7c7c7] border-[1.5px] border-dashed flex flex-col items-center justify-center p-[6px] rounded-[16px] shrink-0 ${className}`}>
       {children && <p className="f-m text-[11px] text-[#666] text-center max-w-[160px]">{children}</p>}
     </div>
   );
@@ -102,7 +103,7 @@ export function ListItem({ title, sub, lead, trail, selected, onClick }: { title
       {trail}
     </>
   );
-  return onClick ? <div role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => e.key === "Enter" && onClick()} className={cls}>{inner}</div> : <div className={cls}>{inner}</div>;
+  return onClick ? <div data-t="row" role="button" tabIndex={0} onClick={onClick} onKeyDown={(e) => e.key === "Enter" && onClick()} className={cls}>{inner}</div> : <div data-t="row" className={cls}>{inner}</div>;
 }
 
 export function Chevron() {
@@ -119,13 +120,13 @@ export function Switch({ on, onChange }: { on: boolean; onChange: (v: boolean) =
 }
 
 export function Card({ children, strong }: { children: ReactNode; strong?: boolean }) {
-  return <div className={`border-[1.5px] flex flex-col gap-[6px] items-start p-[12px] rounded-[16px] w-full shrink-0 ${strong ? "border-[#1a1a1a]" : "border-[#c7c7c7]"}`}>{children}</div>;
+  return <div data-t={strong ? "card-strong" : "card"} className={`border-[1.5px] flex flex-col gap-[6px] items-start p-[12px] rounded-[16px] w-full shrink-0 ${strong ? "border-[#1a1a1a]" : "border-[#c7c7c7]"}`}>{children}</div>;
 }
 
 /** Emergency block shared by the setup screen and Resources. Deliberately not a tel: link, so testers on a real phone never dial 112. */
 export function DangerCard({ onCall }: { onCall: () => void }) {
   return (
-    <div className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[10px] p-[12px] rounded-[16px] shrink-0">
+    <div data-t="danger" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[10px] p-[12px] rounded-[16px] shrink-0">
       <p className="f-s text-[15px]">In danger now?</p>
       <Button onClick={onCall}>Call 112</Button>
     </div>

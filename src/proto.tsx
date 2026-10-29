@@ -14,6 +14,8 @@ const ROWS: Row<keyof Options>[] = [
   { key: "exit", title: "Quick exit position", choices: [["top", "Top right"], ["bottom", "Bottom right · fixed"], ["float", "Bottom right · floating"], ["nav", "Nav bar"]] },
   { key: "capture", title: "Capture design", choices: [["1", "1 · Direct save"], ["2", "2 · Check first"]] },
   { key: "voice", title: "Voice recording", choices: [["1", "1 · Tap to record"], ["2", "2 · Starts straight away"]] },
+  { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
+    ["rose", "Soft rose"], ["butter", "Butter"], ["sage", "Sage"], ["sky", "Soft sky"], ["lavender", "Lavender"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 
@@ -21,6 +23,19 @@ const JUMPS: [Jump, string][] = [
   ["warn", "Setup"], ["signin", "Sign in"], ["home", "Home"], ["case", "Case"], ["caseEmpty", "Case, empty"],
   ["resources", "Resources"], ["settings", "Settings"], ["exited", "After quick exit"],
 ];
+
+// Small colour dots next to the theme names, so themes are easy to tell apart in the menu. Same colours as index.css.
+const THEME_DOTS: Record<string, string[]> = {
+  none: ["#ffffff", "#1a1a1a"],
+  research: ["#F3EFE9", "#406690"],
+  quiet: ["#F4EFE9", "#3F6690"],
+  sunset: ["#FDEBB4", "#F8D4DF", "#8E3A5C"],
+  rose: ["#F6D8D0", "#A8473F"],
+  butter: ["#F8E3AE", "#946010"],
+  sage: ["#D8E8DC", "#3E7A63"],
+  sky: ["#D9E6F2", "#3F6690"],
+  lavender: ["#E2D9F0", "#5E5390"],
+};
 
 const HANDS: [Hand, string][] = [["right", "Right"], ["left", "Left"], ["unknown", "Not noted"]];
 
@@ -99,7 +114,14 @@ export function HiddenMenu({ opt, setOpt, jump, reset, test, onStartTest }: {
             <div className="flex flex-wrap gap-[6px]">
               {r.choices.map(([v, l]) => (
                 <button key={String(v)} disabled={locked} onClick={() => setOpt({ ...opt, [r.key]: v })}
-                  className={`${pill} disabled:opacity-60 ${opt[r.key] === v ? "bg-[#1a1a1a] border-[#1a1a1a] text-white" : "border-[#c7c7c7] hover:border-[#1a1a1a]"}`}>{l}</button>
+                  className={`${pill} disabled:opacity-60 ${opt[r.key] === v ? "bg-[#1a1a1a] border-[#1a1a1a] text-white" : "border-[#c7c7c7] hover:border-[#1a1a1a]"} ${r.key === "theme" ? "flex items-center gap-[6px]" : ""}`}>
+                  {r.key === "theme" && (
+                    <span className="flex" aria-hidden>
+                      {THEME_DOTS[String(v)].map((c, i) => <span key={i} className="size-[10px] rounded-full border border-[#c7c7c7] -ml-[3px] first:ml-0" style={{ background: c }} />)}
+                    </span>
+                  )}
+                  {l}
+                </button>
               ))}
             </div>
             {locked && <p className="f-r text-[11px] text-[#666]">Set by the speed test while it runs.</p>}

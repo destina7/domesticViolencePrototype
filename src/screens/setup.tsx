@@ -50,7 +50,7 @@ export function CoverChoice({ cover, setCover, onContinue }: { cover: string; se
 
 function PinField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
-    <label className="relative flex items-center gap-[12px] h-[48px] px-[16px] rounded-[14px] border-[1.5px] border-[#c7c7c7] focus-within:border-[#1a1a1a] cursor-text">
+    <label data-t="field" className="relative flex items-center gap-[12px] h-[48px] px-[16px] rounded-[14px] border-[1.5px] border-[#c7c7c7] focus-within:border-[#1a1a1a] cursor-text">
       {[0, 1, 2, 3].map((i) => (
         <span key={i} className={`rounded-full size-[13px] border-[1.5px] border-[#1a1a1a] ${value[i] ? "bg-[#1a1a1a]" : ""}`} />
       ))}
@@ -63,7 +63,7 @@ function PinField({ value, onChange }: { value: string; onChange: (v: string) =>
 
 function WayCard({ n, text, on, onClick }: { n: number; text: string; on: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} aria-pressed={on}
+    <button data-t="choice" onClick={onClick} aria-pressed={on}
       className={`flex-1 flex flex-col gap-[10px] items-start text-left p-[12px] rounded-[14px] border-[1.5px] min-h-[84px] transition-colors ${on ? "border-[#1a1a1a]" : "border-[#c7c7c7] hover:bg-[#f7f7f7]"}`}>
       <span className={`size-[20px] rounded-full border-[1.5px] border-[#1a1a1a] flex items-center justify-center f-s text-[11px] ${on ? "bg-[#1a1a1a] text-white" : ""}`}>{n}</span>
       <span className="f-s text-[12px] leading-snug">{text}</span>
@@ -100,7 +100,7 @@ export function WayIn({ onContinue }: { onContinue: () => void }) {
 
 function Field({ label, value, onChange, type = "text", placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder: string }) {
   return (
-    <label className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[2px] justify-center min-h-[54px] px-[14px] py-[8px] rounded-[14px] w-full focus-within:shadow-[0_0_0_2px_#1a1a1a]">
+    <label data-t="field" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[2px] justify-center min-h-[54px] px-[14px] py-[8px] rounded-[14px] w-full focus-within:shadow-[0_0_0_2px_#1a1a1a]">
       <span className="f-m text-[10px] text-[#666] tracking-[0.6px] uppercase">{label}</span>
       <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
         className="f-r text-[14px] text-[#1a1a1a] placeholder:text-[#666] outline-none bg-transparent" />
@@ -125,7 +125,7 @@ export function SignIn({ onSignIn, failOnce, onFailed }: { onSignIn: () => void;
         <Field label="Email" value={email} onChange={setEmail} placeholder="name@example.com" />
         <Field label="Password" type="password" value={pw} onChange={(v) => { setPw(v); setError(false); }} placeholder="••••••••" />
         {error && (
-          <div className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[6px] p-[12px] rounded-[16px]">
+          <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[6px] p-[12px] rounded-[16px]">
             <p className="f-s text-[14px]">That password does not match.</p>
             <p className="f-r text-[12px] text-[#666]">Check it and try again.</p>
           </div>
