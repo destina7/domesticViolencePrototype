@@ -156,3 +156,93 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 [data-phone][data-theme] [data-quick-exit]:hover { filter: brightness(1.15); }
 [data-phone][data-theme] [data-quick-exit] .border-white { border-color: var(--t-exit-ink); }
 [data-phone][data-theme] [data-quick-exit] .text-white { color: var(--t-exit-ink); }
+
+/* ---------- Design systems (facilitator menu → Design system) ----------
+   A design system only changes shape, type, borders, focus and component rules. It never sets colours of its own:
+   with no colour theme the app stays black and white, and when a colour theme is picked (Themes) the design system
+   reads that theme's variables. So any design system can be combined with any colour theme.
+   Every colour below is var(--t-xxx, black-and-white fallback): the fallback is used when no theme is selected.
+
+   Material 3 (m3.material.io): pill buttons (filled, tonal, outlined), 12 px cards, 8 px chips, 4 px outlined fields,
+   tonal navigation bar with a pill indicator on the active tab, switch with a 52 x 32 track, Roboto, regular-weight
+   top app bar title.
+
+   NL Design System (nldesignsystem.nl), modelled on the Rijkshuisstijl theme: square corners, high contrast, 2 px
+   borders, 44 px or larger touch targets, a thick visible focus ring, bold button labels, body text of at least 14 to
+   16 px, left-border notifications. Rijksoverheid Sans is not freely available, so the font falls back to Arial. */
+
+/* ===== Material 3 ===== */
+
+[data-phone][data-ds="m3"] :is(.f-r, .f-m, .f-s, .f-b) { font-family: Roboto, "Segoe UI", system-ui, "Inter:Regular", sans-serif; }
+[data-phone][data-ds="m3"] .f-r { font-weight: 400; }
+[data-phone][data-ds="m3"] :is(.f-m, .f-s, .f-b) { font-weight: 500; }
+
+/* Buttons: filled (first), tonal (the next ones in a run), outlined (secondary and outline) */
+[data-phone][data-ds="m3"] [data-t^="btn-"] { border-radius: 9999px; border-width: 1px; font-weight: 500; letter-spacing: 0.1px; }
+[data-phone][data-ds="m3"] [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill2, #ebebeb); border-color: var(--t-fill2, #ebebeb); color: var(--t-on-fill, #1a1a1a); --t-fill-icon: var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="m3"] [data-t="btn-primary"] + [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill3, #ebebeb); border-color: var(--t-fill3, #ebebeb); }
+[data-phone][data-ds="m3"] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: transparent; color: var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="m3"] :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background-color: var(--t-tint, #f5f5f5); }
+
+/* Cards, rows, chips, fields */
+[data-phone][data-ds="m3"] :is([data-t="row"], [data-t="card"], [data-t="danger"], [data-t="choice"]) { border-radius: 12px; }
+[data-phone][data-ds="m3"] [data-t="card-strong"] { border-radius: 16px; }
+[data-phone][data-ds="m3"] [data-t="placeholder"] { border-radius: 12px; }
+[data-phone][data-ds="m3"] [data-t^="chip"] { border-radius: 8px; }
+[data-phone][data-ds="m3"] [data-t="chip-solid"] { background-color: var(--t-panel, #ebebeb); border-color: var(--t-panel, #ebebeb); color: var(--t-ink, #1a1a1a); }
+[data-phone][data-ds="m3"] [data-t="field"] { border-radius: 4px; }
+[data-phone][data-ds="m3"] [data-quick-exit] { border-radius: 12px; }
+
+/* Top app bar and navigation bar */
+[data-phone][data-ds="m3"] header p { font-size: 22px; font-weight: 400; }
+[data-phone][data-ds="m3"] nav { background-color: var(--t-tint, #f5f5f5); }
+[data-phone][data-ds="m3"] nav > .bg-\[\#c7c7c7\] { background-color: transparent; }
+[data-phone][data-ds="m3"] nav button:not([data-quick-exit]) > span:first-child { border-color: var(--t-soft, #444); }
+[data-phone][data-ds="m3"] nav button > span.bg-\[\#1a1a1a\]:first-child { width: 56px; height: 28px; border-radius: 14px; background-color: var(--t-panel, #ebebeb); border-color: var(--t-ink, #1a1a1a); }
+[data-phone][data-ds="m3"] nav button:not([data-quick-exit]) .f-s { font-weight: 600; }
+
+/* Switch: 52 x 32 track */
+[data-phone][data-ds="m3"] [role="switch"] { width: 52px; height: 32px; border-radius: 16px; border-color: var(--t-soft, #666); background-color: var(--t-tint, #ebebeb); }
+[data-phone][data-ds="m3"] [role="switch"][aria-checked="true"] { background-color: var(--t-accent, #1a1a1a); border-color: var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="m3"] [role="switch"] > span { width: 18px; height: 18px; top: 6.5px; }
+[data-phone][data-ds="m3"] [role="switch"][aria-checked="false"] > span { left: 6.5px; background-color: var(--t-soft, #666); }
+[data-phone][data-ds="m3"] [role="switch"][aria-checked="true"] > span { left: 24.5px; background-color: #FFFFFF; }
+
+/* ===== NL Design System (Rijkshuisstijl) ===== */
+
+[data-phone][data-ds="nl"] :is(.f-r, .f-m, .f-s, .f-b) { font-family: "RijksoverheidSansText", Arial, Helvetica, sans-serif; }
+[data-phone][data-ds="nl"] .f-r { font-weight: 400; }
+[data-phone][data-ds="nl"] .f-m { font-weight: 600; }
+[data-phone][data-ds="nl"] :is(.f-s, .f-b) { font-weight: 700; }
+/* Larger small print: the wireframe uses 10 to 14 px, the guidelines ask for readable text */
+[data-phone][data-ds="nl"] :is(.text-\[10px\], .text-\[11px\], .text-\[12px\]) { font-size: 14px; }
+[data-phone][data-ds="nl"] .text-\[13px\] { font-size: 15px; }
+[data-phone][data-ds="nl"] .text-\[14px\] { font-size: 16px; }
+
+/* Square corners everywhere */
+[data-phone][data-ds="nl"] :is([data-t="row"], [data-t="card"], [data-t="card-strong"], [data-t="danger"], [data-t="choice"], [data-t="placeholder"], [data-t="field"], [data-t^="btn-"], [data-t^="chip"], [data-quick-exit]) { border-radius: 0; }
+
+/* Buttons: bold labels, 2 px border; secondary and outline are a plain surface with a dark border */
+[data-phone][data-ds="nl"] [data-t^="btn-"] { border-width: 2px; font-weight: 700; min-height: 48px; }
+[data-phone][data-ds="nl"] [data-t="btn-primary"]:hover { filter: brightness(0.85); }
+[data-phone][data-ds="nl"] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: var(--t-surface, #ffffff); border-color: var(--t-accent, #1a1a1a); color: var(--t-ink, #1a1a1a); }
+
+/* Visible focus on every control */
+[data-phone][data-ds="nl"] :is(button, input, textarea, select, a, [role="button"], [role="switch"]):focus-visible { outline: 3px solid var(--t-ink, #000000); outline-offset: 3px; }
+
+/* Notifications and cards: a thick left edge */
+[data-phone][data-ds="nl"] [data-t="card-strong"] { border-left: 6px solid var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="nl"] [data-t="danger"] { border-left: 6px solid var(--t-accent, #1a1a1a); }
+
+/* Form fields: 2 px dark border */
+[data-phone][data-ds="nl"] [data-t="field"] { border-width: 2px; border-color: var(--t-ink, #1a1a1a); }
+[data-phone][data-ds="nl"] [data-t="field"]:is(:focus, :focus-within) { border-color: var(--t-accent, #1a1a1a); box-shadow: none; }
+
+/* Chips: 44 px touch target when tappable */
+[data-phone][data-ds="nl"] button[data-t^="chip"] { min-height: 44px; }
+[data-phone][data-ds="nl"] [data-t="chip"] { border-color: var(--t-accent, #1a1a1a); }
+
+/* Header ribbon and navigation */
+[data-phone][data-ds="nl"] header { border-bottom: 3px solid var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="nl"] nav > .bg-\[\#c7c7c7\] { background-color: var(--t-accent, #1a1a1a); height: 3px; }
+[data-phone][data-ds="nl"] nav button:not([data-quick-exit]) .f-s { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }

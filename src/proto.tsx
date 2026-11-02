@@ -16,6 +16,7 @@ const ROWS: Row<keyof Options>[] = [
   { key: "voice", title: "Voice recording", choices: [["1", "1 · Tap to record"], ["2", "2 · Starts straight away"]] },
   { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
     ["rose", "Soft rose"], ["butter", "Butter"], ["sage", "Sage"], ["sky", "Soft sky"], ["lavender", "Lavender"]] },
+  { key: "ds", title: "Design system", choices: [["none", "None"], ["m3", "Material 3"], ["nl", "NL Design System"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 
@@ -106,11 +107,12 @@ export function HiddenMenu({ opt, setOpt, jump, reset, test, onStartTest }: {
       <p className="f-r text-[11px] text-[#666]">Hidden from participants. Press P or tap the top-left corner 3 times to toggle.</p>
 
       {ROWS.map((r) => {
-        const locked = r.key === "exit" && test.running;
+        const locked = (r.key === "exit" && test.running);
         return (
           <div key={r.key} className="flex flex-col gap-[6px]">
             <Label>{r.title}</Label>
             {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
+            {r.key === "ds" && <p className="f-r text-[11px] text-[#666]">Changes shapes, type and components only, no colours. Combine it with any colour theme below, or leave Themes on None for black and white.</p>}
             <div className="flex flex-wrap gap-[6px]">
               {r.choices.map(([v, l]) => (
                 <button key={String(v)} disabled={locked} onClick={() => setOpt({ ...opt, [r.key]: v })}
