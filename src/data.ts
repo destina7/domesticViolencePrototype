@@ -45,9 +45,13 @@ export type Theme = "none" | "research" | "quiet" | "sunset" | "rose" | "butter"
 // A design system sets its own colours, shapes, type and component rules, so it replaces the colour theme while it is on.
 export const DESIGN_SYSTEMS = ["none", "m3a"] as const;
 export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem };
+// PIN setup on "Your way in". field = both PINs on one screen, dots inside a field (the original).
+// centred = one PIN per screen, big centred dots with no field, moves on by itself after the 4th digit.
+export const PIN_DESIGNS = ["field", "centred"] as const;
+export type PinDesign = (typeof PIN_DESIGNS)[number];
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

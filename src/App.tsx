@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, Button, Card, Heading, Label, Spacer, StatusBar, Toast, useToast } from "./ui";
-import { DEFAULT_OPTIONS, DESIGN_SYSTEMS, SEED } from "./data";
+import { DEFAULT_OPTIONS, DESIGN_SYSTEMS, PIN_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
-import { CoverChoice, SignIn, Warning, WayIn } from "./screens/setup";
+import { CoverChoice, SignIn, Warning, WayIn, WayInCentred } from "./screens/setup";
 import { Home } from "./screens/home";
 import { Camera, MicDenied, Note, Saved, UploadFailed, Voice } from "./screens/capture";
 import { Case, EntryDetail } from "./screens/case";
@@ -33,14 +33,15 @@ function loadOptions(): Options {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      // Only the theme and design system are remembered. Older saved layout choices are ignored.
-      const { theme, ds } = JSON.parse(raw);
+      // Only the theme, design system and PIN screen are remembered. Older saved layout choices are ignored.
+      const { theme, ds, pin } = JSON.parse(raw);
       // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
       const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
         ...DEFAULT_OPTIONS,
         theme: theme ?? DEFAULT_OPTIONS.theme,
         ds: (DESIGN_SYSTEMS as readonly string[]).includes(saved) ? saved : DEFAULT_OPTIONS.ds,
+        pin: (PIN_DESIGNS as readonly string[]).includes(pin) ? pin : DEFAULT_OPTIONS.pin,
       };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
@@ -116,7 +117,11 @@ export default function App() {
   switch (screen) {
     case "warn": view = <Warning onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
-    case "way": view = <WayIn onContinue={() => go("signin")} />; break;
+    case "way":
+      view = opt.pin === "centred"
+        ? <WayInCentred cover={cover} onContinue={() => go("signin")} />
+        : <WayIn onContinue={() => go("signin")} />;
+      break;
     case "signin":
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
