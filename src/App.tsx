@@ -35,8 +35,8 @@ function loadOptions(): Options {
     if (raw) {
       // Only the theme and design system are remembered. Older saved layout choices are ignored.
       const { theme, ds } = JSON.parse(raw);
-      // "m3" was the single Material 3 version before A, B and C existed; "nl" is gone.
-      const saved = ds === "m3" ? "m3a" : ds;
+      // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
+      const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
         ...DEFAULT_OPTIONS,
         theme: theme ?? DEFAULT_OPTIONS.theme,

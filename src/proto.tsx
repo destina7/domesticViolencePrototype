@@ -9,7 +9,7 @@ type Row<K extends keyof Options> = { key: K; title: string; choices: [Options[K
 const ROWS: Row<keyof Options>[] = [
   { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
     ["rose", "Soft rose"], ["butter", "Butter"], ["sage", "Sage"], ["sky", "Soft sky"], ["lavender", "Lavender"]] },
-  { key: "ds", title: "Design system", choices: [["none", "None"], ["m3a", "Material 3 · A"], ["m3b", "Material 3 · B"], ["m3c", "Material 3 · C"]] },
+  { key: "ds", title: "Design system", choices: [["none", "None"], ["m3a", "Material 3"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 
@@ -76,7 +76,7 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
         <div key={r.key} className="flex flex-col gap-[6px]">
           <Label>{r.title}</Label>
           {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
-          {r.key === "ds" && <p className="f-r text-[11px] text-[#666]">Three takes on Material 3, all in grays and black, no colour. A is outlined, B is filled and expressive, C is elevated.</p>}
+          {r.key === "ds" && <p className="f-r text-[11px] text-[#666]">Material 3, outlined, all in grays and black, no colour.</p>}
           {r.key === "theme" && opt.ds !== "none" && <p className="f-r text-[11px] text-[#666]">Not used while a design system is on. Set the design system to None to use a colour theme.</p>}
           <div className={`flex flex-wrap gap-[6px] ${r.key === "theme" && opt.ds !== "none" ? "opacity-40" : ""}`}>
             {r.choices.map(([v, l]) => (

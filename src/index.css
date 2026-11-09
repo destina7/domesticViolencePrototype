@@ -158,19 +158,17 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 [data-phone][data-theme] [data-quick-exit] .text-white { color: var(--t-exit-ink); }
 
 /* ---------- Design systems (facilitator menu → Design system) ----------
-   Three takes on Material 3 (m3.material.io), to compare with each other. They are built on the three card
-   styles Material 3 itself defines:
-     A  Outlined  the baseline: thin outlines, 12 px corners, small top bar, outlined text fields with a notch label
-     B  Filled    the expressive take: big rounded shapes, no outlines, large top bar, floating nav bar, bold headings
-     C  Elevated  shadows instead of outlines, 12 px "squared" buttons, centred top bar, filled text fields
+   Material 3 (m3.material.io), outlined take: thin outlines, 12 px corners, small top bar, outlined text fields with
+   a notch label. Variant A won the A/B against B (filled, expressive) and C (elevated), which were removed.
+   The rules are split into a shared block (tokens and component wiring) and the A block that sets those tokens.
 
-   There is NO colour in any of them. Material's own docs and sample palette are purple; here the whole tonal palette
+   There is NO colour in it. Material's own docs and sample palette are purple; here the whole tonal palette
    is a neutral grey ramp (--n10 near black to --n100 white), so colour cannot sway the participant's choices.
    A design system replaces the colour theme while it is on (App drops data-theme), so these rules own every colour.
    Like the theme rules, they sit outside Tailwind's layers and win over the utility classes without !important.
    Note: unlayered `background` also beats Tailwind's hover: utilities, so hover states are set here as well. */
 
-/* ===== Material 3: shared (all three) ===== */
+/* ===== Material 3: shared ===== */
 
 [data-phone][data-ds^="m3"] {
   /* Neutral tonal palette: tone 10 = near black ... tone 100 = white */
@@ -300,95 +298,4 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   /* Navigation bar, docked, tonal */
   & nav { background: var(--n94); }
   & nav [data-quick-exit] { border-radius: 16px; }
-}
-
-/* ===== Material 3 · B — Filled, expressive ===== */
-
-[data-phone][data-ds="m3b"] {
-  --m-bg: linear-gradient(180deg, var(--n96) 0%, var(--n90) 100%);
-  --r-card: 28px; --r-strong: 28px; --r-row: 20px; --r-chip: 12px; --r-btn: 9999px; --r-exit: 28px;
-  --card-bg: var(--n100); --card-border: transparent; --card-shadow: none; --card-hover: var(--n98);
-  --sel-bg: var(--n100); --sel-border: transparent; --sel-shadow: inset 0 0 0 2px var(--n10);
-  --strong-bg: linear-gradient(135deg, var(--n30) 0%, var(--n10) 100%);
-  --btn2-bg: var(--n100); --btn2-border: 1px solid transparent; --btn2-hover: var(--n98);
-  --on-var: #3d3d3d;
-
-  /* Bolder, bigger type */
-  & :is(.f-s, .f-b) { font-weight: 700; }
-  & .f-s.text-\[14px\], & .f-s.text-\[15px\], & .f-s.text-\[12px\], & .f-s.text-\[13px\], & .f-s.text-\[11px\] { font-weight: 500; }
-  & .f-b.text-\[22px\] { font-size: 30px; line-height: 36px; font-weight: 700; }
-
-  /* Taller buttons, generous padding on cards and rows */
-  & [data-t^="btn-"] { min-height: 60px; font-size: 16px; border-width: 1px; }
-  & [data-t="btn-primary"] { border-color: var(--n10); }
-  & :is([data-t="card"], [data-t="card-strong"], [data-t="danger"]) { padding: 16px 20px; }
-  & [data-t="row"] { min-height: 64px; padding: 8px 18px; }
-  & [data-t="choice"] { padding: 14px 16px; }
-
-  /* Highlighted cards are inverted: a dark grey gradient with light text */
-  & [data-t="card-strong"] { color: #fff; }
-  & [data-t="card-strong"] :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--n80); }
-  & [data-t="card-strong"] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.28); }
-  & [data-t="card-strong"] .border-\[\#1a1a1a\] { border-color: #fff; }
-  & [data-t="card-strong"] svg[stroke] { stroke: #fff; }
-
-  /* Chips: filled, no outline */
-  & [data-t="chip"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
-  & [data-t="chip-quiet"] { background: var(--n94); border: 1px solid var(--n94); color: var(--on-var); }
-  & [data-t="chip-solid"] { background: var(--n10); border: 1px solid var(--n10); color: #fff; }
-  & [data-t="round"] { background: var(--n100); border-color: transparent; }
-
-  /* Filled text fields with big corners, black ring on focus */
-  & [data-t="field"] { background: var(--n100); border-color: transparent; border-radius: 16px; box-shadow: none; }
-  & textarea[data-t="field"] { border-radius: 24px; }
-  & [data-t="field"]:is(:focus, :focus-within) { border-color: transparent; box-shadow: inset 0 0 0 2px var(--n10); }
-  & label[data-t="field"] > span.uppercase { font-size: 12px; }
-
-  /* Large top app bar: back button on the first row, big title below it */
-  & header > div { flex-wrap: wrap; align-items: flex-end; row-gap: 12px; min-height: 0; padding-top: 12px; padding-bottom: 12px; }
-  & header button[aria-label="Back"] { order: 1; width: 48px; height: 48px; background: var(--n100); }
-  & header button[aria-label="Back"]:hover { background: var(--n92); }
-  & header p.f-b { order: 2; flex: 1 0 100%; font-size: 32px; line-height: 40px; font-weight: 500; }
-
-  /* Floating, pill-shaped navigation bar */
-  & nav { background: var(--n100); margin: 0 12px 12px; width: auto; border-radius: 32px; box-shadow: var(--sh1); }
-  & nav > div:last-child { padding: 10px 8px; }
-  & nav [data-quick-exit] { border-radius: 24px; }
-
-  & .bg-\[\#1a1a1a\].text-white.rounded-full.shadow-lg { border-radius: 16px; }
-}
-
-/* ===== Material 3 · C — Elevated ===== */
-
-[data-phone][data-ds="m3c"] {
-  --m-bg: linear-gradient(180deg, var(--n96) 0%, var(--n92) 100%);
-  --r-card: 12px; --r-strong: 12px; --r-row: 12px; --r-chip: 8px; --r-btn: 12px; --r-exit: 12px;
-  --card-bg: var(--n100); --card-border: transparent; --card-shadow: var(--sh1); --card-hover: var(--n98); --card-shadow-hover: var(--sh2);
-  --sel-bg: var(--n100); --sel-border: transparent; --sel-shadow: inset 0 0 0 2px var(--n10), var(--sh1);
-  --strong-bg: var(--n87);
-  --btn2-bg: var(--n100); --btn2-border: 1px solid transparent; --btn2-shadow: var(--sh1); --btn2-hover: var(--n98);
-
-  & [data-t^="btn-"] { border-width: 1px; }
-  & [data-t="btn-primary"] { border-color: var(--n10); }
-  & .f-b.text-\[22px\] { font-size: 24px; line-height: 32px; font-weight: 500; }
-
-  /* Chips: tonal, no outline */
-  & [data-t="chip"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
-  & [data-t="chip-quiet"] { background: var(--n94); border: 1px solid var(--n94); color: var(--on-var); }
-  & [data-t="chip-solid"] { background: var(--n10); border: 1px solid var(--n10); color: #fff; }
-  & [data-t="round"] { background: var(--n100); border-color: transparent; box-shadow: var(--sh1); }
-
-  /* Filled text fields: grey container, 4 px top corners, line along the bottom */
-  & [data-t="field"] { background: var(--n90); border-width: 1px; border-style: solid; border-color: transparent transparent var(--n50); border-radius: 4px 4px 0 0; box-shadow: none; }
-  & [data-t="field"]:is(:focus, :focus-within) { border-bottom-color: var(--n10); box-shadow: 0 1px 0 0 var(--n10); }
-  & label[data-t="field"] > span.uppercase { font-size: 12px; }
-
-  /* Centre-aligned top app bar with a shadow */
-  & header { position: relative; z-index: 2; background: var(--n100); box-shadow: var(--sh2); }
-  & header > div { position: relative; justify-content: center; min-height: 64px; }
-  & header p.f-b { flex: 0 1 auto; text-align: center; font-size: 22px; line-height: 28px; font-weight: 400; }
-  & header button[aria-label="Back"] { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); }
-
-  /* Navigation bar: white, raised above the content */
-  & nav { position: relative; z-index: 2; background: var(--n100); box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.2), 0 -3px 8px rgba(0, 0, 0, 0.08); }
 }
