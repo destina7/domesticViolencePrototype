@@ -40,9 +40,11 @@ export type VoiceDesign = "1" | "2";
 export type Sim = "off" | "mic" | "upload" | "password";
 // Colour themes for user testing. "none" is the black-and-white wireframe. The colours live in index.css.
 export type Theme = "none" | "research" | "quiet" | "sunset" | "rose" | "butter" | "sage" | "sky" | "lavender";
-// Design systems to compare with the team. "none" = the wireframe (with an optional colour theme). m3 = Material 3, nl = NL Design System.
+// Design systems to compare with the team. "none" = the wireframe (with an optional colour theme).
+// m3a / m3b / m3c = three takes on Material 3 (outlined, filled and expressive, elevated). All grayscale, no colour.
 // A design system sets its own colours, shapes, type and component rules, so it replaces the colour theme while it is on.
-export type DesignSystem = "none" | "m3" | "nl";
+export const DESIGN_SYSTEMS = ["none", "m3a", "m3b", "m3c"] as const;
+export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
 export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem };
 
 export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none" };

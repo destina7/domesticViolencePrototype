@@ -1,10 +1,9 @@
 import { useState } from "react";
-import type { ReactNode } from "react";
 import { Body, Chevron, Chip, DangerCard, Label, ListItem, Switch, TopBar } from "../ui";
 
 const SOON = "Not part of this test";
 
-export function Resources({ exit, toast }: { exit: ReactNode; toast: (t: string) => void }) {
+export function Resources({ toast }: { toast: (t: string) => void }) {
   const items = [
     { t: "Veilig Thuis", s: "Advice and reporting", c: "Call" },
     { t: "NEST / Lumens", s: "Support in Eindhoven", c: "Open" },
@@ -13,7 +12,7 @@ export function Resources({ exit, toast }: { exit: ReactNode; toast: (t: string)
   ];
   return (
     <>
-      <TopBar title="Resources" right={exit} />
+      <TopBar title="Resources" />
       <Body>
         <DangerCard onCall={() => toast("Prototype: no call is made")} />
         {items.map((i) => <ListItem key={i.t} title={i.t} sub={i.s} trail={<Chip quiet>{i.c}</Chip>} onClick={() => toast(SOON)} />)}
@@ -22,7 +21,7 @@ export function Resources({ exit, toast }: { exit: ReactNode; toast: (t: string)
   );
 }
 
-export function Settings({ exit, cover, toast }: { exit: ReactNode; cover: string; toast: (t: string) => void }) {
+export function Settings({ cover, toast }: { cover: string; toast: (t: string) => void }) {
   const [shake, setShake] = useState(true);
   const [lock, setLock] = useState(true);
   const [notif, setNotif] = useState(false);
@@ -30,7 +29,7 @@ export function Settings({ exit, cover, toast }: { exit: ReactNode; cover: strin
   const go = () => toast(SOON);
   return (
     <>
-      <TopBar title="Settings" right={exit} />
+      <TopBar title="Settings" />
       <Body>
         <Label>Disguise</Label>
         <ListItem title="Cover app" sub={cover} trail={<Chevron />} onClick={go} />

@@ -147,6 +147,10 @@ export function CheckMark({ size = 84 }: { size?: number }) {
 
 export const NAV_HEIGHT = 66;
 
+/** Tabs that use a real icon (Material Symbols name). Every other tab keeps the wireframe square for now. */
+const TAB_ICON: Record<string, string> = { Home: "home", Case: "list_alt", Resources: "volunteer_activism", Settings: "settings" };
+const HIDE_ICON = "exit_to_app";
+
 /** Bottom tab bar. When `onHide` is given a black "Hide" tab (quick exit) is added at the right. */
 export function BottomNav({ tabs, active, onSelect, onHide }: { tabs: string[]; active: string; onSelect: (t: string) => void; onHide?: () => void }) {
   return (
@@ -157,14 +161,20 @@ export function BottomNav({ tabs, active, onSelect, onHide }: { tabs: string[]; 
           const on = t === active;
           return (
             <button key={t} onClick={() => onSelect(t)} className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0">
-              <span className={`border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[22px] ${on ? "bg-[#1a1a1a]" : ""}`} />
+              {TAB_ICON[t] ? (
+                // Real icon from the Material Symbols font. Filled when the tab is active. Other tabs still use the wireframe square.
+                <span data-icon data-on={on || undefined} aria-hidden style={{ fontVariationSettings: `'FILL' ${on ? 1 : 0}` }}
+                  className={`material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] ${on ? "text-[#1a1a1a]" : "text-[#666]"}`}>{TAB_ICON[t]}</span>
+              ) : (
+                <span className={`border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[22px] ${on ? "bg-[#1a1a1a]" : ""}`} />
+              )}
               <span className={`text-[11px] whitespace-nowrap ${on ? "f-s text-[#1a1a1a]" : "f-r text-[#666]"}`}>{t}</span>
             </button>
           );
         })}
         {onHide && (
           <button onClick={onHide} aria-label="Hide (quick exit)" data-quick-exit className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0 bg-[#1a1a1a] rounded-[16px] active:scale-95 transition-transform">
-            <span className="border-white border-[1.5px] rounded-[6px] size-[22px]" />
+            <span data-icon aria-hidden className="material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] text-white">{HIDE_ICON}</span>
             <span className="f-s text-[11px] text-white whitespace-nowrap">Hide</span>
           </button>
         )}

@@ -1,15 +1,14 @@
 import { useState } from "react";
-import type { ReactNode } from "react";
 import { Body, Button, Card, Chevron, Chip, Label, ListItem, Placeholder, Spacer, TextLine, TopBar } from "../ui";
 import { entrySub } from "../data";
 import type { Entry } from "../data";
 import { EntryRow } from "./home";
 
-export function Case({ entries, exit, open, onAdd }: { entries: Entry[]; exit: ReactNode; open: (id: number) => void; onAdd: () => void }) {
+export function Case({ entries, open, onAdd }: { entries: Entry[]; open: (id: number) => void; onAdd: () => void }) {
   if (entries.length === 0) {
     return (
       <>
-        <TopBar title="Case" right={exit} />
+        <TopBar title="Case" />
         <Body center>
           <Spacer />
           <Placeholder className="w-[140px] h-[110px]">soft illustration, no people</Placeholder>
@@ -31,7 +30,7 @@ export function Case({ entries, exit, open, onAdd }: { entries: Entry[]; exit: R
   const incidents = new Set(entries.map((e) => e.incident).filter(Boolean)).size;
   return (
     <>
-      <TopBar title="Your case" right={exit} />
+      <TopBar title="Your case" />
       <Body>
         <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
           <Label>Your case</Label>
@@ -52,11 +51,11 @@ export function Case({ entries, exit, open, onAdd }: { entries: Entry[]; exit: R
   );
 }
 
-export function EntryDetail({ entry, exit, onBack }: { entry: Entry; exit: ReactNode; onBack: () => void }) {
+export function EntryDetail({ entry, onBack }: { entry: Entry; onBack: () => void }) {
   const [proof, setProof] = useState(false);
   return (
     <>
-      <TopBar title="Your case" onBack={onBack} right={exit} />
+      <TopBar title="Your case" onBack={onBack} />
       <Body>
         <div className="flex gap-[8px] items-center flex-wrap">
           <Chip>Saved</Chip>

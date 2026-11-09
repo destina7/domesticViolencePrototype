@@ -158,91 +158,237 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 [data-phone][data-theme] [data-quick-exit] .text-white { color: var(--t-exit-ink); }
 
 /* ---------- Design systems (facilitator menu → Design system) ----------
-   A design system only changes shape, type, borders, focus and component rules. It never sets colours of its own:
-   with no colour theme the app stays black and white, and when a colour theme is picked (Themes) the design system
-   reads that theme's variables. So any design system can be combined with any colour theme.
-   Every colour below is var(--t-xxx, black-and-white fallback): the fallback is used when no theme is selected.
+   Three takes on Material 3 (m3.material.io), to compare with each other. They are built on the three card
+   styles Material 3 itself defines:
+     A  Outlined  the baseline: thin outlines, 12 px corners, small top bar, outlined text fields with a notch label
+     B  Filled    the expressive take: big rounded shapes, no outlines, large top bar, floating nav bar, bold headings
+     C  Elevated  shadows instead of outlines, 12 px "squared" buttons, centred top bar, filled text fields
 
-   Material 3 (m3.material.io): pill buttons (filled, tonal, outlined), 12 px cards, 8 px chips, 4 px outlined fields,
-   tonal navigation bar with a pill indicator on the active tab, switch with a 52 x 32 track, Roboto, regular-weight
-   top app bar title.
+   There is NO colour in any of them. Material's own docs and sample palette are purple; here the whole tonal palette
+   is a neutral grey ramp (--n10 near black to --n100 white), so colour cannot sway the participant's choices.
+   A design system replaces the colour theme while it is on (App drops data-theme), so these rules own every colour.
+   Like the theme rules, they sit outside Tailwind's layers and win over the utility classes without !important.
+   Note: unlayered `background` also beats Tailwind's hover: utilities, so hover states are set here as well. */
 
-   NL Design System (nldesignsystem.nl), modelled on the Rijkshuisstijl theme: square corners, high contrast, 2 px
-   borders, 44 px or larger touch targets, a thick visible focus ring, bold button labels, body text of at least 14 to
-   16 px, left-border notifications. Rijksoverheid Sans is not freely available, so the font falls back to Arial. */
+/* ===== Material 3: shared (all three) ===== */
 
-/* ===== Material 3 ===== */
+[data-phone][data-ds^="m3"] {
+  /* Neutral tonal palette: tone 10 = near black ... tone 100 = white */
+  --n10: #1a1a1a; --n20: #2e2e2e; --n30: #454545; --n50: #777777; --n80: #c7c7c7; --n87: #d4d4d4;
+  --n90: #e3e3e3; --n92: #ebebeb; --n94: #f0f0f0; --n96: #f5f5f5; --n98: #fafafa; --n100: #ffffff;
+  /* Elevation levels 1 and 2 (grey shadows) */
+  --sh1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --sh2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --on: var(--n10);          /* text on surfaces */
+  --on-var: var(--n30);      /* secondary text */
+  --ind: var(--n87);         /* active indicator in the navigation bar */
+  background: var(--m-bg);
+  color: var(--on);
+  font-family: Roboto, "Segoe UI", system-ui, sans-serif;
 
-[data-phone][data-ds="m3"] :is(.f-r, .f-m, .f-s, .f-b) { font-family: Roboto, "Segoe UI", system-ui, "Inter:Regular", sans-serif; }
-[data-phone][data-ds="m3"] .f-r { font-weight: 400; }
-[data-phone][data-ds="m3"] :is(.f-m, .f-s, .f-b) { font-weight: 500; }
+  /* Type: Roboto, regular and medium weights */
+  & :is(.f-r, .f-m, .f-s, .f-b) { font-family: Roboto, "Segoe UI", system-ui, sans-serif; }
+  & .f-r { font-weight: 400; }
+  & :is(.f-m, .f-s, .f-b) { font-weight: 500; }
+  & .uppercase { text-transform: none; letter-spacing: 0.1px; }
+  & p.uppercase { font-size: 14px; font-weight: 500; color: var(--on-var); }
+  & .text-\[\#1a1a1a\] { color: var(--on); }
+  & :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--on-var); }
+  & .placeholder\:text-\[\#666\]::placeholder { color: var(--on-var); }
+  & .bg-\[\#ebebeb\] { background-color: var(--n90); }
 
-/* Buttons: filled (first), tonal (the next ones in a run), outlined (secondary and outline) */
-[data-phone][data-ds="m3"] [data-t^="btn-"] { border-radius: 9999px; border-width: 1px; font-weight: 500; letter-spacing: 0.1px; }
-[data-phone][data-ds="m3"] [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill2, #ebebeb); border-color: var(--t-fill2, #ebebeb); color: var(--t-on-fill, #1a1a1a); --t-fill-icon: var(--t-accent, #1a1a1a); }
-[data-phone][data-ds="m3"] [data-t="btn-primary"] + [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill3, #ebebeb); border-color: var(--t-fill3, #ebebeb); }
-[data-phone][data-ds="m3"] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: transparent; color: var(--t-accent, #1a1a1a); }
-[data-phone][data-ds="m3"] :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background-color: var(--t-tint, #f5f5f5); }
+  /* Shapes (each variant sets the --r-* tokens) */
+  & [data-t="card"], & [data-t="danger"] { border-radius: var(--r-card); }
+  & [data-t="card-strong"] { border-radius: var(--r-strong); }
+  & :is([data-t="row"], [data-t="choice"]) { border-radius: var(--r-row); }
+  & [data-t="placeholder"]:not(.rounded-none) { border-radius: var(--r-card); border-style: solid; border-color: transparent; }
+  & [data-t^="chip"] { border-radius: var(--r-chip); }
+  & [data-t^="btn-"] { border-radius: var(--r-btn); font-size: 15px; font-weight: 500; letter-spacing: 0.1px; }
+  & [data-quick-exit] { border-radius: var(--r-exit); }
 
-/* Cards, rows, chips, fields */
-[data-phone][data-ds="m3"] :is([data-t="row"], [data-t="card"], [data-t="danger"], [data-t="choice"]) { border-radius: 12px; }
-[data-phone][data-ds="m3"] [data-t="card-strong"] { border-radius: 16px; }
-[data-phone][data-ds="m3"] [data-t="placeholder"] { border-radius: 12px; }
-[data-phone][data-ds="m3"] [data-t^="chip"] { border-radius: 8px; }
-[data-phone][data-ds="m3"] [data-t="chip-solid"] { background-color: var(--t-panel, #ebebeb); border-color: var(--t-panel, #ebebeb); color: var(--t-ink, #1a1a1a); }
-[data-phone][data-ds="m3"] [data-t="field"] { border-radius: 4px; }
-[data-phone][data-ds="m3"] [data-quick-exit] { border-radius: 12px; }
+  /* Cards, list rows, selectable cards. Outlined / filled / elevated come from the --card-* tokens. */
+  & :is([data-t="row"], [data-t="card"], [data-t="danger"], [data-t="choice"]) {
+    background: var(--card-bg); border-color: var(--card-border); box-shadow: var(--card-shadow);
+  }
+  & [data-t="row"][role="button"]:hover { background: var(--card-hover); box-shadow: var(--card-shadow-hover, var(--card-shadow)); }
+  & :is([data-t="row"], [data-t="choice"]).border-\[\#1a1a1a\] {
+    background: var(--sel-bg); border-color: var(--sel-border); box-shadow: var(--sel-shadow);
+  }
+  /* Highlighted cards (setup message, case summary, date and time, error) */
+  & [data-t="card-strong"] { background: var(--strong-bg); border-color: transparent; box-shadow: var(--strong-shadow, none); }
+  & [data-t="card-strong"] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.6); }
 
-/* Top app bar and navigation bar */
-[data-phone][data-ds="m3"] header p { font-size: 22px; font-weight: 400; }
-[data-phone][data-ds="m3"] nav { background-color: var(--t-tint, #f5f5f5); }
-[data-phone][data-ds="m3"] nav > .bg-\[\#c7c7c7\] { background-color: transparent; }
-[data-phone][data-ds="m3"] nav button:not([data-quick-exit]) > span:first-child { border-color: var(--t-soft, #444); }
-[data-phone][data-ds="m3"] nav button > span.bg-\[\#1a1a1a\]:first-child { width: 56px; height: 28px; border-radius: 14px; background-color: var(--t-panel, #ebebeb); border-color: var(--t-ink, #1a1a1a); }
-[data-phone][data-ds="m3"] nav button:not([data-quick-exit]) .f-s { font-weight: 600; }
+  /* Buttons: primary stays the filled near-black pill. All three actions in a run stay equal on purpose, so the
+     look of a button never nudges which capture method the participant picks. */
+  & :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background: var(--btn2-bg); border: var(--btn2-border); box-shadow: var(--btn2-shadow, none); color: var(--on); }
+  & :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background: var(--btn2-hover); }
 
-/* Switch: 52 x 32 track */
-[data-phone][data-ds="m3"] [role="switch"] { width: 52px; height: 32px; border-radius: 16px; border-color: var(--t-soft, #666); background-color: var(--t-tint, #ebebeb); }
-[data-phone][data-ds="m3"] [role="switch"][aria-checked="true"] { background-color: var(--t-accent, #1a1a1a); border-color: var(--t-accent, #1a1a1a); }
-[data-phone][data-ds="m3"] [role="switch"] > span { width: 18px; height: 18px; top: 6.5px; }
-[data-phone][data-ds="m3"] [role="switch"][aria-checked="false"] > span { left: 6.5px; background-color: var(--t-soft, #666); }
-[data-phone][data-ds="m3"] [role="switch"][aria-checked="true"] > span { left: 24.5px; background-color: #FFFFFF; }
+  /* Switch: 52 x 32 track, thumb grows from 16 to 24 px when on */
+  & [role="switch"] { width: 52px; height: 32px; border-radius: 16px; border: 2px solid var(--n50); background: var(--n92); }
+  & [role="switch"] > span { top: 6px; width: 16px; height: 16px; left: 6px; background: var(--n50); }
+  & [role="switch"][aria-checked="true"] { background: var(--n10); border-color: var(--n10); }
+  & [role="switch"][aria-checked="true"] > span { top: 2px; left: 22px; width: 24px; height: 24px; background: #fff; }
 
-/* ===== NL Design System (Rijkshuisstijl) ===== */
+  /* Back button: an arrow instead of the wireframe square */
+  & header button[aria-label="Back"] {
+    width: 40px; height: 40px; border: 0; border-radius: 9999px; background: transparent; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  & header button[aria-label="Back"]::before { content: "\2190"; font-family: Roboto, "Segoe UI", system-ui, sans-serif; font-size: 24px; line-height: 1; color: var(--on); }
+  & header button[aria-label="Back"]:hover { background: var(--n90); }
 
-[data-phone][data-ds="nl"] :is(.f-r, .f-m, .f-s, .f-b) { font-family: "RijksoverheidSansText", Arial, Helvetica, sans-serif; }
-[data-phone][data-ds="nl"] .f-r { font-weight: 400; }
-[data-phone][data-ds="nl"] .f-m { font-weight: 600; }
-[data-phone][data-ds="nl"] :is(.f-s, .f-b) { font-weight: 700; }
-/* Larger small print: the wireframe uses 10 to 14 px, the guidelines ask for readable text */
-[data-phone][data-ds="nl"] :is(.text-\[10px\], .text-\[11px\], .text-\[12px\]) { font-size: 14px; }
-[data-phone][data-ds="nl"] .text-\[13px\] { font-size: 15px; }
-[data-phone][data-ds="nl"] .text-\[14px\] { font-size: 16px; }
+  /* Navigation bar: the icon square sits in a pill; the active tab gets a filled pill (the indicator) */
+  & nav > .bg-\[\#c7c7c7\] { display: none; }
+  & nav > div:last-child { padding: 12px 8px 16px; }
+  & nav button { gap: 4px; min-height: 64px; }
+  & nav button:not([data-quick-exit]) > span:first-child {
+    display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; border: 0; border-radius: 16px; background: transparent;
+  }
+  & nav button:not([data-quick-exit]) > span:first-child::before { content: ""; width: 20px; height: 20px; border: 1.5px solid var(--on-var); border-radius: 5px; }
+  & nav button:not([data-quick-exit]) > span:is(.bg-\[\#1a1a1a\], [data-on]):first-child { background: var(--ind); }
+  & nav button:not([data-quick-exit]) > span.bg-\[\#1a1a1a\]:first-child::before { border-color: var(--on); }
+  /* Real icons (Material Symbols) replace the wireframe square: no square, 24 px glyph in the same pill */
+  & nav button:not([data-quick-exit]) > span[data-icon]::before { display: none; }
+  & nav button:not([data-quick-exit]) > span[data-icon] { font-size: 24px; color: var(--on); }
+  & nav .text-\[11px\] { font-size: 12px; }
 
-/* Square corners everywhere */
-[data-phone][data-ds="nl"] :is([data-t="row"], [data-t="card"], [data-t="card-strong"], [data-t="danger"], [data-t="choice"], [data-t="placeholder"], [data-t="field"], [data-t^="btn-"], [data-t^="chip"], [data-quick-exit]) { border-radius: 0; }
+  /* Hide (quick exit) tab: no black fill and no border, dark text and icon only. */
+  & nav [data-quick-exit] { background: transparent; border: 0; color: var(--on); }
+  & nav [data-quick-exit] .text-white { color: var(--on); }
+  & nav [data-quick-exit] .border-white { border-color: var(--on); }
+  /* Same icon pill as the other tabs, so all the labels line up. */
+  & nav [data-quick-exit] > span[data-icon] { display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; font-size: 24px; border-radius: 16px; }
+  /* Hover and keyboard focus light up only the icon pill (never the whole button), the same on every tab. */
+  & nav [data-quick-exit]:hover { background: transparent; }
+  & nav button:is(:hover, :focus-visible) > span:first-child { background: var(--ind); }
+  & nav button:focus-visible { outline: none; }
 
-/* Buttons: bold labels, 2 px border; secondary and outline are a plain surface with a dark border */
-[data-phone][data-ds="nl"] [data-t^="btn-"] { border-width: 2px; font-weight: 700; min-height: 48px; }
-[data-phone][data-ds="nl"] [data-t="btn-primary"]:hover { filter: brightness(0.85); }
-[data-phone][data-ds="nl"] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: var(--t-surface, #ffffff); border-color: var(--t-accent, #1a1a1a); color: var(--t-ink, #1a1a1a); }
+  /* Snackbar */
+  & .bg-\[\#1a1a1a\].text-white.rounded-full.shadow-lg { background: var(--n20); }
+}
 
-/* Visible focus on every control */
-[data-phone][data-ds="nl"] :is(button, input, textarea, select, a, [role="button"], [role="switch"]):focus-visible { outline: 3px solid var(--t-ink, #000000); outline-offset: 3px; }
+/* ===== Material 3 · A — Outlined ===== */
 
-/* Notifications and cards: a thick left edge */
-[data-phone][data-ds="nl"] [data-t="card-strong"] { border-left: 6px solid var(--t-accent, #1a1a1a); }
-[data-phone][data-ds="nl"] [data-t="danger"] { border-left: 6px solid var(--t-accent, #1a1a1a); }
+[data-phone][data-ds="m3a"] {
+  --m-bg: var(--n98);
+  --r-card: 12px; --r-strong: 16px; --r-row: 12px; --r-chip: 8px; --r-btn: 9999px; --r-exit: 16px;
+  --card-bg: transparent; --card-border: var(--n80); --card-shadow: none; --card-hover: var(--n94);
+  --sel-bg: var(--n92); --sel-border: var(--n10); --sel-shadow: none;
+  --strong-bg: var(--n90);
+  --btn2-bg: transparent; --btn2-border: 1px solid var(--n50); --btn2-hover: var(--n94);
 
-/* Form fields: 2 px dark border */
-[data-phone][data-ds="nl"] [data-t="field"] { border-width: 2px; border-color: var(--t-ink, #1a1a1a); }
-[data-phone][data-ds="nl"] [data-t="field"]:is(:focus, :focus-within) { border-color: var(--t-accent, #1a1a1a); box-shadow: none; }
+  & [data-t="danger"] { border-color: var(--n10); }
+  & [data-t^="btn-"] { border-width: 1px; }
+  & [data-t="btn-primary"] { border-color: var(--n10); }
 
-/* Chips: 44 px touch target when tappable */
-[data-phone][data-ds="nl"] button[data-t^="chip"] { min-height: 44px; }
-[data-phone][data-ds="nl"] [data-t="chip"] { border-color: var(--t-accent, #1a1a1a); }
+  /* Chips: outlined; the selected one is filled */
+  & [data-t="chip"] { background: transparent; border: 1px solid var(--n50); color: var(--on); }
+  & [data-t="chip-quiet"] { background: transparent; border: 1px solid var(--n80); color: var(--on-var); }
+  & [data-t="chip-solid"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
 
-/* Header ribbon and navigation */
-[data-phone][data-ds="nl"] header { border-bottom: 3px solid var(--t-accent, #1a1a1a); }
-[data-phone][data-ds="nl"] nav > .bg-\[\#c7c7c7\] { background-color: var(--t-accent, #1a1a1a); height: 3px; }
-[data-phone][data-ds="nl"] nav button:not([data-quick-exit]) .f-s { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  /* Outlined text fields: 4 px corners, the label sits in a notch on the outline */
+  & [data-t="field"] { background: transparent; border: 1px solid var(--n50); border-radius: 4px; box-shadow: none; }
+  & [data-t="field"]:is(:focus, :focus-within) { border-color: var(--n10); box-shadow: inset 0 0 0 1px var(--n10); }
+  & label[data-t="field"] { position: relative; }
+  & label[data-t="field"] > span.uppercase { position: absolute; top: -9px; left: 12px; padding: 0 4px; background: var(--n98); font-size: 12px; line-height: 16px; }
+
+  /* Small top app bar: back arrow, title on the left */
+  & header > div { min-height: 64px; }
+  & header p.f-b { font-size: 22px; line-height: 28px; font-weight: 400; }
+  & .f-b.text-\[22px\] { font-size: 24px; line-height: 32px; font-weight: 400; }
+
+  /* Navigation bar, docked, tonal */
+  & nav { background: var(--n94); }
+  & nav [data-quick-exit] { border-radius: 16px; }
+}
+
+/* ===== Material 3 · B — Filled, expressive ===== */
+
+[data-phone][data-ds="m3b"] {
+  --m-bg: linear-gradient(180deg, var(--n96) 0%, var(--n90) 100%);
+  --r-card: 28px; --r-strong: 28px; --r-row: 20px; --r-chip: 12px; --r-btn: 9999px; --r-exit: 28px;
+  --card-bg: var(--n100); --card-border: transparent; --card-shadow: none; --card-hover: var(--n98);
+  --sel-bg: var(--n100); --sel-border: transparent; --sel-shadow: inset 0 0 0 2px var(--n10);
+  --strong-bg: linear-gradient(135deg, var(--n30) 0%, var(--n10) 100%);
+  --btn2-bg: var(--n100); --btn2-border: 1px solid transparent; --btn2-hover: var(--n98);
+  --on-var: #3d3d3d;
+
+  /* Bolder, bigger type */
+  & :is(.f-s, .f-b) { font-weight: 700; }
+  & .f-s.text-\[14px\], & .f-s.text-\[15px\], & .f-s.text-\[12px\], & .f-s.text-\[13px\], & .f-s.text-\[11px\] { font-weight: 500; }
+  & .f-b.text-\[22px\] { font-size: 30px; line-height: 36px; font-weight: 700; }
+
+  /* Taller buttons, generous padding on cards and rows */
+  & [data-t^="btn-"] { min-height: 60px; font-size: 16px; border-width: 1px; }
+  & [data-t="btn-primary"] { border-color: var(--n10); }
+  & :is([data-t="card"], [data-t="card-strong"], [data-t="danger"]) { padding: 16px 20px; }
+  & [data-t="row"] { min-height: 64px; padding: 8px 18px; }
+  & [data-t="choice"] { padding: 14px 16px; }
+
+  /* Highlighted cards are inverted: a dark grey gradient with light text */
+  & [data-t="card-strong"] { color: #fff; }
+  & [data-t="card-strong"] :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--n80); }
+  & [data-t="card-strong"] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.28); }
+  & [data-t="card-strong"] .border-\[\#1a1a1a\] { border-color: #fff; }
+  & [data-t="card-strong"] svg[stroke] { stroke: #fff; }
+
+  /* Chips: filled, no outline */
+  & [data-t="chip"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
+  & [data-t="chip-quiet"] { background: var(--n94); border: 1px solid var(--n94); color: var(--on-var); }
+  & [data-t="chip-solid"] { background: var(--n10); border: 1px solid var(--n10); color: #fff; }
+  & [data-t="round"] { background: var(--n100); border-color: transparent; }
+
+  /* Filled text fields with big corners, black ring on focus */
+  & [data-t="field"] { background: var(--n100); border-color: transparent; border-radius: 16px; box-shadow: none; }
+  & textarea[data-t="field"] { border-radius: 24px; }
+  & [data-t="field"]:is(:focus, :focus-within) { border-color: transparent; box-shadow: inset 0 0 0 2px var(--n10); }
+  & label[data-t="field"] > span.uppercase { font-size: 12px; }
+
+  /* Large top app bar: back button on the first row, big title below it */
+  & header > div { flex-wrap: wrap; align-items: flex-end; row-gap: 12px; min-height: 0; padding-top: 12px; padding-bottom: 12px; }
+  & header button[aria-label="Back"] { order: 1; width: 48px; height: 48px; background: var(--n100); }
+  & header button[aria-label="Back"]:hover { background: var(--n92); }
+  & header p.f-b { order: 2; flex: 1 0 100%; font-size: 32px; line-height: 40px; font-weight: 500; }
+
+  /* Floating, pill-shaped navigation bar */
+  & nav { background: var(--n100); margin: 0 12px 12px; width: auto; border-radius: 32px; box-shadow: var(--sh1); }
+  & nav > div:last-child { padding: 10px 8px; }
+  & nav [data-quick-exit] { border-radius: 24px; }
+
+  & .bg-\[\#1a1a1a\].text-white.rounded-full.shadow-lg { border-radius: 16px; }
+}
+
+/* ===== Material 3 · C — Elevated ===== */
+
+[data-phone][data-ds="m3c"] {
+  --m-bg: linear-gradient(180deg, var(--n96) 0%, var(--n92) 100%);
+  --r-card: 12px; --r-strong: 12px; --r-row: 12px; --r-chip: 8px; --r-btn: 12px; --r-exit: 12px;
+  --card-bg: var(--n100); --card-border: transparent; --card-shadow: var(--sh1); --card-hover: var(--n98); --card-shadow-hover: var(--sh2);
+  --sel-bg: var(--n100); --sel-border: transparent; --sel-shadow: inset 0 0 0 2px var(--n10), var(--sh1);
+  --strong-bg: var(--n87);
+  --btn2-bg: var(--n100); --btn2-border: 1px solid transparent; --btn2-shadow: var(--sh1); --btn2-hover: var(--n98);
+
+  & [data-t^="btn-"] { border-width: 1px; }
+  & [data-t="btn-primary"] { border-color: var(--n10); }
+  & .f-b.text-\[22px\] { font-size: 24px; line-height: 32px; font-weight: 500; }
+
+  /* Chips: tonal, no outline */
+  & [data-t="chip"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
+  & [data-t="chip-quiet"] { background: var(--n94); border: 1px solid var(--n94); color: var(--on-var); }
+  & [data-t="chip-solid"] { background: var(--n10); border: 1px solid var(--n10); color: #fff; }
+  & [data-t="round"] { background: var(--n100); border-color: transparent; box-shadow: var(--sh1); }
+
+  /* Filled text fields: grey container, 4 px top corners, line along the bottom */
+  & [data-t="field"] { background: var(--n90); border-width: 1px; border-style: solid; border-color: transparent transparent var(--n50); border-radius: 4px 4px 0 0; box-shadow: none; }
+  & [data-t="field"]:is(:focus, :focus-within) { border-bottom-color: var(--n10); box-shadow: 0 1px 0 0 var(--n10); }
+  & label[data-t="field"] > span.uppercase { font-size: 12px; }
+
+  /* Centre-aligned top app bar with a shadow */
+  & header { position: relative; z-index: 2; background: var(--n100); box-shadow: var(--sh2); }
+  & header > div { position: relative; justify-content: center; min-height: 64px; }
+  & header p.f-b { flex: 0 1 auto; text-align: center; font-size: 22px; line-height: 28px; font-weight: 400; }
+  & header button[aria-label="Back"] { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); }
+
+  /* Navigation bar: white, raised above the content */
+  & nav { position: relative; z-index: 2; background: var(--n100); box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.2), 0 -3px 8px rgba(0, 0, 0, 0.08); }
+}
