@@ -54,7 +54,8 @@ function PinField({ value, onChange }: { value: string; onChange: (v: string) =>
       {[0, 1, 2, 3].map((i) => (
         <span key={i} className={`rounded-full size-[13px] border-[1.5px] border-[#1a1a1a] ${value[i] ? "bg-[#1a1a1a]" : ""}`} />
       ))}
-      <input inputMode="numeric" maxLength={4} value={value} aria-label="PIN"
+      {/* inputMode="numeric" opens the number pad on phones; pattern does the same on older iPhones. */}
+      <input inputMode="numeric" pattern="[0-9]*" autoComplete="off" maxLength={4} value={value} aria-label="PIN"
         onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 4))}
         className="absolute inset-0 opacity-0 cursor-text" />
     </label>
@@ -74,8 +75,9 @@ function WayCard({ n, text, on, onClick }: { n: number; text: string; on: boolea
 export function WayIn({ onContinue }: { onContinue: () => void }) {
   const [gesture, setGesture] = useState(false);
   const [pin, setPin] = useState(false);
-  const [mine, setMine] = useState("1234");
-  const [panic, setPanic] = useState("4321");
+  // Start empty: the four dots are open rings and fill in one by one as digits are typed.
+  const [mine, setMine] = useState("");
+  const [panic, setPanic] = useState("");
   return (
     <>
       <TopBar title="Nura" />
