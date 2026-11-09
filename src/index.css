@@ -146,6 +146,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 [data-phone][data-theme] [data-t="btn-primary"] + [data-t="btn-primary"] + [data-t="btn-primary"] { background-color: var(--t-fill3); }
 [data-phone][data-theme] [data-t="btn-primary"]:hover { filter: brightness(0.97); }
 [data-phone][data-theme] [data-t="btn-primary"] .border-white { border-color: var(--t-fill-icon); }
+[data-phone][data-theme] [data-t="btn-primary"] [data-symbol] { color: var(--t-fill-icon); }
 [data-phone][data-theme] :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background-color: var(--t-surface); border-color: var(--t-line); color: var(--t-ink); }
 [data-phone][data-theme] [data-t="btn-outline"] { border-color: var(--t-accent); }
 [data-phone][data-theme] :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background-color: var(--t-tint); }

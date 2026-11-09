@@ -31,9 +31,9 @@ export function Home({ entries, open, start }: { entries: Entry[]; open: (id: nu
         {entries.slice(0, 2).map((e) => <EntryRow key={e.id} e={e} lead onClick={() => open(e.id)} />)}
         <Spacer />
         <Label>Add to your record</Label>
-        <Button size="mid" icon="round" onClick={() => start("voice")}>Record your voice</Button>
-        <Button size="mid" icon="square" onClick={() => start("camera")}>Take a photo or video</Button>
-        <Button size="mid" icon="square" onClick={() => start("note")}>Write what happened</Button>
+        <Button size="mid" symbol="mic" onClick={() => start("voice")}>Record your voice</Button>
+        <Button size="mid" symbol="photo_camera" onClick={() => start("camera")}>Take a photo or video</Button>
+        <Button size="mid" symbol="edit_note" onClick={() => start("note")}>Write what happened</Button>
       </Body>
     </>
   );

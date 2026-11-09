@@ -65,7 +65,8 @@ export function Foot({ children }: { children: ReactNode }) {
 
 type Icon = "square" | "round";
 
-export function Button({ children, onClick, variant = "primary", icon, size = "normal" }: { children: ReactNode; onClick?: () => void; variant?: "primary" | "secondary" | "outline"; icon?: Icon; size?: "tall" | "mid" | "normal" }) {
+/** `icon` draws a wireframe placeholder shape; `symbol` draws a real Material Symbols icon by name (e.g. "mic") instead. */
+export function Button({ children, onClick, variant = "primary", icon, symbol, size = "normal" }: { children: ReactNode; onClick?: () => void; variant?: "primary" | "secondary" | "outline"; icon?: Icon; symbol?: string; size?: "tall" | "mid" | "normal" }) {
   const styles = {
     primary: "bg-[#1a1a1a] border-[#1a1a1a] text-white hover:bg-[#333]",
     secondary: "border-[#c7c7c7] text-[#1a1a1a] hover:bg-[#f5f5f5]",
@@ -74,8 +75,10 @@ export function Button({ children, onClick, variant = "primary", icon, size = "n
   const h = { tall: "min-h-[64px]", mid: "min-h-[54px]", normal: "min-h-[52px]" }[size];
   return (
     <button onClick={onClick} data-t={`btn-${variant}`}
-      className={`border-2 flex items-center ${icon ? "justify-start gap-[10px]" : "justify-center"} ${h} px-[16px] py-[6px] rounded-[16px] w-full shrink-0 f-s text-[15px] transition-colors active:scale-[0.99] ${styles}`}>
-      {icon && <span className={`border-[1.5px] size-[20px] shrink-0 ${variant === "primary" ? "border-white" : "border-[#1a1a1a]"} ${icon === "round" ? "rounded-[10px]" : "rounded-[6px]"}`} />}
+      className={`border-2 flex items-center ${icon || symbol ? "justify-start gap-[10px]" : "justify-center"} ${h} px-[16px] py-[6px] rounded-[16px] w-full shrink-0 f-s text-[15px] transition-colors active:scale-[0.99] ${styles}`}>
+      {/* Takes the button's text colour; colour themes give it the accent colour instead (index.css). */}
+      {symbol && <span data-symbol aria-hidden className="material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] shrink-0">{symbol}</span>}
+      {!symbol && icon && <span className={`border-[1.5px] size-[20px] shrink-0 ${variant === "primary" ? "border-white" : "border-[#1a1a1a]"} ${icon === "round" ? "rounded-[10px]" : "rounded-[6px]"}`} />}
       {children}
     </button>
   );
