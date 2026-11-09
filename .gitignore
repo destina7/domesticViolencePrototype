@@ -22,3 +22,6 @@ logs/
 
 # macOS
 .DS_Store
+
+# This project uses pnpm (see packageManager in package.json). An npm lockfile here would drift out of date.
+package-lock.json
