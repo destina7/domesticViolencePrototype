@@ -1,5 +1,5 @@
 import { Body, Button, CheckMark, Chip, Label, ListItem, Spacer, TopBar } from "../ui";
-import { entrySub } from "../data";
+import { KIND_ICON, entrySub } from "../data";
 import type { Entry } from "../data";
 
 export type Capture = "note" | "voice" | "camera";
@@ -9,15 +9,16 @@ export function CaptureButtons({ start }: { start: (c: Capture) => void }) {
   return (
     <>
       <Label>Add to your record</Label>
-      <Button size="mid" symbol="mic" onClick={() => start("voice")}>Record your voice</Button>
-      <Button size="mid" symbol="photo_camera" onClick={() => start("camera")}>Take a photo or video</Button>
-      <Button size="mid" symbol="edit_note" onClick={() => start("note")}>Write what happened</Button>
+      <Button size="mid" symbol={KIND_ICON["Voice note"]} onClick={() => start("voice")}>Record your voice</Button>
+      <Button size="mid" symbol={KIND_ICON["Photo, 2 items"]} onClick={() => start("camera")}>Take a photo or video</Button>
+      <Button size="mid" symbol={KIND_ICON["Written note"]} onClick={() => start("note")}>Write what happened</Button>
     </>
   );
 }
 
+/** One saved entry. With `lead`, the row starts with the same icon as the button that made this kind of entry. */
 export function EntryRow({ e, sub, lead, onClick }: { e: Entry; sub?: string; lead?: boolean; onClick: () => void }) {
-  return <ListItem lead={lead ? "square" : undefined} title={e.kind} sub={sub ?? entrySub(e)} trail={<Chip>Saved</Chip>} onClick={onClick} />;
+  return <ListItem symbol={lead ? KIND_ICON[e.kind] : undefined} title={e.kind} sub={sub ?? entrySub(e)} trail={<Chip>Saved</Chip>} onClick={onClick} />;
 }
 
 function Empty() {

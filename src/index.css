@@ -113,6 +113,8 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 [data-phone][data-theme] :is([data-t="row"], [data-t="card"]) { background-color: var(--t-surface); border-color: var(--t-line); }
 [data-phone][data-theme] [data-t="row"]:is([role="button"]):hover { background-color: var(--t-tint); }
 [data-phone][data-theme] [data-t="row"].border-\[\#1a1a1a\] { border-color: var(--t-accent); }
+/* Entry icons at the start of a row (mic, camera, note) take the accent colour, like the square they replaced */
+[data-phone][data-theme] [data-t="row"] [data-symbol] { color: var(--t-accent); }
 /* Highlighted cards (case summary, setup message, date and time, error): a soft colour panel without a heavy border */
 [data-phone][data-theme] [data-t="card-strong"] { background-color: var(--t-panel); border-color: var(--t-panel); }
 [data-phone][data-theme] [data-t="card-strong"] .bg-\[\#ebebeb\] { background-color: var(--t-surface); opacity: 0.8; }

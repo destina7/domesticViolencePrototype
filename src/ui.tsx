@@ -97,13 +97,16 @@ export function Placeholder({ children, className = "" }: { children?: ReactNode
   );
 }
 
-export function ListItem({ title, sub, lead, trail, selected, onClick }: { title: string; sub?: string; lead?: Icon | "image"; trail?: ReactNode; selected?: boolean; onClick?: () => void }) {
+/** `lead` draws a wireframe placeholder at the start of the row; `symbol` draws a real Material Symbols icon there instead. */
+export function ListItem({ title, sub, lead, symbol, trail, selected, onClick }: { title: string; sub?: string; lead?: Icon | "image"; symbol?: string; trail?: ReactNode; selected?: boolean; onClick?: () => void }) {
   const cls = `border-[1.5px] flex gap-[12px] items-center min-h-[58px] px-[14px] py-[8px] rounded-[14px] w-full shrink-0 text-left ${selected ? "border-[#1a1a1a]" : "border-[#c7c7c7]"} ${onClick ? "hover:bg-[#f7f7f7] transition-colors cursor-pointer" : ""}`;
   const inner = (
     <>
-      {lead === "round" && <span className={`border-[#1a1a1a] border-[1.5px] rounded-[10px] size-[20px] shrink-0 ${selected ? "bg-[#1a1a1a] shadow-[inset_0_0_0_3px_#fff]" : ""}`} />}
-      {lead === "square" && <span className="border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[20px] shrink-0" />}
-      {lead === "image" && <Placeholder className="size-[40px]" />}
+      {/* 24 px set inline, like the other icons: the icon font's own size rule beats Tailwind's text size classes. */}
+      {symbol && <span data-symbol aria-hidden style={{ fontSize: 24 }} className="material-symbols-outlined flex items-center justify-center size-[24px] leading-none shrink-0 text-[#1a1a1a]">{symbol}</span>}
+      {!symbol && lead === "round" && <span className={`border-[#1a1a1a] border-[1.5px] rounded-[10px] size-[20px] shrink-0 ${selected ? "bg-[#1a1a1a] shadow-[inset_0_0_0_3px_#fff]" : ""}`} />}
+      {!symbol && lead === "square" && <span className="border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[20px] shrink-0" />}
+      {!symbol && lead === "image" && <Placeholder className="size-[40px]" />}
       <span className="flex flex-1 flex-col gap-[2px] min-w-0">
         <span className="f-s text-[14px] text-[#1a1a1a]">{title}</span>
         {sub && <span className="f-r text-[12px] text-[#666]">{sub}</span>}

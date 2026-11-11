@@ -1,5 +1,8 @@
 export type Kind = "Voice note" | "Photo, 2 items" | "Written note";
 
+// Material Symbols icon per kind of entry. Used by the "Add to your record" buttons and by the entry rows, so they match.
+export const KIND_ICON: Record<Kind, string> = { "Voice note": "mic", "Photo, 2 items": "photo_camera", "Written note": "edit_note" };
+
 export type Entry = {
   id: number;
   kind: Kind;
