@@ -135,8 +135,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 /* Placeholders (illustration, camera view, photo preview, info notes) */
 [data-phone][data-theme] [data-t="placeholder"] { background-color: var(--t-tint); border-color: var(--t-line); }
 
-/* Round controls: play / pause buttons and the big record button */
-[data-phone][data-theme] [data-t="round"] { background-color: var(--t-surface); }
+/* The big record button (pause / play are Material Symbols icons now and just take the text colour) */
 [data-phone][data-theme] [data-t="record"] { background-color: var(--t-fill1); border-color: var(--t-accent); color: var(--t-on-fill); }
 [data-phone][data-theme] [data-t="record"].bg-\[\#1a1a1a\] { background-color: var(--t-accent); color: #FFFFFF; }
 
@@ -213,7 +212,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & :is([data-t="row"], [data-t="choice"]).border-\[\#1a1a1a\] {
     background: var(--sel-bg); border-color: var(--sel-border); box-shadow: var(--sel-shadow);
   }
-  /* An opened card (Resources, option B) is an elevated card: white, no outline, level 2 shadow, so it sits in front
+  /* An opened card (Resources, option C) is an elevated card: white, no outline, level 2 shadow, so it sits in front
      of the outlined cards around it. Picked options above keep the filled "selected" look. */
   & [data-t="row"][data-open] { background: var(--n100); border-color: transparent; box-shadow: var(--sh2); }  /* Highlighted cards (setup message, case summary, date and time, error) */
   & [data-t="card-strong"] { background: var(--strong-bg); border-color: transparent; box-shadow: var(--strong-shadow, none); }
@@ -230,12 +229,11 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & [role="switch"][aria-checked="true"] { background: var(--n10); border-color: var(--n10); }
   & [role="switch"][aria-checked="true"] > span { top: 2px; left: 22px; width: 24px; height: 24px; background: #fff; }
 
-  /* Back button: an arrow instead of the wireframe square */
+  /* Back button: the keyboard_backspace icon (ui.tsx) in a 40 px round tap area, grey circle on hover */
   & header button[aria-label="Back"] {
     width: 40px; height: 40px; border: 0; border-radius: 9999px; background: transparent; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  & header button[aria-label="Back"]::before { content: "\2190"; font-family: Roboto, "Segoe UI", system-ui, sans-serif; font-size: 24px; line-height: 1; color: var(--on); }
   & header button[aria-label="Back"]:hover { background: var(--n90); }
 
   /* Navigation bar: the icon square sits in a pill; the active tab gets a filled pill (the indicator) */

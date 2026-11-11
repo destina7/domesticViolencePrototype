@@ -31,7 +31,12 @@ export function TopBar({ title, onBack, right }: { title: string; onBack?: () =>
   return (
     <header className="w-full shrink-0">
       <div className="flex gap-[10px] items-center min-h-[56px] px-[16px] py-[6px] w-full max-w-[560px] mx-auto">
-        {onBack && <button onClick={onBack} aria-label="Back" className="border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[20px] shrink-0 hover:bg-[#ebebeb]" />}
+        {/* Back: the keyboard_backspace arrow from Material Symbols, in a 40 px round tap area. */}
+        {onBack && (
+          <button onClick={onBack} aria-label="Back" className="flex items-center justify-center size-[40px] -ml-[8px] rounded-full shrink-0 hover:bg-[#ebebeb]">
+            <span data-symbol aria-hidden className="material-symbols-outlined text-[24px] leading-none text-[#1a1a1a]">keyboard_backspace</span>
+          </button>
+        )}
         <p className="flex-1 min-w-0 f-b text-[20px] text-[#1a1a1a] select-none">{title}</p>
         {right}
       </div>

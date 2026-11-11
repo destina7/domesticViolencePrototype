@@ -52,13 +52,14 @@ export function Voice({ onBack, onDone, onMic }: Common & { onDone: (seconds: nu
           ))}
         </div>
         <p className="f-r text-[12px] text-[#666] text-center">Saved inside the app while you record.</p>
-        <div data-t="placeholder" className="border-[#c7c7c7] border-[1.5px] border-dashed rounded-[12px] px-[12px] py-[10px] w-full">
-          <p className="f-r text-[12px] text-[#666]">Your phone shows a dot while the mic is on.</p>
-        </div>
         <Spacer />
         <div className="flex items-end justify-center gap-[44px] pb-[14px]">
           <button onClick={() => setPaused(!paused)} className="flex flex-col items-center gap-[4px]">
-            <span data-t="round" className="border-[#1a1a1a] border-[1.5px] rounded-full size-[48px] flex items-center justify-center f-s text-[14px] hover:bg-[#f5f5f5]">{paused ? "▶" : "II"}</span>
+            {/* Material Symbols pause_circle / play_circle: the circle is part of the icon, so no border of our own.
+                The size is set inline: the icon font's own 24 px rule beats Tailwind's text-[48px]. */}
+            <span data-symbol aria-hidden style={{ fontSize: 48 }} className="material-symbols-outlined flex items-center justify-center size-[48px] leading-none text-[#1a1a1a]">
+              {paused ? "play_circle" : "pause_circle"}
+            </span>
             <span className="f-m text-[11px]">{paused ? "Resume" : "Pause"}</span>
           </button>
           <button onClick={() => onDone(sec)} aria-label="Stop" className="flex flex-col items-center gap-[4px] active:scale-95 transition-transform">
