@@ -53,12 +53,9 @@ export type PinDesign = (typeof PIN_DESIGNS)[number];
 // expand = one list as before, each card opens to show more about that place.
 export const RESOURCE_DESIGNS = ["grouped", "expand"] as const;
 export type ResourceDesign = (typeof RESOURCE_DESIGNS)[number];
-// How an opened Resources card (option B) looks in Material 3: elevated = white with a shadow, filled = grey, no outline.
-export const OPEN_CARD_DESIGNS = ["elevated", "filled"] as const;
-export type OpenCardDesign = (typeof OPEN_CARD_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign; openCard: OpenCardDesign };
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "grouped", openCard: "elevated" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "grouped" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 
