@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, Button, Card, Heading, Label, Spacer, StatusBar, Toast, useToast } from "./ui";
-import { DEFAULT_OPTIONS, DESIGN_SYSTEMS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
+import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
@@ -34,7 +34,7 @@ function loadOptions(): Options {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
       // Only the theme, design system and the screen A/B choices are remembered. Older saved layout choices are ignored.
-      const { theme, ds, pin, resources } = JSON.parse(raw);
+      const { theme, ds, pin, resources, caseEmpty } = JSON.parse(raw);
       // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
       const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
@@ -42,7 +42,9 @@ function loadOptions(): Options {
         theme: theme ?? DEFAULT_OPTIONS.theme,
         ds: (DESIGN_SYSTEMS as readonly string[]).includes(saved) ? saved : DEFAULT_OPTIONS.ds,
         pin: (PIN_DESIGNS as readonly string[]).includes(pin) ? pin : DEFAULT_OPTIONS.pin,
-        resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,      };
+        resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,
+        caseEmpty: (CASE_EMPTY_DESIGNS as readonly string[]).includes(caseEmpty) ? caseEmpty : DEFAULT_OPTIONS.caseEmpty,
+      };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
   return DEFAULT_OPTIONS;
@@ -126,7 +128,7 @@ export default function App() {
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
     case "home": view = <Home entries={entries} open={openEntry} start={go} />; break;
-    case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} />; break;
+    case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} start={go} empty={opt.caseEmpty} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
     case "resources": view = <Resources design={opt.resources} toast={toast} />; break;
     case "settings": view = <Settings cover={cover} toast={toast} />; break;

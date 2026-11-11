@@ -6,7 +6,7 @@ const SOON = "Not part of this test";
 
 type Place = { t: string; s: string; c: string; kind: string };
 
-// `kind` is the heading the place sits under in option A, in this order.
+// `kind` is the heading the place sits under in option B (Grouped by help), in this order.
 const PLACES: Place[] = [
   { t: "Veilig Thuis", s: "Advice and reporting", c: "Call", kind: "Mental help" },
   { t: "NEST / Lumens", s: "Support in Eindhoven", c: "Open", kind: "Mental help" },
@@ -22,7 +22,7 @@ const sameBox = (a: Box, b: Box) => a.top === b.top && a.left === b.left && a.wi
 const EASE = "duration-300 ease-out motion-reduce:transition-none";
 
 /**
- * Option B: tapping the card opens it. The chevron points down when closed and up when open.
+ * Option C (Cards that open): tapping the card opens it. The chevron points down when closed and up when open.
  * Opening animates in two ways:
  * - The body grows from 0 to its full height (grid rows 0fr → 1fr), so the cards below slide down instead of jumping.
  * - The Call / Open / Read pill becomes the big button: it is one element that moves and resizes between two invisible
@@ -98,20 +98,24 @@ export function Resources({ design, toast }: { design: ResourceDesign; toast: (t
       <TopBar title="Resources" />
       <Body>
         <DangerCard onCall={() => toast("Prototype: no call is made")} />
-        {design === "grouped"
-          // Option A: a heading per kind of help, like the Settings page.
-          ? kinds.map((k) => (
-              <div key={k} className="contents">
-                <Label>{k}</Label>
-                {PLACES.filter((p) => p.kind === k).map((p) => (
-                  <ListItem key={p.t} title={p.t} sub={p.s} trail={<Chip quiet>{p.c}</Chip>} onClick={() => toast(SOON)} />
-                ))}
-              </div>
-            ))
-          : PLACES.map((p) => (
-              <ExpandRow key={p.t} place={p} open={openPlace === p.t}
-                onToggle={() => setOpenPlace(openPlace === p.t ? null : p.t)} onAction={() => toast(SOON)} />
+        {/* Option A · Current: the original single list, no headings, nothing opens. */}
+        {design === "current" && PLACES.map((p) => (
+          <ListItem key={p.t} title={p.t} sub={p.s} trail={<Chip quiet>{p.c}</Chip>} onClick={() => toast(SOON)} />
+        ))}
+        {/* Option B · Grouped by help: a heading per kind of help, like the Settings page. */}
+        {design === "grouped" && kinds.map((k) => (
+          <div key={k} className="contents">
+            <Label>{k}</Label>
+            {PLACES.filter((p) => p.kind === k).map((p) => (
+              <ListItem key={p.t} title={p.t} sub={p.s} trail={<Chip quiet>{p.c}</Chip>} onClick={() => toast(SOON)} />
             ))}
+          </div>
+        ))}
+        {/* Option C · Cards that open. */}
+        {design === "expand" && PLACES.map((p) => (
+          <ExpandRow key={p.t} place={p} open={openPlace === p.t}
+            onToggle={() => setOpenPlace(openPlace === p.t ? null : p.t)} onAction={() => toast(SOON)} />
+        ))}
       </Body>
     </>
   );

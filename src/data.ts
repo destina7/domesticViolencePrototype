@@ -49,13 +49,17 @@ export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
 // centred = one PIN per screen, big centred dots with no field, moves on by itself after the 4th digit.
 export const PIN_DESIGNS = ["field", "centred"] as const;
 export type PinDesign = (typeof PIN_DESIGNS)[number];
-// Resources tab. grouped = the places listed under headings by kind of help, like Settings.
-// expand = one list as before, each card opens to show more about that place.
-export const RESOURCE_DESIGNS = ["grouped", "expand"] as const;
+// Resources tab. current = the original single list. grouped = the places listed under headings by kind of help,
+// like Settings. expand = one list as before, each card opens to show more about that place.
+export const RESOURCE_DESIGNS = ["current", "grouped", "expand"] as const;
 export type ResourceDesign = (typeof RESOURCE_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign };
+// Case tab with no entries yet. current = illustration + "Add the first entry" (goes to Home).
+// preview = empty summary and faint rows where entries will go. add = the three capture buttons right on the screen.
+export const CASE_EMPTY_DESIGNS = ["current", "preview", "add"] as const;
+export type CaseEmptyDesign = (typeof CASE_EMPTY_DESIGNS)[number];
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign; caseEmpty: CaseEmptyDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "grouped" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "current", caseEmpty: "current" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

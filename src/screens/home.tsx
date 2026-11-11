@@ -2,7 +2,19 @@ import { Body, Button, CheckMark, Chip, Label, ListItem, Spacer, TopBar } from "
 import { entrySub } from "../data";
 import type { Entry } from "../data";
 
-type Capture = "note" | "voice" | "camera";
+export type Capture = "note" | "voice" | "camera";
+
+/** The three ways to add to the record. Shared by Home and the empty Case screen (option C), so they always match. */
+export function CaptureButtons({ start }: { start: (c: Capture) => void }) {
+  return (
+    <>
+      <Label>Add to your record</Label>
+      <Button size="mid" symbol="mic" onClick={() => start("voice")}>Record your voice</Button>
+      <Button size="mid" symbol="photo_camera" onClick={() => start("camera")}>Take a photo or video</Button>
+      <Button size="mid" symbol="edit_note" onClick={() => start("note")}>Write what happened</Button>
+    </>
+  );
+}
 
 export function EntryRow({ e, sub, lead, onClick }: { e: Entry; sub?: string; lead?: boolean; onClick: () => void }) {
   return <ListItem lead={lead ? "square" : undefined} title={e.kind} sub={sub ?? entrySub(e)} trail={<Chip>Saved</Chip>} onClick={onClick} />;
@@ -30,10 +42,7 @@ export function Home({ entries, open, start }: { entries: Entry[]; open: (id: nu
         {entries.length === 0 && <Empty />}
         {entries.slice(0, 2).map((e) => <EntryRow key={e.id} e={e} lead onClick={() => open(e.id)} />)}
         <Spacer />
-        <Label>Add to your record</Label>
-        <Button size="mid" symbol="mic" onClick={() => start("voice")}>Record your voice</Button>
-        <Button size="mid" symbol="photo_camera" onClick={() => start("camera")}>Take a photo or video</Button>
-        <Button size="mid" symbol="edit_note" onClick={() => start("note")}>Write what happened</Button>
+        <CaptureButtons start={start} />
       </Body>
     </>
   );

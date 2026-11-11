@@ -8,7 +8,8 @@ type Row<K extends keyof Options> = { key: K; title: string; choices: [Options[K
 
 const ROWS: Row<keyof Options>[] = [
   { key: "pin", title: "PIN screen", choices: [["field", "A · Both PINs"], ["centred", "B · One PIN, centered"]] },
-  { key: "resources", title: "Resources screen", choices: [["grouped", "A · Grouped by help"], ["expand", "B · Cards that open"]] },  { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
+  { key: "resources", title: "Resources screen", choices: [["current", "A · Current"], ["grouped", "B · Grouped by help"], ["expand", "C · Cards that open"]] },
+  { key: "caseEmpty", title: "Case, empty screen", choices: [["current", "A · Current"], ["preview", "B · Preview"], ["add", "C · Add right here"]] },  { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
     ["rose", "Soft rose"], ["butter", "Butter"], ["sage", "Sage"], ["sky", "Soft sky"], ["lavender", "Lavender"]] },
   { key: "ds", title: "Design system", choices: [["none", "None"], ["m3a", "Material 3"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
@@ -79,7 +80,8 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
           {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
           {r.key === "ds" && <p className="f-r text-[11px] text-[#666]">Material 3, outlined, all in grays and black, no colour.</p>}
           {r.key === "pin" && <p className="f-r text-[11px] text-[#666]">How the PINs are chosen on the "Your way in" setup screen.</p>}
-          {r.key === "resources" && <p className="f-r text-[11px] text-[#666]">How the Resources tab explains what each place does.</p>}          {r.key === "theme" && opt.ds !== "none" && <p className="f-r text-[11px] text-[#666]">Not used while a design system is on. Set the design system to None to use a colour theme.</p>}
+          {r.key === "resources" && <p className="f-r text-[11px] text-[#666]">How the Resources tab explains what each place does.</p>}
+          {r.key === "caseEmpty" && <p className="f-r text-[11px] text-[#666]">The Case tab before anything is added. See it with Jump to → Case, empty.</p>}          {r.key === "theme" && opt.ds !== "none" && <p className="f-r text-[11px] text-[#666]">Not used while a design system is on. Set the design system to None to use a colour theme.</p>}
           <div className={`flex flex-wrap gap-[6px] ${r.key === "theme" && opt.ds !== "none" ? "opacity-40" : ""}`}>
             {r.choices.map(([v, l]) => (
               <button key={String(v)} onClick={() => setOpt({ ...opt, [r.key]: v })}

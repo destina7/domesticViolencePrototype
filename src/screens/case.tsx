@@ -1,25 +1,73 @@
 import { useState } from "react";
 import { Body, Button, Card, Chevron, Chip, Label, ListItem, Placeholder, Spacer, TextLine, TopBar } from "../ui";
 import { entrySub } from "../data";
-import type { Entry } from "../data";
-import { EntryRow } from "./home";
+import type { CaseEmptyDesign, Entry } from "../data";
+import { CaptureButtons, EntryRow } from "./home";
+import type { Capture } from "./home";
 
-export function Case({ entries, open, onAdd }: { entries: Entry[]; open: (id: number) => void; onAdd: () => void }) {
-  if (entries.length === 0) {
+/** Case tab before anything is added. Three versions to compare, picked in the facilitator menu (Case, empty screen). */
+function CaseEmpty({ design, onAdd, start }: { design: CaseEmptyDesign; onAdd: () => void; start: (c: Capture) => void }) {
+  // B · Preview: the summary card and faint empty rows show where entries will go, so the tab explains itself.
+  if (design === "preview") {
     return (
       <>
-        <TopBar title="Case" />
-        <Body center>
+        <TopBar title="Your case" />
+        <Body>
+          <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
+            <Label>Your case</Label>
+            <p className="f-b text-[16px]">0 entries</p>
+            <p className="f-r text-[11px] text-[#666]">All encrypted</p>
+          </div>
+          <Label>Your entries will show here</Label>
+          {[1, 0.6, 0.3].map((o) => (
+            // The outline of an entry row (square, title, date), so it reads as "entries go here".
+            <div key={o} aria-hidden style={{ opacity: o }}
+              className="border-[1.5px] border-dashed border-[#c7c7c7] rounded-[14px] h-[58px] shrink-0 flex items-center gap-[12px] px-[14px]">
+              <span className="border-[1.5px] border-dashed border-[#c7c7c7] rounded-[6px] size-[20px] shrink-0" />
+              <span className="flex flex-col gap-[6px]"><TextLine w={110} /><TextLine w={70} /></span>
+            </div>
+          ))}
           <Spacer />
-          <Placeholder className="w-[140px] h-[110px]">soft illustration, no people</Placeholder>
-          <p className="f-b text-[22px]">Nothing here yet</p>
-          <p className="f-r text-[13px] text-[#666] text-center w-[230px]">What you add on Home will appear here, newest first.</p>
           <Button onClick={onAdd}>Add the first entry</Button>
-          <Spacer />
         </Body>
       </>
     );
   }
+  // C · Add right here: why the record matters, then the same three buttons as Home, in the same low spot.
+  if (design === "add") {
+    return (
+      <>
+        <TopBar title="Case" />
+        <Body>
+          <Spacer />
+          <p className="f-b text-[22px]">Start your record</p>
+          <p className="f-r text-[13px] text-[#666] max-w-[280px]">Each entry gets a date and time and can't be changed later. Small things count too.</p>
+          <Spacer />
+          <CaptureButtons start={start} />
+        </Body>
+      </>
+    );
+  }
+  // A · Current: illustration and one button that goes to Home.
+  return (
+    <>
+      <TopBar title="Case" />
+      <Body center>
+        <Spacer />
+        <Placeholder className="w-[140px] h-[110px]">soft illustration, no people</Placeholder>
+        <p className="f-b text-[22px]">Nothing here yet</p>
+        <p className="f-r text-[13px] text-[#666] text-center w-[230px]">What you add on Home will appear here, newest first.</p>
+        <Button onClick={onAdd}>Add the first entry</Button>
+        <Spacer />
+      </Body>
+    </>
+  );
+}
+
+export function Case({ entries, open, onAdd, start, empty }: {
+  entries: Entry[]; open: (id: number) => void; onAdd: () => void; start: (c: Capture) => void; empty: CaseEmptyDesign;
+}) {
+  if (entries.length === 0) return <CaseEmpty design={empty} onAdd={onAdd} start={start} />;
   // Grouped by incident in order of first appearance; entries without an incident go last.
   const groups: [string | null, Entry[]][] = [];
   entries.forEach((e) => {
