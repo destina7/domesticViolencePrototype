@@ -213,6 +213,13 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & :is([data-t="row"], [data-t="choice"]).border-\[\#1a1a1a\] {
     background: var(--sel-bg); border-color: var(--sel-border); box-shadow: var(--sel-shadow);
   }
+  /* An opened card (Resources, option B) is an elevated card: white, no outline, level 2 shadow, so it sits in front
+     of the outlined cards around it. Picked options above keep the filled "selected" look. */
+  & [data-t="row"][data-open] { background: var(--n100); border-color: transparent; box-shadow: var(--sh2); }
+  /* Open card A/B (facilitator menu → Open card), B · Filled: a grey filled card, no outline, no shadow.
+     The placeholder lines are the same grey, so they turn light to stay visible on it. */
+  &[data-open-card="filled"] [data-t="row"][data-open] { background: var(--n90); border-color: transparent; box-shadow: none; }
+  &[data-open-card="filled"] [data-t="row"][data-open] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.7); }
   /* Highlighted cards (setup message, case summary, date and time, error) */
   & [data-t="card-strong"] { background: var(--strong-bg); border-color: transparent; box-shadow: var(--strong-shadow, none); }
   & [data-t="card-strong"] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.6); }
@@ -276,7 +283,6 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   --strong-bg: var(--n90);
   --btn2-bg: transparent; --btn2-border: 1px solid var(--n50); --btn2-hover: var(--n94);
 
-  & [data-t="danger"] { border-color: var(--n10); }
   & [data-t^="btn-"] { border-width: 1px; }
   & [data-t="btn-primary"] { border-color: var(--n10); }
 

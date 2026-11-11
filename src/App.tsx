@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, Button, Card, Heading, Label, Spacer, StatusBar, Toast, useToast } from "./ui";
-import { DEFAULT_OPTIONS, DESIGN_SYSTEMS, PIN_DESIGNS, SEED } from "./data";
+import { DEFAULT_OPTIONS, DESIGN_SYSTEMS, OPEN_CARD_DESIGNS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
@@ -33,8 +33,8 @@ function loadOptions(): Options {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      // Only the theme, design system and PIN screen are remembered. Older saved layout choices are ignored.
-      const { theme, ds, pin } = JSON.parse(raw);
+      // Only the theme, design system and the screen A/B choices are remembered. Older saved layout choices are ignored.
+      const { theme, ds, pin, resources, openCard } = JSON.parse(raw);
       // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
       const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
@@ -42,6 +42,8 @@ function loadOptions(): Options {
         theme: theme ?? DEFAULT_OPTIONS.theme,
         ds: (DESIGN_SYSTEMS as readonly string[]).includes(saved) ? saved : DEFAULT_OPTIONS.ds,
         pin: (PIN_DESIGNS as readonly string[]).includes(pin) ? pin : DEFAULT_OPTIONS.pin,
+        resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,
+        openCard: (OPEN_CARD_DESIGNS as readonly string[]).includes(openCard) ? openCard : DEFAULT_OPTIONS.openCard,
       };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
@@ -128,7 +130,7 @@ export default function App() {
     case "home": view = <Home entries={entries} open={openEntry} start={go} />; break;
     case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
-    case "resources": view = <Resources toast={toast} />; break;
+    case "resources": view = <Resources design={opt.resources} toast={toast} />; break;
     case "settings": view = <Settings cover={cover} toast={toast} />; break;
     case "note": view = <Note onBack={back} onSave={() => finish("Written note")} />; break;
     case "voice": view = <Voice onBack={back} onMic={setMic} onDone={(s) => finish("Voice note", s)} />; break;
@@ -147,7 +149,7 @@ export default function App() {
   return (
     <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#f2f2f2] sm:py-[24px]">
       <HiddenMenu opt={opt} setOpt={setOpt} jump={jump} reset={reset} />
-      <div data-phone data-ds={opt.ds === "none" ? undefined : opt.ds} data-theme={opt.ds !== "none" || opt.theme === "none" ? undefined : opt.theme} className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
+      <div data-phone data-ds={opt.ds === "none" ? undefined : opt.ds} data-open-card={opt.openCard}data-theme={opt.ds !== "none" || opt.theme === "none" ? undefined : opt.theme} className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
         {screen !== "exited" && <StatusBar mic={mic} />}
         {view}
         {inApp && <BottomNav tabs={TABS} active={ACTIVE_TAB[screen] ?? "Home"} onSelect={tab} onHide={quickExit} />}
