@@ -16,9 +16,9 @@ function CaseEmpty({ design, onAdd, start }: { design: CaseEmptyDesign; onAdd: (
           <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
             <Label>Your case</Label>
             <p className="f-b text-[16px]">0 entries</p>
-            <p className="f-r text-[11px] text-[#666]">All encrypted</p>
+            <p className="f-r text-[11px] text-[#666]">All will be locked and private.</p>
           </div>
-          <Label>Your entries will show here</Label>
+          <Label>Whenever you're ready, what you save will show up here, newest first.</Label>
           {[1, 0.6, 0.3].map((o) => (
             // The outline of an entry row (square, title, date), so it reads as "entries go here".
             <div key={o} aria-hidden style={{ opacity: o }}
@@ -55,8 +55,8 @@ function CaseEmpty({ design, onAdd, start }: { design: CaseEmptyDesign; onAdd: (
       <Body center>
         <Spacer />
         <Placeholder className="w-[140px] h-[110px]">soft illustration, no people</Placeholder>
-        <p className="f-b text-[22px]">Nothing here yet</p>
-        <p className="f-r text-[13px] text-[#666] text-center w-[230px]">What you add on Home will appear here, newest first.</p>
+        <p className="f-b text-[22px]">Your space is ready</p>
+        <p className="f-r text-[13px] text-[#666] text-center w-[230px]">Whenever you're ready, what you save will show up here, newest first.</p>
         <Button onClick={onAdd}>Add the first entry</Button>
         <Spacer />
       </Body>
@@ -83,7 +83,7 @@ export function Case({ entries, open, onAdd, start, empty }: {
         <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex flex-col gap-[4px] p-[12px] rounded-[16px] shrink-0">
           <Label>Your case</Label>
           <p className="f-b text-[16px]">{entries.length} entries · {incidents} incidents</p>
-          <p className="f-r text-[11px] text-[#666]">First entry 1 Oct · all encrypted</p>
+          <p className="f-r text-[11px] text-[#666]">Since 1 Oct · all locked and private</p>
         </div>
         {groups.map(([name, list]) => (
           <div key={name ?? "none"} className="flex flex-col gap-[10px]">
@@ -117,9 +117,9 @@ export function EntryDetail({ entry, onBack }: { entry: Entry; onBack: () => voi
               <span className="f-r text-[11px] text-[#666]">3:12</span>
             </div>
             <Card>
-              <Label>Text from the recording</Label>
+              <Label>What was said</Label>
               <TextLine w={290} /><TextLine w={290} /><TextLine w={150} />
-              <p className="f-r text-[12px] text-[#666]">Automatic. May contain mistakes.</p>
+              <p className="f-r text-[12px] text-[#666]">Written automatically, so it may not be perfect.</p>
             </Card>
           </>
         )}

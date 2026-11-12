@@ -11,7 +11,7 @@ export function CaptureButtons({ start }: { start: (c: Capture) => void }) {
       <Label>Add to your record</Label>
       <Button size="mid" symbol={KIND_ICON["Voice note"]} onClick={() => start("voice")}>Record your voice</Button>
       <Button size="mid" symbol={KIND_ICON["Photo, 2 items"]} onClick={() => start("camera")}>Take a photo or video</Button>
-      <Button size="mid" symbol={KIND_ICON["Written note"]} onClick={() => start("note")}>Write what happened</Button>
+      <Button size="mid" symbol={KIND_ICON["Written note"]} onClick={() => start("note")}>Write it in your own words</Button>
     </>
   );
 }
@@ -35,8 +35,8 @@ export function Home({ entries, open, start }: { entries: Entry[]; open: (id: nu
         <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex gap-[12px] items-center p-[14px] rounded-[16px] shrink-0">
           <CheckMark size={36} />
           <div className="flex flex-col gap-[2px]">
-            <p className="f-s text-[15px]">Everything is saved</p>
-            <p className="f-r text-[12px] text-[#666]">{entries.length} entries{last ? ` · last one ${last.day === "Today" || last.day === "Yesterday" ? last.day.toLowerCase() : last.day} ${last.time}` : ""}</p>
+            <p className="f-s text-[15px]">All safe and saved</p>
+            <p className="f-r text-[12px] text-[#666]">{entries.length} entries, private to you{last ? ` · last one ${last.day === "Today" || last.day === "Yesterday" ? last.day.toLowerCase() : last.day} ${last.time}` : ""}</p>
           </div>
         </div>
         <Label>Recent</Label>
