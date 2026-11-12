@@ -44,11 +44,21 @@ export function TopBar({ title, onBack, right }: { title: string; onBack?: () =>
   );
 }
 
-export function Body({ children, center }: { children: ReactNode; center?: boolean }) {
+/** `fade` fades the content out at the bottom edge instead of cutting it off, and hides the scrollbar. Use it when a Dock or the nav bar sits underneath. */
+export function Body({ children, center, fade }: { children: ReactNode; center?: boolean; fade?: boolean }) {
   return (
-    <main className={`flex flex-1 flex-col gap-[12px] min-h-0 overflow-y-auto px-[16px] py-[8px] w-full max-w-[560px] mx-auto ${center ? "items-center" : "items-stretch"}`}>
+    <main className={`flex flex-1 flex-col gap-[12px] min-h-0 overflow-y-auto px-[16px] py-[8px] w-full max-w-[560px] mx-auto ${center ? "items-center" : "items-stretch"} ${fade ? "fade-bottom no-scrollbar" : ""}`}>
       {children}
     </main>
+  );
+}
+
+/** Fixed area under a scrolling Body, for actions that must always be in reach. The Body above scrolls; this never moves. */
+export function Dock({ children }: { children: ReactNode }) {
+  return (
+    <div data-dock className="flex flex-col gap-[12px] shrink-0 px-[16px] pt-[8px] pb-[12px] w-full max-w-[560px] mx-auto">
+      {children}
+    </div>
   );
 }
 

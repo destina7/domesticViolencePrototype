@@ -12,6 +12,20 @@
 
 body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #fff; }
 
+/* Scrolling content fades out at the bottom instead of being cut off where a Dock starts (Body fade).
+   A mask, not a coloured overlay, so it works on every theme's gradient background. The extra bottom padding
+   (same height as the fade) lets the last row scroll fully clear of the fade. */
+.fade-bottom {
+  --fade: 40px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--fade)), transparent);
+  padding-bottom: var(--fade);
+}
+
+/* Hides the scrollbar but keeps scrolling (touch, wheel, trackpad, keyboard). The fade already shows there is more. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 @keyframes cue-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.45; }

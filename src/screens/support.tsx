@@ -96,7 +96,7 @@ export function Resources({ design, toast }: { design: ResourceDesign; toast: (t
   return (
     <>
       <TopBar title="Resources" />
-      <Body>
+      <Body fade>
         <DangerCard onCall={() => toast("Prototype: no call is made")} />
         {/* Option A · Current: the original single list, no headings, nothing opens. */}
         {design === "current" && PLACES.map((p) => (
@@ -130,7 +130,7 @@ export function Settings({ cover, toast }: { cover: string; toast: (t: string) =
   return (
     <>
       <TopBar title="Settings" />
-      <Body>
+      <Body fade>
         <Label>Disguise</Label>
         <ListItem title="Cover app" sub={cover} trail={<Chevron />} onClick={go} />
         <ListItem title="Way in" sub="Hold the ring + PIN · practise again" trail={<Chevron />} onClick={go} />

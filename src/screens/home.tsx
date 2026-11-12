@@ -1,4 +1,4 @@
-import { Body, Button, CheckMark, Chip, Label, ListItem, Spacer, TopBar } from "../ui";
+import { Body, Button, CheckMark, Chip, Dock, Label, ListItem, TopBar } from "../ui";
 import { KIND_ICON, entrySub } from "../data";
 import type { Entry } from "../data";
 
@@ -31,7 +31,7 @@ export function Home({ entries, open, start }: { entries: Entry[]; open: (id: nu
   return (
     <>
       <TopBar title="Home" />
-      <Body>
+      <Body fade>
         <div data-t="card-strong" className="border-[#1a1a1a] border-[1.5px] flex gap-[12px] items-center p-[14px] rounded-[16px] shrink-0">
           <CheckMark size={36} />
           <div className="flex flex-col gap-[2px]">
@@ -42,9 +42,11 @@ export function Home({ entries, open, start }: { entries: Entry[]; open: (id: nu
         <Label>Recent</Label>
         {entries.length === 0 && <Empty />}
         {entries.slice(0, 2).map((e) => <EntryRow key={e.id} e={e} lead onClick={() => open(e.id)} />)}
-        <Spacer />
-        <CaptureButtons start={start} />
       </Body>
+      {/* The capture buttons are the main reason to open the app, so they stay put above the nav bar. Only the content above scrolls. */}
+      <Dock>
+        <CaptureButtons start={start} />
+      </Dock>
     </>
   );
 }
