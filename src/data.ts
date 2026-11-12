@@ -60,9 +60,14 @@ export type ResourceDesign = (typeof RESOURCE_DESIGNS)[number];
 // preview = empty summary and faint rows where entries will go. add = the three capture buttons right on the screen.
 export const CASE_EMPTY_DESIGNS = ["current", "preview", "add"] as const;
 export type CaseEmptyDesign = (typeof CASE_EMPTY_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign; caseEmpty: CaseEmptyDesign };
+// What someone sees when they open the app, before Nura. Never says "Nura": it looks like the cover app.
+// padlock = the cover app asks for a passcode. 1234 opens Nura, any other 4 digits open the cover app.
+// loading = the cover app's loading screen, 5 s, then the cover app. No secret way in yet.
+export const LOCK_DESIGNS = ["padlock", "loading"] as const;
+export type LockDesign = (typeof LOCK_DESIGNS)[number];
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "current", caseEmpty: "current" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "current", caseEmpty: "current", lock: "padlock" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

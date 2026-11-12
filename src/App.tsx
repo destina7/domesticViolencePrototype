@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, Button, Card, Heading, Label, Spacer, StatusBar, Toast, useToast } from "./ui";
-import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
+import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, LOCK_DESIGNS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
@@ -10,9 +10,10 @@ import { Home } from "./screens/home";
 import { Camera, MicDenied, Note, Saved, UploadFailed, Voice } from "./screens/capture";
 import { Case, EntryDetail } from "./screens/case";
 import { Resources, Settings } from "./screens/support";
+import { CoverApp, FakeLoading, Padlock } from "./screens/lock";
 
 type Screen =
-  | "warn" | "cover" | "way" | "signin"
+  | "warn" | "cover" | "way" | "signin" | "lock" | "coverApp"
   | "home" | "case" | "entry" | "resources" | "settings"
   | "note" | "voice" | "camera" | "saved" | "micDenied" | "uploadFailed"
   | "exited";
@@ -34,7 +35,7 @@ function loadOptions(): Options {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
       // Only the theme, design system and the screen A/B choices are remembered. Older saved layout choices are ignored.
-      const { theme, ds, pin, resources, caseEmpty } = JSON.parse(raw);
+      const { theme, ds, pin, resources, caseEmpty, lock } = JSON.parse(raw);
       // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
       const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
@@ -44,6 +45,7 @@ function loadOptions(): Options {
         pin: (PIN_DESIGNS as readonly string[]).includes(pin) ? pin : DEFAULT_OPTIONS.pin,
         resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,
         caseEmpty: (CASE_EMPTY_DESIGNS as readonly string[]).includes(caseEmpty) ? caseEmpty : DEFAULT_OPTIONS.caseEmpty,
+        lock: (LOCK_DESIGNS as readonly string[]).includes(lock) ? lock : DEFAULT_OPTIONS.lock,
       };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
@@ -59,6 +61,8 @@ export default function App() {
   const [detailId, setDetailId] = useState<number | null>(null);
     const [draft, setDraft] = useState<Draft>({ kind: "Voice note", seconds: 0, incident: null });
   const [mic, setMic] = useState(false);
+  // Bumped on every jump from the hidden menu, so jumping to the lock screen again starts it fresh (empty PIN, bar at 0).
+  const [visit, setVisit] = useState(0);
   const [toastText, toast] = useToast();
 
   const setOpt = (o: Options) => {
@@ -101,6 +105,7 @@ export default function App() {
 
   const jump = (j: Jump) => {
     setHistory([]);
+    setVisit((v) => v + 1);
     if (j === "caseEmpty") { setEntries([]); setScreen("case"); return; }
     if (entries.length === 0) setEntries(SEED);
     setScreen(j);
@@ -127,6 +132,12 @@ export default function App() {
     case "signin":
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
+    case "lock":
+      view = opt.lock === "loading"
+        ? <FakeLoading key={visit} cover={cover} onDone={() => setScreen("coverApp")} />
+        : <Padlock key={visit} cover={cover} onUnlock={() => { setHistory([]); setScreen("home"); }} onCover={() => setScreen("coverApp")} />;
+      break;
+    case "coverApp": view = <CoverApp cover={cover} onBack={() => tab("Home")} />; break;
     case "home": view = <Home entries={entries} open={openEntry} start={go} />; break;
     case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} start={go} empty={opt.caseEmpty} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
