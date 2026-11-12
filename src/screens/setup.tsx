@@ -1,25 +1,28 @@
 import { useState } from "react";
-import { Body, Button, Card, Chip, DangerCard, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
+import type { ReactNode } from "react";
+import { Body, Button, Card, Chip, DangerCard, Dock, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
 import { COVERS } from "../data";
+import { HoldIconArt } from "./illustrations";
 
 // Setup screens only collect choices for the test. Nothing is saved or applied.
 
-export function Warning({ onContinue, toast }: { onContinue: () => void; toast: (t: string) => void }) {
+/** First screen of setup. Emergency help comes before anything else; the warning about being found is on the next screen. */
+export function Welcome({ onContinue, toast }: { onContinue: () => void; toast: (t: string) => void }) {
   return (
     <>
       <TopBar title="Nura" />
       <Body>
-        <div className="h-[8px]" />
-        <Heading>Before you start</Heading>
+        <Heading>A private space, just for you</Heading>
         <Card strong>
-          <p className="f-s text-[14px]">Someone who checks your phone could find this app.</p>
-          <TextLine w={290} /><TextLine w={230} />
-        </Card>
-        <DangerCard onCall={() => toast("Prototype: no call is made")} />
-        <Spacer />
-        <Button onClick={onContinue}>Continue</Button>
-        <Foot>Setup screen for this device</Foot>
+          <p className="f-s text-[14px]">About us</p>
+          <p className="f-r text-[13px] text-[#666]">Nura helps you keep a safe record of what happens to you, with notes, voice notes and photos. Only you can see it, and you decide if you ever share it.</p>        </Card>
+        <DangerCard title="Are you in danger right now?" onCall={() => toast("Prototype: no call is made")} />
       </Body>
+      {/* Same place as Continue on the next screen, so the button does not jump between steps. */}
+      <Dock>
+        <Button onClick={onContinue}>Let's set it up</Button>
+        <Foot>Setup screen for this device</Foot>
+      </Dock>
     </>
   );
 }
@@ -28,74 +31,70 @@ export function CoverChoice({ cover, setCover, onContinue }: { cover: string; se
   return (
     <>
       <TopBar title="Nura" />
-      <Body>
-        <div className="h-[8px]" />
-        <Heading>Before you start</Heading>
+      <Body fade>
+        <Heading>Choose your disguise</Heading>
         <Card strong>
-          <p className="f-s text-[14px]">To help us protect you, choose a cover app.</p>
-          <p className="f-r text-[12px] text-[#999]">This is what everyone sees when they open the app</p>
+          <p className="f-s text-[14px]">Someone checking your phone could find this app. Let's make Nura look like an everyday app.</p>
+          <p className="f-r text-[12px] text-[#999]">Anyone who opens it will only see this cover.</p>
         </Card>
         <Label>Choose how Nura looks on your phone</Label>
         {COVERS.map((c) => (
           <ListItem key={c.name} lead="round" title={c.name} sub={c.sub} selected={cover === c.name}
             onClick={() => setCover(c.name)} trail={cover === c.name ? <Chip>Chosen</Chip> : undefined} />
         ))}
-        <Spacer />
+      </Body>
+      {/* Continue stays in reach however long the list of cover apps gets. */}
+      <Dock>
         <Button onClick={onContinue}>Continue</Button>
         <Foot>You can change this later in Settings.</Foot>
-      </Body>
+      </Dock>
     </>
   );
 }
 
-function PinField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+/**
+ * One way in, as a Material 3 outlined card: no fill, 1 px outline, 12 px corners, no shadow.
+ * The top 80% is media (a grey placeholder for an image or animation of the gesture), edge to edge like M3 card media.
+ * The text and a small outlined Try now button sit along the bottom with M3's 16 px padding.
+ * Try now runs whatever the screen passes in; a tried card gets a darker outline.
+ */
+function WayCard({ text, on, onTry, media }: { text: string; on: boolean; onTry: () => void; media?: ReactNode }) {
   return (
-    <label data-t="field" className="relative flex items-center gap-[12px] h-[48px] px-[16px] rounded-[14px] border-[1.5px] border-[#c7c7c7] focus-within:border-[#1a1a1a] cursor-text">
-      {[0, 1, 2, 3].map((i) => (
-        <span key={i} className={`rounded-full size-[13px] border-[1.5px] border-[#1a1a1a] ${value[i] ? "bg-[#1a1a1a]" : ""}`} />
-      ))}
-      {/* inputMode="numeric" opens the number pad on phones; pattern does the same on older iPhones. */}
-      <input inputMode="numeric" pattern="[0-9]*" autoComplete="off" maxLength={4} value={value} aria-label="PIN"
-        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 4))}
-        className="absolute inset-0 opacity-0 cursor-text" />
-    </label>
+    <div data-t="way-card" className={`flex-1 grid grid-rows-[4fr_1fr] min-h-[220px] bg-transparent rounded-[12px] border overflow-hidden transition-colors ${on ? "border-[#1a1a1a]" : "border-[#c7c7c7]"}`}>
+      {/* 4fr / 1fr rows: the media takes exactly 80% of the card, whatever its height. */}
+      {/* The illustration sits absolutely inside, so it scales to fit the media area instead of stretching the card. */}
+      <div className="relative min-h-0 bg-[#ebebeb] flex items-center justify-center f-m text-[12px] text-[#999]">
+        {media ? <div className="absolute inset-0 p-[10px] flex items-center justify-center">{media}</div> : "Add content"}
+      </div>
+      <div className="flex items-center gap-[12px] px-[16px] py-[8px]">
+        <p className="flex-1 min-w-0 f-r text-[13px] leading-[18px] text-[#1a1a1a]">{text}</p>
+        {/* M3 outlined button, small: 32 px tall, full pill, 1 px outline, medium-weight label. */}
+        <button onClick={onTry} className="shrink-0 h-[32px] px-[14px] rounded-full border border-[#767676] f-m text-[13px] text-[#1a1a1a] hover:bg-[#f2f2f2]">Try now</button>
+      </div>
+    </div>
   );
 }
 
-function WayCard({ n, text, on, onClick }: { n: number; text: string; on: boolean; onClick: () => void }) {
-  return (
-    <button data-t="choice" onClick={onClick} aria-pressed={on}
-      className={`flex-1 flex flex-col gap-[10px] items-start text-left p-[12px] rounded-[14px] border-[1.5px] min-h-[84px] transition-colors ${on ? "border-[#1a1a1a]" : "border-[#c7c7c7] hover:bg-[#f7f7f7]"}`}>
-      <span className={`size-[20px] rounded-full border-[1.5px] border-[#1a1a1a] flex items-center justify-center f-s text-[11px] ${on ? "bg-[#1a1a1a] text-white" : ""}`}>{n}</span>
-      <span className="f-s text-[12px] leading-snug">{text}</span>
-    </button>
-  );
-}
-
-export function WayIn({ onContinue }: { onContinue: () => void }) {
+/** `onTryHold` opens the real loading screen to practise card 2; `holdTried` marks that card once they have been there. */
+export function WayIn({ cover, onContinue, onTryHold, holdTried }: { cover: string; onContinue: () => void; onTryHold: () => void; holdTried: boolean }) {
+  // Card 1 has no practice screen yet, so its Try now only marks the card.
   const [gesture, setGesture] = useState(false);
-  const [pin, setPin] = useState(false);
-  // Start empty: the four dots are open rings and fill in one by one as digits are typed.
-  const [mine, setMine] = useState("");
-  const [panic, setPanic] = useState("");
+  // The texts name the cover app chosen on the previous screen (Bloom unless another was picked).
   return (
     <>
       <TopBar title="Nura" />
-      <Body>
-        <div className="h-[8px]" />
-        <Heading>Your way in</Heading>
-        <div className="flex gap-[10px]">
-          <WayCard n={1} text="Hold the ring in the cover for 2 sec" on={gesture} onClick={() => setGesture(!gesture)} />
-          <WayCard n={2} text="Type your PIN" on={pin} onClick={() => setPin(!pin)} />
+      <Body fade>
+        <Heading>Your private way in</Heading>
+        {/* The two cards share the space left on the screen, one above the other. */}
+        <div className="flex-1 flex flex-col gap-[10px]">
+          <WayCard text={`Press and hold the progress bar in ${cover} for 3 seconds`} on={gesture} onTry={() => setGesture(true)} />
+          <WayCard text={`Press and hold the ${cover} icon in the loading screen for 3 seconds`} on={holdTried} onTry={onTryHold} media={<HoldIconArt cover={cover} />} />
         </div>
-        <p className="f-s text-[12px] mt-[4px]">Your PIN · opens the real app</p>
-        <PinField value={mine} onChange={setMine} />
-        <p className="f-s text-[12px] mt-[4px]">Panic PIN · opens the cover app</p>
-        <PinField value={panic} onChange={setPanic} />
-        <Spacer />
+      </Body>
+      <Dock>
         <Button onClick={onContinue}>Continue</Button>
         <Foot>You can change this later in Settings.</Foot>
-      </Body>
+      </Dock>
     </>
   );
 }
@@ -122,8 +121,7 @@ export function SignIn({ onSignIn, failOnce, onFailed }: { onSignIn: () => void;
     <>
       <TopBar title="Nura" />
       <Body>
-        <div className="h-[8px]" />
-        <Heading>Sign in</Heading>
+        <Heading>Welcome back</Heading>
         <Field label="Email" value={email} onChange={setEmail} placeholder="name@example.com" />
         <Field label="Password" type="password" value={pw} onChange={(v) => { setPw(v); setError(false); }} placeholder="••••••••" />
         {error && (
@@ -133,7 +131,7 @@ export function SignIn({ onSignIn, failOnce, onFailed }: { onSignIn: () => void;
           </div>
         )}
         <Button onClick={submit}>Sign in</Button>
-        {!error && <Button variant="secondary" onClick={onSignIn}>Create an account</Button>}
+        {!error && <Button variant="secondary" onClick={onSignIn}>New here? Create an account</Button>}
         <Spacer />
         {!error && (
           <Card strong>

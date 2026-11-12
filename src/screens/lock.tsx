@@ -8,7 +8,7 @@ import type { SecretDesign } from "../data";
 const REAL_PIN = "1234";
 
 /** The cover app's logo: a wireframe app icon with a ring in it. */
-function CoverLogo({ size = 72 }: { size?: number }) {
+export function CoverLogo({ size = 72 }: { size?: number }) {
   return (
     <span aria-hidden className="border-[#1a1a1a] border-2 flex items-center justify-center shrink-0"
       style={{ width: size, height: size, borderRadius: size * 0.28 }}>
@@ -88,8 +88,8 @@ const FINISH_MS = 600;     // once they stop (or got the way in right), the rest
 const MAX_MS = 10000;      // never longer than this, whatever happens
 
 // A · Hold the icon.
-const HOLD_MS = 3000;
-const HOLD_SLOP = 24;      // px a held finger may drift and still count as holding
+export const HOLD_MS = 3000;
+export const HOLD_SLOP = 24;      // px a held finger may drift and still count as holding
 
 // B · Tap rhythm, anywhere on the screen. "." = short press, "-" = long press.
 const RHYTHM = "..-.";

@@ -145,10 +145,10 @@ export function Card({ children, strong }: { children: ReactNode; strong?: boole
 }
 
 /** Emergency block shared by the setup screen and Resources. Deliberately not a tel: link, so testers on a real phone never dial 112. */
-export function DangerCard({ onCall }: { onCall: () => void }) {
+export function DangerCard({ onCall, title = "In danger now?" }: { onCall: () => void; title?: string }) {
   return (
     <div data-t="danger" className="border-[#c7c7c7] border-[1.5px] flex flex-col gap-[10px] p-[12px] rounded-[16px] shrink-0">
-      <p className="f-s text-[15px]">In danger now?</p>
+      <p className="f-s text-[15px]">{title}</p>
       <Button onClick={onCall}>Call 112</Button>
     </div>
   );

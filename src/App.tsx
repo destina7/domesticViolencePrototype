@@ -5,15 +5,16 @@ import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, HINT_DESIGNS, LOCK
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
-import { CoverChoice, SignIn, Warning, WayIn } from "./screens/setup";
+import { CoverChoice, SignIn, Welcome, WayIn } from "./screens/setup";
 import { Home } from "./screens/home";
 import { Camera, MicDenied, Note, Saved, UploadFailed, Voice } from "./screens/capture";
 import { Case, EntryDetail } from "./screens/case";
 import { Resources, Settings } from "./screens/support";
 import { CoverApp, FakeLoading, Padlock } from "./screens/lock";
+import { HoldPractice } from "./screens/practice";
 
 type Screen =
-  | "warn" | "cover" | "way" | "signin" | "lock" | "coverApp"
+  | "warn" | "cover" | "way" | "practice" | "signin" | "lock" | "coverApp"
   | "home" | "case" | "entry" | "resources" | "settings"
   | "note" | "voice" | "camera" | "saved" | "micDenied" | "uploadFailed"
   | "exited";
@@ -65,6 +66,8 @@ export default function App() {
   const [mic, setMic] = useState(false);
   // Bumped on every jump from the hidden menu, so jumping to the lock screen again starts it fresh (empty PIN, bar at 0).
   const [visit, setVisit] = useState(0);
+  // Set once they have done the hold practice from setup (at least round 1), so that card stays marked.
+  const [holdTried, setHoldTried] = useState(false);
   const [toastText, toast] = useToast();
 
   const setOpt = (o: Options) => {
@@ -116,7 +119,7 @@ export default function App() {
   const reset = () => {
     setOpt(DEFAULT_OPTIONS);
     setEntries(SEED); setCover("Bloom"); setDetailId(null);
-    setDraft({ kind: "Voice note", seconds: 0, incident: null }); setMic(false);
+    setDraft({ kind: "Voice note", seconds: 0, incident: null }); setMic(false); setHoldTried(false);
     setHistory([]); setScreen("warn");
   };
 
@@ -124,9 +127,13 @@ export default function App() {
 
   let view: ReactNode = null;
   switch (screen) {
-    case "warn": view = <Warning onContinue={() => go("cover")} toast={toast} />; break;
+    case "warn": view = <Welcome onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
-    case "way": view = <WayIn onContinue={() => go("signin")} />; break;
+    case "way": view = <WayIn cover={cover} onContinue={() => go("signin")} holdTried={holdTried} onTryHold={() => go("practice")} />; break;
+    // Guided practice from setup (two rounds). Back, or finishing, returns to setup; the card is marked once round 1 is done.
+    case "practice":
+      view = <HoldPractice cover={cover} onExit={(learned) => { if (learned) setHoldTried(true); back(); }} />;
+      break;
     case "signin":
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
