@@ -121,8 +121,8 @@ export function Resources({ design, toast }: { design: ResourceDesign; toast: (t
   );
 }
 
-export function Settings({ cover, toast }: { cover: string; toast: (t: string) => void }) {
-  const [shake, setShake] = useState(true);
+/** `onPracticeHold` opens the guided practice for holding the icon on the loading screen (the same one as in setup). */
+export function Settings({ cover, toast, onPracticeHold }: { cover: string; toast: (t: string) => void; onPracticeHold: () => void }) {
   const [lock, setLock] = useState(true);
   const [notif, setNotif] = useState(false);
   const [backup, setBackup] = useState(false);
@@ -131,16 +131,16 @@ export function Settings({ cover, toast }: { cover: string; toast: (t: string) =
     <>
       <TopBar title="Settings" />
       <Body fade>
-        <Label>Disguise</Label>
+        <Label>How Nura stays hidden</Label>
         <ListItem title="Cover app" sub={cover} trail={<Chevron />} onClick={go} />
-        <ListItem title="Way in" sub="Hold the ring + PIN · practise again" trail={<Chevron />} onClick={go} />
-        <Label>Pins</Label>
-        <ListItem title="Change your PIN" trail={<Chevron />} onClick={go} />
-        <ListItem title="Panic PIN & cover app" sub="Edit the fake entries" trail={<Chevron />} onClick={go} />
+        <ListItem title="Way in" sub="Hold for 3 seconds on the loading screen" trail={<Chevron />} onClick={go} />
         <Label>Quick exit</Label>
-        <ListItem title="Shake to hide" trail={<Switch on={shake} onChange={setShake} />} />
         <ListItem title="Lock when I leave" trail={<Switch on={lock} onChange={setLock} />} />
         <ListItem title="Notifications" sub={notif ? "On, no content shown" : "Off, nothing shows"} trail={<Switch on={notif} onChange={setNotif} />} />
+        {/* The same two ways in as setup's "Your private way in". Only the icon hold has a practice screen so far. */}
+        <Label>Practice</Label>
+        <ListItem title="Hold the progress bar" sub={`Press and hold the progress bar in ${cover} for 3 seconds`} trail={<Chevron />} onClick={go} />
+        <ListItem title={`Hold the ${cover} icon`} sub="Press and hold the icon on the loading screen for 3 seconds" trail={<Chevron />} onClick={onPracticeHold} />
         <Label>Backup</Label>
         <ListItem title="Safe email backup" sub="Optional" trail={<Switch on={backup} onChange={setBackup} />} />
       </Body>

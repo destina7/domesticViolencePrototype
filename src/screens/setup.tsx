@@ -16,7 +16,7 @@ export function Welcome({ onContinue, toast }: { onContinue: () => void; toast: 
         <Card strong>
           <p className="f-s text-[14px]">About us</p>
           <p className="f-r text-[13px] text-[#666]">Nura helps you keep a safe record of what happens to you, with notes, voice notes and photos. Only you can see it, and you decide if you ever share it.</p>        </Card>
-        <DangerCard title="Are you in danger right now?" onCall={() => toast("Prototype: no call is made")} />
+        <DangerCard onCall={() => toast("Prototype: no call is made")} />
       </Body>
       {/* Same place as Continue on the next screen, so the button does not jump between steps. */}
       <Dock>

@@ -130,7 +130,8 @@ export default function App() {
     case "warn": view = <Welcome onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
     case "way": view = <WayIn cover={cover} onContinue={() => go("signin")} holdTried={holdTried} onTryHold={() => go("practice")} />; break;
-    // Guided practice from setup (two rounds). Back, or finishing, returns to setup; the card is marked once round 1 is done.
+    // Guided practice (two rounds), from setup or Settings. Back, or finishing, returns to where it was opened;
+    // the setup card is marked once round 1 is done.
     case "practice":
       view = <HoldPractice cover={cover} onExit={(learned) => { if (learned) setHoldTried(true); back(); }} />;
       break;
@@ -149,7 +150,7 @@ export default function App() {
     case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} start={go} empty={opt.caseEmpty} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
     case "resources": view = <Resources design={opt.resources} toast={toast} />; break;
-    case "settings": view = <Settings cover={cover} toast={toast} />; break;
+    case "settings": view = <Settings cover={cover} toast={toast} onPracticeHold={() => go("practice")} />; break;
     case "note": view = <Note onBack={back} onSave={() => finish("Written note")} />; break;
     case "voice": view = <Voice onBack={back} onMic={setMic} onDone={(s) => finish("Voice note", s)} />; break;
     case "camera": view = <Camera onBack={back} onShutter={() => finish("Photo, 2 items")} />; break;

@@ -10,16 +10,20 @@ export function Note({ onBack, onSave }: Common & { onSave: () => void }) {
   const [text, setText] = useState("");
   return (
     <>
-      <TopBar title="Written note" onBack={onBack} />
+      <TopBar title="Write a note" onBack={onBack} />
       <Body>
         <Card strong>
           <Label>Date and time</Label>
           <p className="f-s text-[14px]">Tue 13 Oct, 21:14</p>
           <p className="f-r text-[12px] text-[#666]">Set automatically</p>
         </Card>
-        <textarea data-t="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Write what happened, in your own words."
+        <textarea data-t="field" value={text} onChange={(e) => setText(e.target.value)} placeholder="Take your time. Write it in your own words, there is no right or wrong way."
           className="border-[#c7c7c7] border-[1.5px] rounded-[16px] p-[14px] flex-1 min-h-[160px] f-r text-[14px] placeholder:text-[#666] outline-none focus:border-[#1a1a1a] resize-none" />
-        <p className="f-r text-[12px] text-[#666]">Saved as you type. Nothing is sent until you choose.</p>
+        <p className="flex items-center gap-[4px] f-r text-[12px] text-[#666]">
+          {/* Inline size: the icon font's own CSS sets 24 px and wins over a Tailwind text size class. */}
+          <span data-symbol aria-hidden className="material-symbols-outlined leading-none shrink-0" style={{ fontSize: 14 }}>check</span>
+          Saved as you type. Nothing is sent unless you choose.
+        </p>
         <Button onClick={onSave}>Save note</Button>
       </Body>
     </>
@@ -51,7 +55,7 @@ export function Voice({ onBack, onDone, onMic }: Common & { onDone: (seconds: nu
               style={{ height: h, animation: paused ? "none" : `wave 1.1s ease-in-out ${(i % 6) * 0.13}s infinite` }} />
           ))}
         </div>
-        <p className="f-r text-[12px] text-[#666] text-center">Saved inside the app while you record.</p>
+        <p className="f-r text-[12px] text-[#666] text-center">Saving safely inside the app as you go.</p>
         <Spacer />
         <div className="flex items-end justify-center gap-[44px] pb-[14px]">
           <button onClick={() => setPaused(!paused)} className="flex flex-col items-center gap-[4px]">
