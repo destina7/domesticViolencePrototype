@@ -48,10 +48,6 @@ export type Theme = "none" | "research" | "quiet" | "sunset" | "rose" | "butter"
 // A design system sets its own colours, shapes, type and component rules, so it replaces the colour theme while it is on.
 export const DESIGN_SYSTEMS = ["none", "m3a"] as const;
 export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
-// PIN setup on "Your way in". field = both PINs on one screen, dots inside a field (the original).
-// centred = one PIN per screen, big centred dots with no field, moves on by itself after the 4th digit.
-export const PIN_DESIGNS = ["field", "centred"] as const;
-export type PinDesign = (typeof PIN_DESIGNS)[number];
 // Resources tab. current = the original single list. grouped = the places listed under headings by kind of help,
 // like Settings. expand = one list as before, each card opens to show more about that place.
 export const RESOURCE_DESIGNS = ["current", "grouped", "expand"] as const;
@@ -62,12 +58,19 @@ export const CASE_EMPTY_DESIGNS = ["current", "preview", "add"] as const;
 export type CaseEmptyDesign = (typeof CASE_EMPTY_DESIGNS)[number];
 // What someone sees when they open the app, before Nura. Never says "Nura": it looks like the cover app.
 // padlock = the cover app asks for a passcode. 1234 opens Nura, any other 4 digits open the cover app.
-// loading = the cover app's loading screen, 5 s, then the cover app. No secret way in yet.
+// loading = the cover app's loading screen, then the cover app, unless the secret way in (below) is done while it loads.
 export const LOCK_DESIGNS = ["padlock", "loading"] as const;
 export type LockDesign = (typeof LOCK_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; pin: PinDesign; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign };
+// The secret way into Nura on the fake loading screen. hold = hold the icon 3 s. rhythm = tap short, short, long, short
+// anywhere. pattern = draw an L on an invisible 3×3 grid. Details and timings live in screens/lock.tsx.
+export const SECRET_DESIGNS = ["hold", "rhythm", "pattern"] as const;
+export type SecretDesign = (typeof SECRET_DESIGNS)[number];
+// Demo only: shows on the loading screen what it detects (touch times, grid cells, loading speed).
+export const HINT_DESIGNS = ["off", "on"] as const;
+export type HintDesign = (typeof HINT_DESIGNS)[number];
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", pin: "field", resources: "current", caseEmpty: "current", lock: "padlock" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

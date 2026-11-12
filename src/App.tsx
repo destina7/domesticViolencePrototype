@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, Button, Card, Heading, Label, Spacer, StatusBar, Toast, useToast } from "./ui";
-import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, LOCK_DESIGNS, PIN_DESIGNS, RESOURCE_DESIGNS, SEED } from "./data";
+import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, DESIGN_SYSTEMS, HINT_DESIGNS, LOCK_DESIGNS, RESOURCE_DESIGNS, SECRET_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
-import { CoverChoice, SignIn, Warning, WayIn, WayInCentred } from "./screens/setup";
+import { CoverChoice, SignIn, Warning, WayIn } from "./screens/setup";
 import { Home } from "./screens/home";
 import { Camera, MicDenied, Note, Saved, UploadFailed, Voice } from "./screens/capture";
 import { Case, EntryDetail } from "./screens/case";
@@ -35,17 +35,19 @@ function loadOptions(): Options {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
       // Only the theme, design system and the screen A/B choices are remembered. Older saved layout choices are ignored.
-      const { theme, ds, pin, resources, caseEmpty, lock } = JSON.parse(raw);
+      // A saved "pin" choice from the removed PIN screen A/B is ignored: setup always uses A, both PINs on one screen.
+      const { theme, ds, resources, caseEmpty, lock, secret, hints } = JSON.parse(raw);
       // Older Material 3 choices ("m3" from before A/B/C, and the removed B and C) all become A; "nl" is gone.
       const saved = ds === "m3" || ds === "m3b" || ds === "m3c" ? "m3a" : ds;
       return {
         ...DEFAULT_OPTIONS,
         theme: theme ?? DEFAULT_OPTIONS.theme,
         ds: (DESIGN_SYSTEMS as readonly string[]).includes(saved) ? saved : DEFAULT_OPTIONS.ds,
-        pin: (PIN_DESIGNS as readonly string[]).includes(pin) ? pin : DEFAULT_OPTIONS.pin,
         resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,
         caseEmpty: (CASE_EMPTY_DESIGNS as readonly string[]).includes(caseEmpty) ? caseEmpty : DEFAULT_OPTIONS.caseEmpty,
         lock: (LOCK_DESIGNS as readonly string[]).includes(lock) ? lock : DEFAULT_OPTIONS.lock,
+        secret: (SECRET_DESIGNS as readonly string[]).includes(secret) ? secret : DEFAULT_OPTIONS.secret,
+        hints: (HINT_DESIGNS as readonly string[]).includes(hints) ? hints : DEFAULT_OPTIONS.hints,
       };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
@@ -124,17 +126,15 @@ export default function App() {
   switch (screen) {
     case "warn": view = <Warning onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
-    case "way":
-      view = opt.pin === "centred"
-        ? <WayInCentred cover={cover} onContinue={() => go("signin")} />
-        : <WayIn onContinue={() => go("signin")} />;
-      break;
+    case "way": view = <WayIn onContinue={() => go("signin")} />; break;
     case "signin":
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
     case "lock":
       view = opt.lock === "loading"
-        ? <FakeLoading key={visit} cover={cover} onDone={() => setScreen("coverApp")} />
+        // Keyed on the way in and hints too, so changing them in the menu restarts the loading screen.
+        ? <FakeLoading key={`${visit}-${opt.secret}-${opt.hints}`} cover={cover} secret={opt.secret} hints={opt.hints === "on"}
+            onUnlock={() => { setHistory([]); setScreen("home"); }} onDone={() => setScreen("coverApp")} />
         : <Padlock key={visit} cover={cover} onUnlock={() => { setHistory([]); setScreen("home"); }} onCover={() => setScreen("coverApp")} />;
       break;
     case "coverApp": view = <CoverApp cover={cover} onBack={() => tab("Home")} />; break;

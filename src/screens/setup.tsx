@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Body, Button, Card, Chip, DangerCard, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
 import { COVERS } from "../data";
 
@@ -95,54 +95,6 @@ export function WayIn({ onContinue }: { onContinue: () => void }) {
         <Spacer />
         <Button onClick={onContinue}>Continue</Button>
         <Foot>You can change this later in Settings.</Foot>
-      </Body>
-    </>
-  );
-}
-
-/** Big centred dots with no field around them, like a phone lock screen. The invisible input on top opens the number pad. */
-function PinDots({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
-  return (
-    <label className="relative flex items-center justify-center gap-[22px] px-[28px] py-[18px] mt-[8px] cursor-text">
-      {[0, 1, 2, 3].map((i) => (
-        <span key={i} className={`rounded-full size-[18px] border-2 border-[#1a1a1a] transition-colors ${value[i] ? "bg-[#1a1a1a]" : ""}`} />
-      ))}
-      <input autoFocus inputMode="numeric" pattern="[0-9]*" autoComplete="off" maxLength={4} value={value} aria-label={label}
-        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 4))}
-        className="absolute inset-0 opacity-0 cursor-text" />
-    </label>
-  );
-}
-
-const CENTRED_STEPS = [
-  { title: "Choose your PIN", text: () => "Hold the ring in the cover for 2 sec, then type this PIN to open Nura." },
-  { title: "Choose a panic PIN", text: (cover: string) => `If someone makes you open the app, type this instead. It opens ${cover}.` },
-];
-
-/** "Your way in", centred option: one PIN per screen. Moves on by itself shortly after the 4th digit, so no Continue button is needed. */
-export function WayInCentred({ cover, onContinue }: { cover: string; onContinue: () => void }) {
-  const [step, setStep] = useState(0);
-  const [pins, setPins] = useState(["", ""]);
-  const value = pins[step];
-  const set = (v: string) => setPins(pins.map((p, i) => (i === step ? v : p)));
-  // A short pause so the 4th dot is seen filling before the screen changes.
-  useEffect(() => {
-    if (value.length < 4) return;
-    const t = window.setTimeout(() => (step === 0 ? setStep(1) : onContinue()), 350);
-    return () => window.clearTimeout(t);
-  }, [value, step]);
-  const s = CENTRED_STEPS[step];
-  return (
-    <>
-      <TopBar title="Nura" onBack={step === 1 ? () => { setPins(["", ""]); setStep(0); } : undefined} />
-      <Body center>
-        {/* Sits in the upper part of the screen, so it stays clear of the number pad. */}
-        <div className="flex-[1]" />
-        <Heading>{s.title}</Heading>
-        <p className="f-r text-[13px] text-[#666] text-center max-w-[260px]">{s.text(cover)}</p>
-        <PinDots key={step} value={value} onChange={set} label={s.title} />
-        <div className="flex-[2]" />
-        <Foot>Step {step + 1} of 2 · You can change this later in Settings.</Foot>
       </Body>
     </>
   );
