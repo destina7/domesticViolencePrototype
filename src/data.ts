@@ -41,13 +41,6 @@ export type CaptureDesign = "1" | "2";
 // 1 = tap Record to start, tap again to stop. 2 = starts recording as soon as the screen opens, big Stop button.
 export type VoiceDesign = "1" | "2";
 export type Sim = "off" | "mic" | "upload" | "password";
-// Colour themes for user testing. "none" is the black-and-white wireframe. The colours live in index.css.
-export type Theme = "none" | "research" | "quiet" | "sunset" | "rose" | "butter" | "sage" | "sky" | "lavender";
-// Design systems to compare with the team. "none" = the wireframe (with an optional colour theme).
-// m3a = Material 3, outlined (the A that won against B and C). All grayscale, no colour.
-// A design system sets its own colours, shapes, type and component rules, so it replaces the colour theme while it is on.
-export const DESIGN_SYSTEMS = ["none", "m3a"] as const;
-export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
 // Resources tab. current = the original single list. grouped = the places listed under headings by kind of help,
 // like Settings. expand = one list as before, each card opens to show more about that place.
 export const RESOURCE_DESIGNS = ["current", "grouped", "expand"] as const;
@@ -68,9 +61,9 @@ export type SecretDesign = (typeof SECRET_DESIGNS)[number];
 // Demo only: shows on the loading screen what it detects (touch times, grid cells, loading speed).
 export const HINT_DESIGNS = ["off", "on"] as const;
 export type HintDesign = (typeof HINT_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; theme: Theme; ds: DesignSystem; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign };
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", theme: "none", ds: "none", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

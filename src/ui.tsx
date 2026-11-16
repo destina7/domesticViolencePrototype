@@ -91,7 +91,7 @@ export function Button({ children, onClick, variant = "primary", icon, symbol, s
   return (
     <button onClick={onClick} data-t={`btn-${variant}`}
       className={`border-2 flex items-center ${icon || symbol ? "justify-start gap-[10px]" : "justify-center"} ${h} px-[16px] py-[6px] rounded-[16px] w-full shrink-0 f-s text-[15px] transition-colors active:scale-[0.99] ${styles}`}>
-      {/* Takes the button's text colour; colour themes give it the accent colour instead (index.css). */}
+      {/* Takes the button's text colour. */}
       {symbol && <span data-symbol aria-hidden className="material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] shrink-0">{symbol}</span>}
       {!symbol && icon && <span className={`border-[1.5px] size-[20px] shrink-0 ${variant === "primary" ? "border-white" : "border-[#1a1a1a]"} ${icon === "round" ? "rounded-[10px]" : "rounded-[6px]"}`} />}
       {children}
@@ -172,8 +172,9 @@ export const NAV_HEIGHT = 66;
 const TAB_ICON: Record<string, string> = { Home: "home", Case: "list_alt", Resources: "volunteer_activism", Settings: "settings" };
 const HIDE_ICON = "exit_to_app";
 
-/** Bottom tab bar. When `onHide` is given a black "Hide" tab (quick exit) is added at the right. */
-export function BottomNav({ tabs, active, onSelect, onHide }: { tabs: string[]; active: string; onSelect: (t: string) => void; onHide?: () => void }) {
+/** Bottom tab bar. When `onHide` is given a black "Hide" tab (quick exit) is added at the right.
+ *  `icons={false}` draws the wireframe square on every tab (the cover app, whose icons are not chosen yet). */
+export function BottomNav({ tabs, active, onSelect, onHide, icons = true }: { tabs: string[]; active: string; onSelect: (t: string) => void; onHide?: () => void; icons?: boolean }) {
   return (
     <nav className="w-full shrink-0 bg-white">
       <div className="bg-[#c7c7c7] h-[1.5px] w-full" />
@@ -182,7 +183,7 @@ export function BottomNav({ tabs, active, onSelect, onHide }: { tabs: string[]; 
           const on = t === active;
           return (
             <button key={t} onClick={() => onSelect(t)} className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0">
-              {TAB_ICON[t] ? (
+              {icons && TAB_ICON[t] ? (
                 // Real icon from the Material Symbols font. Filled when the tab is active. Other tabs still use the wireframe square.
                 <span data-icon data-on={on || undefined} aria-hidden style={{ fontVariationSettings: `'FILL' ${on ? 1 : 0}` }}
                   className={`material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] ${on ? "text-[#1a1a1a]" : "text-[#666]"}`}>{TAB_ICON[t]}</span>

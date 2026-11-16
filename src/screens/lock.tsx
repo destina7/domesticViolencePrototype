@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Heading, Label, Spacer } from "../ui";
+import { Spacer } from "../ui";
 import type { SecretDesign } from "../data";
 
 // What someone sees when they open the app. These screens must never say "Nura": to anyone holding the phone
@@ -276,22 +276,5 @@ export function FakeLoading({ cover, secret, hints, onUnlock, onDone }: {
         </div>
       )}
     </main>
-  );
-}
-
-/** Stand-in for the cover app itself. Not part of this test. */
-export function CoverApp({ cover, onBack }: { cover: string; onBack: () => void }) {
-  return (
-    <div className="flex-1 bg-[#ebebeb] flex flex-col items-center justify-center gap-[12px] p-[20px]">
-      <Card strong>
-        <Label>Cover app · {cover}</Label>
-        <Heading>Not yet implemented</Heading>
-        <p className="f-r text-[13px] text-[#666]">
-          In the finished app this is {cover}, the cover app. That part is not included in this test.
-        </p>
-      </Card>
-      <Spacer />
-      <Button onClick={onBack}>Back to Nura</Button>
-    </div>
   );
 }

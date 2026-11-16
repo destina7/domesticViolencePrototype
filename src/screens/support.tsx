@@ -35,7 +35,7 @@ function ExpandRow({ place, open, onToggle, onAction }: { place: Place; open: bo
   const [spots, setSpots] = useState<{ pill: Box; button: Box } | null>(null);
 
   // Measure both spots, and again whenever the card, its top row or a spot changes size (phone width, fonts loading,
-  // switching design system: a new font resizes the pill without resizing the card).
+  // Roboto loading late: a new font resizes the pill without resizing the card).
   useLayoutEffect(() => {
     const measure = () => {
       if (!pillSpot.current || !buttonSpot.current) return;

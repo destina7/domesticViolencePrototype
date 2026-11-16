@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Label } from "./ui";
 import type { Options } from "./data";
 
-export type Jump = "warn" | "signin" | "lock" | "home" | "case" | "caseEmpty" | "resources" | "settings" | "exited";
+export type Jump = "warn" | "signin" | "lock" | "coverApp" | "home" | "case" | "caseEmpty" | "resources" | "settings";
 
 type Row<K extends keyof Options> = { key: K; title: string; choices: [Options[K], string][] };
 
@@ -12,29 +12,13 @@ const ROWS: Row<keyof Options>[] = [
   { key: "lock", title: "Lock screen version", choices: [["padlock", "A · Padlock"], ["loading", "B · Fake loading"]] },
   { key: "secret", title: "Fake loading, way in", choices: [["hold", "A · Hold the icon"], ["rhythm", "B · Tap rhythm"], ["pattern", "C · Draw a pattern"]] },
   { key: "hints", title: "Fake loading, show what it detects", choices: [["off", "Off"], ["on", "On (demo)"]] },
-  { key: "theme", title: "Themes", choices: [["none", "No theme"], ["research", "01 · Research"], ["quiet", "02 · Quiet neutral"], ["sunset", "03 · Sunset"],
-    ["rose", "Soft rose"], ["butter", "Butter"], ["sage", "Sage"], ["sky", "Soft sky"], ["lavender", "Lavender"]] },
-  { key: "ds", title: "Design system", choices: [["none", "None"], ["m3a", "Material 3"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 
 const JUMPS: [Jump, string][] = [
-  ["warn", "Setup"], ["signin", "Sign in"], ["lock", "Lock screen"], ["home", "Home"], ["case", "Case"], ["caseEmpty", "Case, empty"],
-  ["resources", "Resources"], ["settings", "Settings"], ["exited", "After quick exit"],
+  ["warn", "Setup"], ["signin", "Sign in"], ["lock", "Lock screen"], ["coverApp", "Cover app (quick exit)"], ["home", "Home"], ["case", "Case"], ["caseEmpty", "Case, empty"],
+  ["resources", "Resources"], ["settings", "Settings"],
 ];
-
-// Small colour dots next to the theme names, so themes are easy to tell apart in the menu. Same colours as index.css.
-const THEME_DOTS: Record<string, string[]> = {
-  none: ["#ffffff", "#1a1a1a"],
-  research: ["#F3EFE9", "#406690"],
-  quiet: ["#F4EFE9", "#3F6690"],
-  sunset: ["#FDEBB4", "#F8D4DF", "#8E3A5C"],
-  rose: ["#F6D8D0", "#A8473F"],
-  butter: ["#F8E3AE", "#946010"],
-  sage: ["#D8E8DC", "#3E7A63"],
-  sky: ["#D9E6F2", "#3F6690"],
-  lavender: ["#E2D9F0", "#5E5390"],
-};
 
 const pill = "border-[1.5px] rounded-full px-[10px] py-[3px] f-m text-[12px]";
 
@@ -81,21 +65,15 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
         <div key={r.key} className="flex flex-col gap-[6px]">
           <Label>{r.title}</Label>
           {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
-          {r.key === "ds" && <p className="f-r text-[11px] text-[#666]">Material 3, outlined, all in grays and black, no colour.</p>}
           {r.key === "resources" && <p className="f-r text-[11px] text-[#666]">How the Resources tab explains what each place does.</p>}
           {r.key === "caseEmpty" && <p className="f-r text-[11px] text-[#666]">The Case tab before anything is added. See it with Jump to → Case, empty.</p>}
           {r.key === "lock" && <p className="f-r text-[11px] text-[#666]">What opening the app looks like. See it with Jump to → Lock screen. A: PIN 1234 opens Nura, any other PIN opens the cover app. B: loads, then the cover app, unless the way in below is done while it loads.</p>}
           {r.key === "secret" && <p className="f-r text-[11px] text-[#666]">Only for Lock screen B. A: hold the icon for 3 s. B: tap anywhere short, short, long, short (any speed). C: draw an L: down the left side, then along the bottom. Loading takes 3 s untouched, slows down while a finger is on the screen (up to 10 s) and finishes quickly once it stops.</p>}
-          {r.key === "hints" && <p className="f-r text-[11px] text-[#666]">For demos. Shows on the loading screen what it picks up, and the grid for C. Never on for participants.</p>}          {r.key === "theme" && opt.ds !== "none" && <p className="f-r text-[11px] text-[#666]">Not used while a design system is on. Set the design system to None to use a colour theme.</p>}
-          <div className={`flex flex-wrap gap-[6px] ${r.key === "theme" && opt.ds !== "none" ? "opacity-40" : ""}`}>
+          {r.key === "hints" && <p className="f-r text-[11px] text-[#666]">For demos. Shows on the loading screen what it picks up, and the grid for C. Never on for participants.</p>}
+          <div className="flex flex-wrap gap-[6px]">
             {r.choices.map(([v, l]) => (
               <button key={String(v)} onClick={() => setOpt({ ...opt, [r.key]: v })}
-                className={`${pill} ${opt[r.key] === v ? "bg-[#1a1a1a] border-[#1a1a1a] text-white" : "border-[#c7c7c7] hover:border-[#1a1a1a]"} ${r.key === "theme" ? "flex items-center gap-[6px]" : ""}`}>
-                {r.key === "theme" && (
-                  <span className="flex" aria-hidden>
-                    {THEME_DOTS[String(v)].map((c, i) => <span key={i} className="size-[10px] rounded-full border border-[#c7c7c7] -ml-[3px] first:ml-0" style={{ background: c }} />)}
-                  </span>
-                )}
+                className={`${pill} ${opt[r.key] === v ? "bg-[#1a1a1a] border-[#1a1a1a] text-white" : "border-[#c7c7c7] hover:border-[#1a1a1a]"}`}>
                 {l}
               </button>
             ))}
