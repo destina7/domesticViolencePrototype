@@ -12,6 +12,7 @@ const ROWS: Row<keyof Options>[] = [
   { key: "lock", title: "Lock screen version", choices: [["padlock", "A · Padlock"], ["loading", "B · Fake loading"]] },
   { key: "secret", title: "Fake loading, way in", choices: [["hold", "A · Hold the icon"], ["rhythm", "B · Tap rhythm"], ["pattern", "C · Draw a pattern"]] },
   { key: "hints", title: "Fake loading, show what it detects", choices: [["off", "Off"], ["on", "On (demo)"]] },
+  { key: "micDot", title: "Mic Toggle", choices: [["fake", "Fake dot"], ["real", "Real dot"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
 
@@ -70,6 +71,7 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
           {r.key === "lock" && <p className="f-r text-[11px] text-[#666]">What opening the app looks like. See it with Jump to → Lock screen. A: PIN 1234 opens Nura, any other PIN opens the cover app. B: loads, then the cover app, unless the way in below is done while it loads.</p>}
           {r.key === "secret" && <p className="f-r text-[11px] text-[#666]">Only for Lock screen B. A: hold the icon for 3 s. B: tap anywhere short, short, long, short (any speed). C: draw an L: down the left side, then along the bottom. Loading takes 3 s untouched, slows down while a finger is on the screen (up to 10 s) and finishes quickly once it stops.</p>}
           {r.key === "hints" && <p className="f-r text-[11px] text-[#666]">For demos. Shows on the loading screen what it picks up, and the grid for C. Never on for participants.</p>}
+          {r.key === "micDot" && <p className="f-r text-[11px] text-[#666]">The dot that shows while Nura records (also the hidden recording from holding Bloom's progress bar). Fake: a drawn "● rec" in the status bar, only in the desktop phone frame. Real: opens the actual microphone so the phone shows its own dot (orange on iPhone). Nothing is saved. The browser asks for the mic the first time: allow it before the participant starts. Kept on Reset.</p>}
           <div className="flex flex-wrap gap-[6px]">
             {r.choices.map(([v, l]) => (
               <button key={String(v)} onClick={() => setOpt({ ...opt, [r.key]: v })}

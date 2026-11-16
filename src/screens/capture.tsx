@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Kind } from "../data";
-import { Body, Button, Card, CheckMark, Foot, Heading, Label, Placeholder, Spacer, TopBar, fmtTime, useTimer } from "../ui";
+import { Body, Button, Card, CheckMark, Foot, Heading, Label, Placeholder, Spacer, TopBar, fmtTime } from "../ui";
 
 type Common = { onBack: () => void };
 
@@ -34,11 +34,33 @@ export function Note({ onBack, onSave }: Common & { onSave: () => void }) {
 
 const BARS = [10, 18, 28, 20, 34, 44, 30, 40, 26, 36, 46, 32, 22, 38, 28, 16, 24, 12];
 
-/** Starts recording as soon as the screen opens. Big Stop button saves it. */
-export function Voice({ onBack, onDone, onMic }: Common & { onDone: (seconds: number) => void; onMic: (on: boolean) => void }) {
-  const [paused, setPaused] = useState(false);
-  const sec = useTimer(!paused);
-  useEffect(() => { onMic(true); return () => onMic(false); }, []);
+/**
+ * A voice recording, kept by App so it outlives the voice screen (Back and quick exit leave it running).
+ * banked = ms recorded before the last pause; since = when it last started or resumed (Date.now()), null while paused;
+ * hidden = started from the cover app by holding its progress bar, without opening Nura.
+ * Wall-clock based, so the time is right however long Nura was closed.
+ */
+export type Recording = { banked: number; since: number | null; hidden: boolean };
+
+export const recordedSeconds = (r: Recording | null) =>
+  r ? Math.floor((r.banked + (r.since === null ? 0 : Date.now() - r.since)) / 1000) : 0;
+
+/**
+ * Shows and controls the recording App keeps. Opening the screen starts one if there is none; a running or paused one
+ * carries on from its time, not from 0. Back leaves it as it is. Only the big Stop button ends it and saves it.
+ */
+export function Voice({ rec, onStart, onPause, onResume, onBack, onDone }: Common & {
+  rec: Recording | null; onStart: () => void; onPause: () => void; onResume: () => void; onDone: (seconds: number) => void;
+}) {
+  useEffect(() => { onStart(); }, []);
+  // Redraw the timer a few times a second; the time itself comes from the recording.
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => tick((n) => n + 1), 250);
+    return () => window.clearInterval(id);
+  }, []);
+  const paused = rec !== null && rec.since === null;
+  const sec = recordedSeconds(rec);
 
   return (
     <>
@@ -55,10 +77,13 @@ export function Voice({ onBack, onDone, onMic }: Common & { onDone: (seconds: nu
               style={{ height: h, animation: paused ? "none" : `wave 1.1s ease-in-out ${(i % 6) * 0.13}s infinite` }} />
           ))}
         </div>
+        {rec?.hidden && (
+          <p data-hidden-rec className="f-s text-[13px] text-[#1a1a1a] text-center max-w-[260px]">Started while Nura was hidden. Stop it when you're safe.</p>
+        )}
         <p className="f-r text-[12px] text-[#666] text-center">Saving safely inside the app as you go.</p>
         <Spacer />
         <div className="flex items-end justify-center gap-[44px] pb-[14px]">
-          <button onClick={() => setPaused(!paused)} className="flex flex-col items-center gap-[4px]">
+          <button onClick={paused ? onResume : onPause} className="flex flex-col items-center gap-[4px]">
             {/* Material Symbols pause_circle / play_circle: the circle is part of the icon, so no border of our own.
                 The size is set inline: the icon font's own 24 px rule beats Tailwind's text-[48px]. */}
             <span data-symbol aria-hidden style={{ fontSize: 48 }} className="material-symbols-outlined flex items-center justify-center size-[48px] leading-none text-[#1a1a1a]">

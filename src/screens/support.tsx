@@ -121,8 +121,8 @@ export function Resources({ design, toast }: { design: ResourceDesign; toast: (t
   );
 }
 
-/** `onPracticeHold` opens the guided practice for holding the icon on the loading screen (the same one as in setup). */
-export function Settings({ cover, toast, onPracticeHold }: { cover: string; toast: (t: string) => void; onPracticeHold: () => void }) {
+/** `onPracticeTap` and `onPracticeHold` open the guided practices for the two ways in (the same ones as in setup). */
+export function Settings({ cover, toast, onPracticeTap, onPracticeHold }: { cover: string; toast: (t: string) => void; onPracticeTap: () => void; onPracticeHold: () => void }) {
   const [lock, setLock] = useState(true);
   const [notif, setNotif] = useState(false);
   const [backup, setBackup] = useState(false);
@@ -137,9 +137,9 @@ export function Settings({ cover, toast, onPracticeHold }: { cover: string; toas
         <Label>Quick exit</Label>
         <ListItem title="Lock when I leave" trail={<Switch on={lock} onChange={setLock} />} />
         <ListItem title="Notifications" sub={notif ? "On, no content shown" : "Off, nothing shows"} trail={<Switch on={notif} onChange={setNotif} />} />
-        {/* The same two ways in as setup's "Your private way in". Only the icon hold has a practice screen so far. */}
+        {/* The same two ways in as setup's "Your private way in", each with its practice. */}
         <Label>Practice</Label>
-        <ListItem title="Hold the progress bar" sub={`Press and hold the progress bar in ${cover} for 3 seconds`} trail={<Chevron />} onClick={go} />
+        <ListItem title="Press the progress bar" sub={`Press the progress bar in ${cover} 3 times`} trail={<Chevron />} onClick={onPracticeTap} />
         <ListItem title={`Hold the ${cover} icon`} sub="Press and hold the icon on the loading screen for 3 seconds" trail={<Chevron />} onClick={onPracticeHold} />
         <Label>Backup</Label>
         <ListItem title="Safe email backup" sub="Optional" trail={<Switch on={backup} onChange={setBackup} />} />

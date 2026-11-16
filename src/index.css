@@ -76,6 +76,50 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   .wi-anim * { animation: none !important; }
 }
 
+/* "Tap the progress bar 3 times" illustration (screens/illustrations.tsx). One 7 s loop:
+   0–0.8 s finger moves in · taps at 1.1 s, 1.6 s, 2.1 s (ripple + a dot each) · 2.8 s Nura opens · finger leaves · restart. */
+.ti-anim .ti-finger { animation: ti-finger 7s ease-in-out infinite; }
+.ti-anim .ti-ripple { transform-box: fill-box; transform-origin: center; animation: ti-ripple 7s ease-out infinite; }
+.ti-anim .ti-dot1 { animation: ti-dot1 7s linear infinite; }
+.ti-anim .ti-dot2 { animation: ti-dot2 7s linear infinite; }
+.ti-anim .ti-dot3 { animation: ti-dot3 7s linear infinite; }
+.ti-anim .ti-nura { animation: ti-nura 7s ease-in-out infinite; }
+/* Down = on the ring (0), up = lifted along the finger (10px). Out of view when not tapping. */
+@keyframes ti-finger {
+  0%, 4% { transform: translateY(150px); opacity: 0; }
+  8% { opacity: 1; }
+  12% { transform: translateY(10px); }
+  16% { transform: translateY(0); }
+  19% { transform: translateY(10px); }
+  23% { transform: translateY(0); }
+  26% { transform: translateY(10px); }
+  30% { transform: translateY(0); }
+  34% { transform: translateY(10px); opacity: 1; }
+  44%, 100% { transform: translateY(150px); opacity: 0; }
+}
+@keyframes ti-ripple {
+  0%, 15.9% { transform: scale(0.6); opacity: 0; }
+  16% { transform: scale(0.8); opacity: 0.5; }
+  20% { transform: scale(1.6); opacity: 0; }
+  22.9% { transform: scale(0.6); opacity: 0; }
+  23% { transform: scale(0.8); opacity: 0.5; }
+  27% { transform: scale(1.6); opacity: 0; }
+  29.9% { transform: scale(0.6); opacity: 0; }
+  30% { transform: scale(0.8); opacity: 0.5; }
+  34%, 100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes ti-dot1 { 0%, 15.9% { opacity: 0; } 16%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
+@keyframes ti-dot2 { 0%, 22.9% { opacity: 0; } 23%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
+@keyframes ti-dot3 { 0%, 29.9% { opacity: 0; } 30%, 94% { opacity: 1; } 98%, 100% { opacity: 0; } }
+@keyframes ti-nura {
+  0%, 38% { opacity: 0; }
+  43%, 92% { opacity: 1; }
+  98%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ti-anim * { animation: none !important; }
+}
+
 /* ---------- Material 3, the app's design system ----------
    Material 3 (m3.material.io), outlined take: thin outlines, 12 px corners, small top bar, outlined text fields with
    a notch label. It won the A/B against the plain wireframe and the filled and elevated M3 takes, which were removed.

@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { Body, Button, Card, Chip, DangerCard, Dock, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
 import { COVERS } from "../data";
-import { HoldIconArt } from "./illustrations";
+import { HoldIconArt, TapRingArt } from "./illustrations";
 
 // Setup screens only collect choices for the test. Nothing is saved or applied.
 
@@ -75,10 +75,10 @@ function WayCard({ text, on, onTry, media }: { text: string; on: boolean; onTry:
   );
 }
 
-/** `onTryHold` opens the real loading screen to practise card 2; `holdTried` marks that card once they have been there. */
-export function WayIn({ cover, onContinue, onTryHold, holdTried }: { cover: string; onContinue: () => void; onTryHold: () => void; holdTried: boolean }) {
-  // Card 1 has no practice screen yet, so its Try now only marks the card.
-  const [gesture, setGesture] = useState(false);
+/** Each card's Try now opens its practice (`onTryTap`, `onTryHold`); `tapTried` / `holdTried` mark a card once round 1 is done. */
+export function WayIn({ cover, onContinue, onTryTap, tapTried, onTryHold, holdTried }: {
+  cover: string; onContinue: () => void; onTryTap: () => void; tapTried: boolean; onTryHold: () => void; holdTried: boolean;
+}) {
   // The texts name the cover app chosen on the previous screen (Bloom unless another was picked).
   return (
     <>
@@ -87,7 +87,7 @@ export function WayIn({ cover, onContinue, onTryHold, holdTried }: { cover: stri
         <Heading>Your private way in</Heading>
         {/* The two cards share the space left on the screen, one above the other. */}
         <div className="flex-1 flex flex-col gap-[10px]">
-          <WayCard text={`Press and hold the progress bar in ${cover} for 3 seconds`} on={gesture} onTry={() => setGesture(true)} />
+          <WayCard text={`Press the progress bar in ${cover} 3 times`} on={tapTried} onTry={onTryTap} media={<TapRingArt cover={cover} />} />
           <WayCard text={`Press and hold the ${cover} icon in the loading screen for 3 seconds`} on={holdTried} onTry={onTryHold} media={<HoldIconArt cover={cover} />} />
         </div>
       </Body>

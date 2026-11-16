@@ -22,7 +22,8 @@ export function StatusBar({ mic }: { mic?: boolean }) {
   return (
     <div className="hidden sm:flex h-[28px] shrink-0 items-center justify-between px-[18px] f-r text-[10px] text-[#666] select-none">
       <span>21:14</span>
-      <span>{mic && <span className="f-s text-[#1a1a1a]">● mic dot&nbsp;&nbsp;</span>}wifi · batt</span>
+      {/* The rec dot: the microphone is on, in Nura or hidden behind the cover app. */}
+      <span className="flex items-center">{mic && <span data-rec-dot className="flex items-center gap-[4px] f-s text-[#1a1a1a]"><span className="size-[6px] rounded-full bg-[#1a1a1a]" />rec&nbsp;&nbsp;</span>}wifi · batt</span>
     </div>
   );
 }
@@ -173,8 +174,8 @@ const TAB_ICON: Record<string, string> = { Home: "home", Case: "list_alt", Resou
 const HIDE_ICON = "exit_to_app";
 
 /** Bottom tab bar. When `onHide` is given a black "Hide" tab (quick exit) is added at the right.
- *  `icons={false}` draws the wireframe square on every tab (the cover app, whose icons are not chosen yet). */
-export function BottomNav({ tabs, active, onSelect, onHide, icons = true }: { tabs: string[]; active: string; onSelect: (t: string) => void; onHide?: () => void; icons?: boolean }) {
+ *  `icons` maps tab names to Material Symbols names (Nura's tabs by default); a tab not in it gets the wireframe square. */
+export function BottomNav({ tabs, active, onSelect, onHide, icons = TAB_ICON }: { tabs: string[]; active: string; onSelect: (t: string) => void; onHide?: () => void; icons?: Record<string, string> }) {
   return (
     <nav className="w-full shrink-0 bg-white">
       <div className="bg-[#c7c7c7] h-[1.5px] w-full" />
@@ -183,10 +184,10 @@ export function BottomNav({ tabs, active, onSelect, onHide, icons = true }: { ta
           const on = t === active;
           return (
             <button key={t} onClick={() => onSelect(t)} className="flex flex-1 flex-col gap-[3px] items-center justify-center min-h-[52px] min-w-0">
-              {icons && TAB_ICON[t] ? (
+              {icons[t] ? (
                 // Real icon from the Material Symbols font. Filled when the tab is active. Other tabs still use the wireframe square.
                 <span data-icon data-on={on || undefined} aria-hidden style={{ fontVariationSettings: `'FILL' ${on ? 1 : 0}` }}
-                  className={`material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] ${on ? "text-[#1a1a1a]" : "text-[#666]"}`}>{TAB_ICON[t]}</span>
+                  className={`material-symbols-outlined flex items-center justify-center size-[22px] text-[22px] ${on ? "text-[#1a1a1a]" : "text-[#666]"}`}>{icons[t]}</span>
               ) : (
                 <span className={`border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[22px] ${on ? "bg-[#1a1a1a]" : ""}`} />
               )}

@@ -61,9 +61,14 @@ export type SecretDesign = (typeof SECRET_DESIGNS)[number];
 // Demo only: shows on the loading screen what it detects (touch times, grid cells, loading speed).
 export const HINT_DESIGNS = ["off", "on"] as const;
 export type HintDesign = (typeof HINT_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign };
+// The recording dot. fake = the wireframe's own "● rec" in the drawn status bar (desktop phone frame only).
+// real = the actual microphone is opened while Nura records, so the phone shows its own dot (orange on iPhone).
+// Nothing is saved or sent either way.
+export const MIC_DESIGNS = ["fake", "real"] as const;
+export type MicDesign = (typeof MIC_DESIGNS)[number];
+export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign; micDot: MicDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off" };
+export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off", micDot: "fake" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

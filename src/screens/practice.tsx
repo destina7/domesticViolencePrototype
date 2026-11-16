@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { Button, CheckMark, Heading } from "../ui";
 import { CoverLogo, HOLD_MS, HOLD_SLOP } from "./lock";
 
@@ -35,8 +36,8 @@ const TIPS: Record<Exclude<Tip, null>, string> = {
 const RING_R = 55;
 const RING_LEN = 2 * Math.PI * RING_R;
 
-/** A short buzz on Android when the hold works. iPhones do not let websites vibrate, so nothing happens there. */
-function buzz() {
+/** A short buzz on Android when the way in works. iPhones do not let websites vibrate, so nothing happens there. */
+export function buzz() {
   try { navigator.vibrate?.(60); } catch { /* not supported */ }
 }
 
@@ -89,13 +90,6 @@ export function HoldPractice({ cover, onExit }: { cover: string; onExit: (learne
     return () => window.clearInterval(timer);
   }, [phase, round]);
 
-  // "That's it" moves on to round 2's intro by itself; "You're ready" goes back to setup by itself.
-  useEffect(() => {
-    if (phase !== "nice" && phase !== "done") return;
-    const id = window.setTimeout(() => (phase === "nice" ? setPhase("next") : exit.current(true)), CELEBRATE_MS);
-    return () => window.clearTimeout(id);
-  }, [phase]);
-
   const onDown = (e: React.PointerEvent<HTMLElement>) => {
     const t = s.current;
     if (t.finishing || t.down) return;
@@ -134,33 +128,11 @@ export function HoldPractice({ cover, onExit }: { cover: string; onExit: (learne
 
   if (phase !== "play") {
     return (
-      <main className="relative flex flex-1 flex-col items-center justify-center gap-[16px] min-h-0 px-[24px] w-full max-w-[560px] mx-auto text-center">
-        {back}
-        {phase === "nice" && (
-          <>
-            <CheckMark size={72} />
-            <Heading>That's it</Heading>
-            <p className="f-r text-[14px] text-[#666]">Holding the icon for 3 seconds opens Nura.</p>
-          </>
-        )}
-        {phase === "next" && (
-          <>
-            <Heading>Now without help</Heading>
-            <p className="f-r text-[14px] text-[#666]">This time it looks like the real thing: no ring and no tips. Hold the {cover} icon for 3 seconds.</p>
-            <div className="w-full flex flex-col gap-[10px] mt-[8px]">
-              <Button onClick={() => { setRound(2); setPhase("play"); }}>Try it</Button>
-              <Button variant="secondary" onClick={() => exit.current(true)}>Back to setup</Button>
-            </div>
-          </>
-        )}
-        {phase === "done" && (
-          <>
-            <CheckMark size={72} />
-            <Heading>You're ready</Heading>
-            <p className="f-r text-[14px] text-[#666]">Whenever you open {cover}, hold the icon for 3 seconds to open Nura.</p>
-          </>
-        )}
-      </main>
+      <PracticeEnd phase={phase} back={back} onNext={() => setPhase("next")}
+        onTry={() => { setRound(2); setPhase("play"); }} onExit={() => exit.current(true)}
+        nice="Holding the icon for 3 seconds opens Nura."
+        next={`This time it looks like the real thing: no ring and no tips. Hold the ${cover} icon for 3 seconds.`}
+        done={`Whenever you open ${cover}, hold the icon for 3 seconds to open Nura.`} />
     );
   }
 
@@ -206,6 +178,53 @@ export function HoldPractice({ cover, onExit }: { cover: string; onExit: (learne
         <div className="h-full rounded-full bg-[#1a1a1a]" style={{ width: `${bar * 100}%` }} />
       </div>
       <p className="relative f-r text-[12px] text-[#666] mb-[40px]">Loading…</p>
+    </main>
+  );
+}
+
+/**
+ * The screens between and after the two rounds, shared by both practices (this one and screens/practice-tap.tsx).
+ * "That's it" (after round 1) moves on to "Now without help" by itself; "You're ready" (after round 2) leaves by itself.
+ */
+export function PracticeEnd({ phase, back, nice, next, done, onNext, onTry, onExit }: {
+  phase: "nice" | "next" | "done"; back?: ReactNode; nice: string; next: string; done: string;
+  onNext: () => void; onTry: () => void; onExit: () => void;
+}) {
+  const go = useRef({ onNext, onExit });
+  go.current = { onNext, onExit };
+  useEffect(() => {
+    if (phase === "next") return;
+    const id = window.setTimeout(() => (phase === "nice" ? go.current.onNext() : go.current.onExit()), CELEBRATE_MS);
+    return () => window.clearTimeout(id);
+  }, [phase]);
+
+  return (
+    <main className="relative flex flex-1 flex-col items-center justify-center gap-[16px] min-h-0 px-[24px] w-full max-w-[560px] mx-auto text-center">
+      {back}
+      {phase === "nice" && (
+        <>
+          <CheckMark size={72} />
+          <Heading>That's it</Heading>
+          <p className="f-r text-[14px] text-[#666]">{nice}</p>
+        </>
+      )}
+      {phase === "next" && (
+        <>
+          <Heading>Now without help</Heading>
+          <p className="f-r text-[14px] text-[#666]">{next}</p>
+          <div className="w-full flex flex-col gap-[10px] mt-[8px]">
+            <Button onClick={onTry}>Try it</Button>
+            <Button variant="secondary" onClick={onExit}>Back to setup</Button>
+          </div>
+        </>
+      )}
+      {phase === "done" && (
+        <>
+          <CheckMark size={72} />
+          <Heading>You're ready</Heading>
+          <p className="f-r text-[14px] text-[#666]">{done}</p>
+        </>
+      )}
     </main>
   );
 }
