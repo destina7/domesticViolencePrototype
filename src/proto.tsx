@@ -7,11 +7,7 @@ export type Jump = "warn" | "signin" | "lock" | "coverApp" | "home" | "case" | "
 type Row<K extends keyof Options> = { key: K; title: string; choices: [Options[K], string][] };
 
 const ROWS: Row<keyof Options>[] = [
-  { key: "resources", title: "Resources screen", choices: [["current", "A · Current"], ["grouped", "B · Grouped by help"], ["expand", "C · Cards that open"]] },
-  { key: "caseEmpty", title: "Case, empty screen", choices: [["current", "A · Current"], ["preview", "B · Preview"], ["add", "C · Add right here"]] },
-  { key: "lock", title: "Lock screen version", choices: [["padlock", "A · Padlock"], ["loading", "B · Fake loading"]] },
-  { key: "secret", title: "Fake loading, way in", choices: [["hold", "A · Hold the icon"], ["rhythm", "B · Tap rhythm"], ["pattern", "C · Draw a pattern"]] },
-  { key: "hints", title: "Fake loading, show what it detects", choices: [["off", "Off"], ["on", "On (demo)"]] },
+  { key: "secret", title: "Fake loading, way in", choices: [["taps", "A · Three taps"], ["pattern", "B · Draw a pattern"]] },
   { key: "micDot", title: "Mic Toggle", choices: [["fake", "Fake dot"], ["real", "Real dot"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
@@ -66,11 +62,7 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
         <div key={r.key} className="flex flex-col gap-[6px]">
           <Label>{r.title}</Label>
           {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
-          {r.key === "resources" && <p className="f-r text-[11px] text-[#666]">How the Resources tab explains what each place does.</p>}
-          {r.key === "caseEmpty" && <p className="f-r text-[11px] text-[#666]">The Case tab before anything is added. See it with Jump to → Case, empty.</p>}
-          {r.key === "lock" && <p className="f-r text-[11px] text-[#666]">What opening the app looks like. See it with Jump to → Lock screen. A: PIN 1234 opens Nura, any other PIN opens the cover app. B: loads, then the cover app, unless the way in below is done while it loads.</p>}
-          {r.key === "secret" && <p className="f-r text-[11px] text-[#666]">Only for Lock screen B. A: hold the icon for 3 s. B: tap anywhere short, short, long, short (any speed). C: draw an L: down the left side, then along the bottom. Loading takes 3 s untouched, slows down while a finger is on the screen (up to 10 s) and finishes quickly once it stops.</p>}
-          {r.key === "hints" && <p className="f-r text-[11px] text-[#666]">For demos. Shows on the loading screen what it picks up, and the grid for C. Never on for participants.</p>}
+          {r.key === "secret" && <p className="f-r text-[11px] text-[#666]">Opening the app shows the cover app's loading screen, then the cover app, unless the way in is done while it loads. See it with Jump to → Lock screen. A: tap the cover app's logo 3 times within 3 s, the same rule as the cover app's own way in. B: draw an L: down the left side, then along the bottom. Loading takes 3 s untouched, slows down while a finger is on the screen or tapping the logo (up to 10 s) and finishes quickly once it stops.</p>}
           {r.key === "micDot" && <p className="f-r text-[11px] text-[#666]">The dot that shows while Nura records (also the hidden recording from holding Bloom's progress bar). Fake: a drawn "● rec" in the status bar, only in the desktop phone frame. Real: opens the actual microphone so the phone shows its own dot (orange on iPhone). Nothing is saved. The browser asks for the mic the first time: allow it before the participant starts. Kept on Reset.</p>}
           <div className="flex flex-wrap gap-[6px]">
             {r.choices.map(([v, l]) => (

@@ -2,7 +2,9 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { Body, Button, Card, Chip, DangerCard, Dock, Foot, Heading, Label, ListItem, Spacer, TextLine, TopBar } from "../ui";
 import { COVERS } from "../data";
-import { HoldIconArt, TapRingArt } from "./illustrations";
+import { LoadingWayArt, TapRingArt } from "./illustrations";
+import { WAY_IN } from "./lock";
+import type { SecretDesign } from "../data";
 
 // Setup screens only collect choices for the test. Nothing is saved or applied.
 
@@ -75,9 +77,13 @@ function WayCard({ text, on, onTry, media }: { text: string; on: boolean; onTry:
   );
 }
 
-/** Each card's Try now opens its practice (`onTryTap`, `onTryHold`); `tapTried` / `holdTried` mark a card once round 1 is done. */
-export function WayIn({ cover, onContinue, onTryTap, tapTried, onTryHold, holdTried }: {
-  cover: string; onContinue: () => void; onTryTap: () => void; tapTried: boolean; onTryHold: () => void; holdTried: boolean;
+/**
+ * Card 1 is the cover app's way in, card 2 the loading screen's (in the version picked in the hidden menu, `secret`).
+ * Each card's Try now opens its practice (`onTryTap`, `onTryLoading`); `tapTried` / `loadingTried` mark a card once
+ * round 1 is done.
+ */
+export function WayIn({ cover, secret, onContinue, onTryTap, tapTried, onTryLoading, loadingTried }: {
+  cover: string; secret: SecretDesign; onContinue: () => void; onTryTap: () => void; tapTried: boolean; onTryLoading: () => void; loadingTried: boolean;
 }) {
   // The texts name the cover app chosen on the previous screen (Bloom unless another was picked).
   return (
@@ -88,7 +94,7 @@ export function WayIn({ cover, onContinue, onTryTap, tapTried, onTryHold, holdTr
         {/* The two cards share the space left on the screen, one above the other. */}
         <div className="flex-1 flex flex-col gap-[10px]">
           <WayCard text={`Press the progress bar in ${cover} 3 times`} on={tapTried} onTry={onTryTap} media={<TapRingArt cover={cover} />} />
-          <WayCard text={`Press and hold the ${cover} icon in the loading screen for 3 seconds`} on={holdTried} onTry={onTryHold} media={<HoldIconArt cover={cover} />} />
+          <WayCard text={WAY_IN[secret].text(cover)} on={loadingTried} onTry={onTryLoading} media={<LoadingWayArt key={secret} cover={cover} secret={secret} />} />
         </div>
       </Body>
       <Dock>

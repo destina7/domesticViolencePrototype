@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, StatusBar, Toast, useToast } from "./ui";
-import { CASE_EMPTY_DESIGNS, DEFAULT_OPTIONS, HINT_DESIGNS, LOCK_DESIGNS, MIC_DESIGNS, RESOURCE_DESIGNS, SECRET_DESIGNS, SEED } from "./data";
+import { DEFAULT_OPTIONS, MIC_DESIGNS, SECRET_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
@@ -11,13 +11,13 @@ import { Camera, MicDenied, Note, Saved, UploadFailed, Voice } from "./screens/c
 import type { Recording } from "./screens/capture";
 import { Case, EntryDetail } from "./screens/case";
 import { Resources, Settings } from "./screens/support";
-import { FakeLoading, Padlock } from "./screens/lock";
+import { FakeLoading } from "./screens/lock";
 import { CoverApp } from "./screens/cover";
-import { HoldPractice } from "./screens/practice";
+import { LoadingPractice } from "./screens/practice";
 import { TapPractice } from "./screens/practice-tap";
 
 type Screen =
-  | "warn" | "cover" | "way" | "practice" | "practiceTap" | "signin" | "lock" | "coverApp"
+  | "warn" | "cover" | "way" | "practiceLoading" | "practiceTap" | "signin" | "lock" | "coverApp"
   | "home" | "case" | "entry" | "resources" | "settings"
   | "note" | "voice" | "camera" | "saved" | "micDenied" | "uploadFailed";
 type Capture = "note" | "voice" | "camera";
@@ -37,16 +37,12 @@ function loadOptions(): Options {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      // Only the screen A/B choices are remembered. Older saved layout, theme and design system choices are ignored.
-      // A saved "pin" choice from the removed PIN screen A/B is ignored: setup always uses A, both PINs on one screen.
-      const { resources, caseEmpty, lock, secret, hints, micDot } = JSON.parse(raw);
+      // Only the way in and the Mic Toggle are remembered. Choices for options that user testing settled (Resources,
+      // Case empty, lock screen, demo hints, themes, design system) are ignored, and so is an old "hold" or "rhythm" way in.
+      const { secret, micDot } = JSON.parse(raw);
       return {
         ...DEFAULT_OPTIONS,
-        resources: (RESOURCE_DESIGNS as readonly string[]).includes(resources) ? resources : DEFAULT_OPTIONS.resources,
-        caseEmpty: (CASE_EMPTY_DESIGNS as readonly string[]).includes(caseEmpty) ? caseEmpty : DEFAULT_OPTIONS.caseEmpty,
-        lock: (LOCK_DESIGNS as readonly string[]).includes(lock) ? lock : DEFAULT_OPTIONS.lock,
         secret: (SECRET_DESIGNS as readonly string[]).includes(secret) ? secret : DEFAULT_OPTIONS.secret,
-        hints: (HINT_DESIGNS as readonly string[]).includes(hints) ? hints : DEFAULT_OPTIONS.hints,
         micDot: (MIC_DESIGNS as readonly string[]).includes(micDot) ? micDot : DEFAULT_OPTIONS.micDot,
       };
     }
@@ -61,7 +57,7 @@ export default function App() {
   const [cover, setCover] = useState("Bloom");
   const [entries, setEntries] = useState<Entry[]>(SEED);
   const [detailId, setDetailId] = useState<number | null>(null);
-    const [draft, setDraft] = useState<Draft>({ kind: "Voice note", seconds: 0, incident: null });
+  const [draft, setDraft] = useState<Draft>({ kind: "Voice note", seconds: 0, incident: null });
   // The voice recording, kept here rather than on the voice screen so it outlives that screen: Back, the tabs and
   // quick exit all leave it running (or paused), and only Stop ends it. Started on the voice screen, or hidden from
   // the cover app by holding its progress bar. While there is one, opening Nura goes straight to the voice screen.
@@ -95,10 +91,10 @@ export default function App() {
       setRealMic(false);
     };
   }, [recording, opt.micDot]);
-  // Bumped on every jump from the hidden menu, so jumping to the lock screen again starts it fresh (empty PIN, bar at 0).
+  // Bumped on every jump from the hidden menu, so jumping to the lock screen again starts it fresh (bar at 0).
   const [visit, setVisit] = useState(0);
-  // Set once they have done the hold practice from setup (at least round 1), so that card stays marked.
-  const [holdTried, setHoldTried] = useState(false);
+  // Set once they have done a way-in practice (at least round 1), so its setup card stays marked.
+  const [loadingTried, setLoadingTried] = useState(false);
   const [tapTried, setTapTried] = useState(false);
   const [toastText, toast] = useToast();
 
@@ -122,7 +118,7 @@ export default function App() {
   // Quick exit drops straight into the cover app, as if Nura was never open.
   const quickExit = () => { setHistory([]); setScreen("coverApp"); };
   const homeToAdd = () => { setHistory([]); setScreen("home"); };
-  // Every way into Nura (PIN, loading screen, Bloom's 3 taps) lands on Home, or on the recording if there is one.
+  // Every way into Nura (the loading screen's way in, Bloom's 3 taps) lands on Home, or on the recording if there is one.
   const openNura = () => { setHistory([]); setScreen(rec !== null ? "voice" : "home"); };
   const openEntry = (id: number) => { setDetailId(id); go("entry"); };
 
@@ -155,7 +151,7 @@ export default function App() {
   const reset = () => {
     setOpt({ ...DEFAULT_OPTIONS, micDot: opt.micDot });
     setEntries(SEED); setCover("Bloom"); setDetailId(null);
-    setDraft({ kind: "Voice note", seconds: 0, incident: null }); setRec(null); setHoldTried(false); setTapTried(false);
+    setDraft({ kind: "Voice note", seconds: 0, incident: null }); setRec(null); setLoadingTried(false); setTapTried(false);
     setHistory([]); setScreen("warn");
   };
 
@@ -166,11 +162,13 @@ export default function App() {
     case "warn": view = <Welcome onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
     case "way": view = <WayIn cover={cover} onContinue={() => go("signin")}
-      tapTried={tapTried} onTryTap={() => go("practiceTap")} holdTried={holdTried} onTryHold={() => go("practice")} />; break;
+      secret={opt.secret}
+      tapTried={tapTried} onTryTap={() => go("practiceTap")} loadingTried={loadingTried} onTryLoading={() => go("practiceLoading")} />; break;
     // Guided practice (two rounds), from setup or Settings. Back, or finishing, returns to where it was opened;
     // the setup card is marked once round 1 is done.
-    case "practice":
-      view = <HoldPractice cover={cover} onExit={(learned) => { if (learned) setHoldTried(true); back(); }} />;
+    case "practiceLoading":
+      // Keyed on the way in, so changing it in the menu starts the practice over in the new version.
+      view = <LoadingPractice key={opt.secret} cover={cover} secret={opt.secret} onExit={(learned) => { if (learned) setLoadingTried(true); back(); }} />;
       break;
     case "practiceTap":
       view = <TapPractice cover={cover} toast={toast} onExit={(learned) => { if (learned) setTapTried(true); back(); }} />;
@@ -179,18 +177,16 @@ export default function App() {
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
     case "lock":
-      view = opt.lock === "loading"
-        // Keyed on the way in and hints too, so changing them in the menu restarts the loading screen.
-        ? <FakeLoading key={`${visit}-${opt.secret}-${opt.hints}`} cover={cover} secret={opt.secret} hints={opt.hints === "on"}
-            onUnlock={openNura} onDone={() => setScreen("coverApp")} />
-        : <Padlock key={visit} cover={cover} onUnlock={openNura} onCover={() => setScreen("coverApp")} />;
+      // Keyed on the way in too, so changing it in the menu restarts the loading screen.
+      view = <FakeLoading key={`${visit}-${opt.secret}`} cover={cover} secret={opt.secret}
+        onUnlock={openNura} onDone={() => setScreen("coverApp")} />;
       break;
     case "coverApp": view = <CoverApp cover={cover} toast={toast} onUnlock={openNura} onRecord={() => { startRec(true); resumeRec(); }} />; break;
     case "home": view = <Home entries={entries} open={openEntry} start={go} />; break;
-    case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} start={go} empty={opt.caseEmpty} />; break;
+    case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
-    case "resources": view = <Resources design={opt.resources} toast={toast} />; break;
-    case "settings": view = <Settings cover={cover} toast={toast} onPracticeTap={() => go("practiceTap")} onPracticeHold={() => go("practice")} />; break;
+    case "resources": view = <Resources toast={toast} />; break;
+    case "settings": view = <Settings cover={cover} secret={opt.secret} toast={toast} onPracticeTap={() => go("practiceTap")} onPracticeLoading={() => go("practiceLoading")} />; break;
     case "note": view = <Note onBack={back} onSave={() => finish("Written note")} />; break;
     case "voice":
       view = <Voice rec={rec} onStart={() => startRec(false)} onPause={pauseRec} onResume={resumeRec} onBack={back}

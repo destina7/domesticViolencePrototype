@@ -36,44 +36,32 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   50% { transform: scaleY(1); }
 }
 
-/* "Press and hold the icon" illustration (screens/illustrations.tsx). One 7 s loop:
-   0–1.2 s loading, finger moves in · 1.2–4.2 s finger holds, ring fills (3 s) · 4.3–4.6 s Nura opens · finger lifts · Nura stays, then it restarts. */
-.wi-anim .wi-finger { animation: wi-finger 7s ease-in-out infinite; }
-.wi-anim .wi-press { animation: wi-press 7s linear infinite; }
-.wi-anim .wi-ring { animation: wi-ring 7s linear infinite; }
-.wi-anim .wi-bar { transform-box: fill-box; transform-origin: left center; animation: wi-bar 7s ease-out infinite; }
-.wi-anim .wi-nura { animation: wi-nura 7s ease-in-out infinite; }
-/* Out of view (moved away and faded) when not pressing, so no fingertip peeks in at the edge. */
-@keyframes wi-finger {
-  0%, 6% { transform: translateY(150px); opacity: 0; }
-  10% { opacity: 1; }
-  17%, 64% { transform: translateY(0); opacity: 1; }
-  72% { opacity: 1; }
-  78%, 100% { transform: translateY(150px); opacity: 0; }
+/* "Draw the L" illustration (LoadingWayArt in screens/illustrations.tsx, pattern version). One 7 s loop:
+   0-0.8 s finger moves in at the top left · 0.8-2.4 s down the left side · 2.4-3.2 s along the bottom (the trail
+   follows) · 3.5 s Nura opens · finger leaves · restart. The L is 198 units long: 132 down, 66 across. */
+.pi-anim .pi-finger { animation: pi-finger 7s ease-in-out infinite; }
+.pi-anim .pi-trail { animation: pi-trail 7s linear infinite; }
+.pi-anim .pi-nura { animation: pi-nura 7s ease-in-out infinite; }
+@keyframes pi-finger {
+  0%, 5% { transform: translate(47px, 44px) rotate(-45deg); opacity: 0; }
+  11% { transform: translate(47px, 44px) rotate(-45deg); opacity: 1; }
+  34% { transform: translate(47px, 176px) rotate(-45deg); }
+  46% { transform: translate(113px, 176px) rotate(-45deg); opacity: 1; }
+  54%, 100% { transform: translate(113px, 176px) rotate(-45deg); opacity: 0; }
 }
-@keyframes wi-press {
-  0%, 16% { opacity: 0; }
-  18%, 61% { opacity: 1; }
-  63%, 100% { opacity: 0; }
+@keyframes pi-trail {
+  0%, 11% { stroke-dashoffset: 198; opacity: 0.55; }
+  34% { stroke-dashoffset: 66; }
+  46%, 92% { stroke-dashoffset: 0; opacity: 0.55; }
+  98%, 100% { stroke-dashoffset: 0; opacity: 0; }
 }
-@keyframes wi-ring {
-  0%, 17% { stroke-dashoffset: 169.6; opacity: 1; }
-  60% { stroke-dashoffset: 0; opacity: 1; }
-  63%, 100% { stroke-dashoffset: 0; opacity: 0; }
-}
-/* Fast at first, then barely moves while the finger is down (the real loading screen slows down too). */
-@keyframes wi-bar {
-  0% { transform: scaleX(0.04); }
-  17% { transform: scaleX(0.45); }
-  60%, 100% { transform: scaleX(0.55); }
-}
-@keyframes wi-nura {
-  0%, 61% { opacity: 0; }
-  66%, 92% { opacity: 1; }
+@keyframes pi-nura {
+  0%, 48% { opacity: 0; }
+  53%, 92% { opacity: 1; }
   98%, 100% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wi-anim * { animation: none !important; }
+  .pi-anim * { animation: none !important; }
 }
 
 /* "Tap the progress bar 3 times" illustration (screens/illustrations.tsx). One 7 s loop:
