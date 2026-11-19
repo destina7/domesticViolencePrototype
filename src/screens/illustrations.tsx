@@ -1,18 +1,26 @@
+import type { SecretDesign } from "../data";
+
 /**
- * Animated how-to: a small phone shows the cover app's loading screen, a finger presses and holds the icon,
- * a ring fills around it over 3 seconds, then Nura opens. Loops every 7 seconds.
- * Drawn to match the real loading screen (screens/lock.tsx): icon, cover name, thin progress bar, "Loading…".
- * The loading bar slows down while the finger is down, like the real screen does.
- * Timings live in index.css (the wi-… keyframes). With reduced motion on, it shows one still frame: finger on the icon, ring mostly full.
+ * Animated how-to for the loading screen's way in, in the version picked in the hidden menu. Loops every 7 seconds.
+ * A small phone shows the cover app's loading screen (drawn to match screens/lock.tsx: icon, cover name, thin bar,
+ * "Loading…"), then:
+ * - taps: a finger taps the logo three times, a ripple and a dot under the phone mark each tap, then Nura opens.
+ *   It uses the same ti-… keyframes as the cover app's how-to below, so both tap animations keep the same rhythm.
+ * - pattern: the 3x3 grid shows as faint dots, a finger draws the L with a trail behind it, then Nura opens
+ *   (the pi-… keyframes). On the real screen the grid and the trail are invisible.
+ * Timings live in index.css. With reduced motion on, it shows one still frame: for the L, the whole L drawn.
  */
-export function HoldIconArt({ cover }: { cover: string }) {
-  // Ring around the icon: radius 27, so its length is 2πr ≈ 169.6. The animation draws it from 0 to full.
-  const RING = 169.6;
+export function LoadingWayArt({ cover, secret }: { cover: string; secret: SecretDesign }) {
+  const taps = secret === "taps";
+  // Cell centres of the 3x3 grid over the phone's screen (x 31-129, y 11-209).
+  const col = [47, 80, 113], row = [44, 110, 176];
   return (
-    <svg data-art="hold-icon" viewBox="0 0 160 220" className="wi-anim h-full w-full" role="img"
-      aria-label={`Animation: a finger holds the ${cover} icon on the loading screen for 3 seconds, then Nura opens`}>
+    <svg data-art={`loading-${secret}`} viewBox="0 0 160 232" className={`${taps ? "ti-anim" : "pi-anim"} h-full w-full`} role="img"
+      aria-label={taps
+        ? `Animation: on the ${cover} loading screen a finger taps the logo 3 times, then Nura opens`
+        : `Animation: on the ${cover} loading screen a finger draws an L, down the left side and along the bottom, then Nura opens`}>
       <defs>
-        <clipPath id="wi-screen"><rect x="31" y="11" width="98" height="198" rx="15" /></clipPath>
+        <clipPath id={`li-screen-${secret}`}><rect x="31" y="11" width="98" height="198" rx="15" /></clipPath>
       </defs>
 
       {/* Phone */}
@@ -24,15 +32,24 @@ export function HoldIconArt({ cover }: { cover: string }) {
       <circle cx="80" cy="88" r="8" fill="none" stroke="#1a1a1a" strokeWidth="2" />
       <text x="80" y="126" textAnchor="middle" className="f-b" fontSize="11" fill="#1a1a1a">{cover}</text>
       <rect x="55" y="172" width="50" height="4" rx="2" fill="#ebebeb" />
-      <rect className="wi-bar" x="55" y="172" width="50" height="4" rx="2" fill="#1a1a1a" />
+      <rect x="55" y="172" width="20" height="4" rx="2" fill="#1a1a1a" />
       <text x="80" y="188" textAnchor="middle" className="f-r" fontSize="7" fill="#666">Loading…</text>
 
-      {/* Hold ring: fills over the 3 seconds the finger is down */}
-      <circle className="wi-ring" cx="80" cy="88" r="27" fill="none" stroke="#1a1a1a" strokeWidth="2.5"
-        strokeDasharray={RING} strokeDashoffset={RING * 0.25} transform="rotate(-90 80 88)" />
+      {taps ? (
+        /* A ripple on the logo for each tap */
+        <circle className="ti-ripple" cx="80" cy="88" r="22" fill="none" stroke="#1a1a1a" strokeWidth="1.5" opacity="0" />
+      ) : (
+        <>
+          {/* The invisible grid, shown here as faint dots, and the L drawn as a trail behind the finger */}
+          {row.map((y) => col.map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.5" fill="#c7c7c7" />))}
+          <polyline className="pi-trail" points={`${col[0]},${row[0]} ${col[0]},${row[2]} ${col[2]},${row[2]}`} fill="none"
+            stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0.55"
+            strokeDasharray="198" strokeDashoffset="0" />
+        </>
+      )}
 
-      {/* Nura opens: title, a few lines, the three capture buttons */}
-      <g className="wi-nura" opacity="0" clipPath="url(#wi-screen)">
+      {/* Nura opens: title, a few lines, the three capture buttons (the same as the other how-to) */}
+      <g className={taps ? "ti-nura" : "pi-nura"} opacity="0" clipPath={`url(#li-screen-${secret})`}>
         <rect x="31" y="11" width="98" height="198" fill="#fff" />
         <rect x="70" y="16" width="20" height="4" rx="2" fill="#1a1a1a" />
         <text x="42" y="44" className="f-b" fontSize="13" fill="#1a1a1a">Nura</text>
@@ -45,16 +62,23 @@ export function HoldIconArt({ cover }: { cover: string }) {
         <line x1="31" y1="192" x2="129" y2="192" stroke="#ebebeb" strokeWidth="1" />
       </g>
 
-      {/* Finger, coming in from the lower right. Its tip is at (0, 0) and rests on the icon. */}
-      {/* Angled 45° so the finger crosses to the right of the cover name instead of hiding it. */}
-      <g transform="translate(89 95) rotate(-45)">
-        <g className="wi-finger">
-          <circle className="wi-press" cx="0" cy="2" r="9" fill="#1a1a1a" opacity="0.12" />
+      {/* Finger, coming in from the lower right. Its tip is at (0, 0). For taps it rests on the logo and lifts between
+          taps; for the L the whole finger moves along the path (the transform below is where it rests without motion). */}
+      <g transform={taps ? "translate(82 92) rotate(-45)" : `translate(${col[2]} ${row[2]}) rotate(-45)`} className={taps ? undefined : "pi-finger"}>
+        <g className={taps ? "ti-finger" : undefined}>
           <rect x="-11" y="-2" width="22" height="110" rx="11" fill="#fff" stroke="#1a1a1a" strokeWidth="2" />
           <rect x="-6.5" y="3" width="13" height="15" rx="5.5" fill="none" stroke="#1a1a1a" strokeWidth="1.3" />
           <line x1="-7" y1="34" x2="7" y2="34" stroke="#1a1a1a" strokeWidth="1.2" strokeLinecap="round" />
         </g>
       </g>
+
+      {/* Tap counter under the phone: one dot fills per tap */}
+      {taps && [68, 80, 92].map((x, i) => (
+        <g key={x}>
+          <circle cx={x} cy="222" r="3.5" fill="none" stroke="#1a1a1a" strokeWidth="1.2" />
+          <circle className={`ti-dot${i + 1}`} cx={x} cy="222" r="3.5" fill="#1a1a1a" opacity="0" />
+        </g>
+      ))}
     </svg>
   );
 }

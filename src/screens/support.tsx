@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Body, Chevron, Chip, DangerCard, Label, ListItem, Switch, TextLine, TopBar } from "../ui";
-import type { ResourceDesign } from "../data";
+import type { SecretDesign } from "../data";
+import { WAY_IN } from "./lock";
 
 const SOON = "Not part of this test";
 
 type Place = { t: string; s: string; c: string; kind: string };
 
-// `kind` is the heading the place sits under in option B (Grouped by help), in this order.
+// `kind` is the heading the place sits under, in this order.
 const PLACES: Place[] = [
   { t: "Veilig Thuis", s: "Advice and reporting", c: "Call", kind: "Mental help" },
   { t: "NEST / Lumens", s: "Support in Eindhoven", c: "Open", kind: "Mental help" },
@@ -22,7 +23,7 @@ const sameBox = (a: Box, b: Box) => a.top === b.top && a.left === b.left && a.wi
 const EASE = "duration-300 ease-out motion-reduce:transition-none";
 
 /**
- * Option C (Cards that open): tapping the card opens it. The chevron points down when closed and up when open.
+ * A place's card: tapping it opens it. The chevron points down when closed and up when open.
  * Opening animates in two ways:
  * - The body grows from 0 to its full height (grid rows 0fr → 1fr), so the cards below slide down instead of jumping.
  * - The Call / Open / Read pill becomes the big button: it is one element that moves and resizes between two invisible
@@ -89,7 +90,11 @@ function ExpandRow({ place, open, onToggle, onAction }: { place: Place; open: bo
   );
 }
 
-export function Resources({ design, toast }: { design: ResourceDesign; toast: (t: string) => void }) {
+/**
+ * The places that can help, under a heading per kind of help (like Settings), each a card that opens to say more
+ * about that place. User testing asked for both: the headings of option B and the opening cards of option C.
+ */
+export function Resources({ toast }: { toast: (t: string) => void }) {
   const kinds = [...new Set(PLACES.map((p) => p.kind))];
   // Only one card is open at a time: opening another closes the one that was open. Tapping the open one closes it.
   const [openPlace, setOpenPlace] = useState<string | null>(null);
@@ -98,31 +103,25 @@ export function Resources({ design, toast }: { design: ResourceDesign; toast: (t
       <TopBar title="Resources" />
       <Body fade>
         <DangerCard onCall={() => toast("Prototype: no call is made")} />
-        {/* Option A · Current: the original single list, no headings, nothing opens. */}
-        {design === "current" && PLACES.map((p) => (
-          <ListItem key={p.t} title={p.t} sub={p.s} trail={<Chip quiet>{p.c}</Chip>} onClick={() => toast(SOON)} />
-        ))}
-        {/* Option B · Grouped by help: a heading per kind of help, like the Settings page. */}
-        {design === "grouped" && kinds.map((k) => (
+        {kinds.map((k) => (
           <div key={k} className="contents">
             <Label>{k}</Label>
             {PLACES.filter((p) => p.kind === k).map((p) => (
-              <ListItem key={p.t} title={p.t} sub={p.s} trail={<Chip quiet>{p.c}</Chip>} onClick={() => toast(SOON)} />
+              <ExpandRow key={p.t} place={p} open={openPlace === p.t}
+                onToggle={() => setOpenPlace(openPlace === p.t ? null : p.t)} onAction={() => toast(SOON)} />
             ))}
           </div>
-        ))}
-        {/* Option C · Cards that open. */}
-        {design === "expand" && PLACES.map((p) => (
-          <ExpandRow key={p.t} place={p} open={openPlace === p.t}
-            onToggle={() => setOpenPlace(openPlace === p.t ? null : p.t)} onAction={() => toast(SOON)} />
         ))}
       </Body>
     </>
   );
 }
 
-/** `onPracticeTap` and `onPracticeHold` open the guided practices for the two ways in (the same ones as in setup). */
-export function Settings({ cover, toast, onPracticeTap, onPracticeHold }: { cover: string; toast: (t: string) => void; onPracticeTap: () => void; onPracticeHold: () => void }) {
+/** `onPracticeTap` and `onPracticeLoading` open the guided practices for the two ways in (the same ones as in setup).
+ *  `secret` is the loading screen's way in, as picked in the hidden menu. */
+export function Settings({ cover, secret, toast, onPracticeTap, onPracticeLoading }: {
+  cover: string; secret: SecretDesign; toast: (t: string) => void; onPracticeTap: () => void; onPracticeLoading: () => void;
+}) {
   const [lock, setLock] = useState(true);
   const [notif, setNotif] = useState(false);
   const [backup, setBackup] = useState(false);
@@ -133,14 +132,14 @@ export function Settings({ cover, toast, onPracticeTap, onPracticeHold }: { cove
       <Body fade>
         <Label>How Nura stays hidden</Label>
         <ListItem title="Cover app" sub={cover} trail={<Chevron />} onClick={go} />
-        <ListItem title="Way in" sub="Hold for 3 seconds on the loading screen" trail={<Chevron />} onClick={go} />
+        <ListItem title="Way in" sub={WAY_IN[secret].text(cover)} trail={<Chevron />} onClick={go} />
         <Label>Quick exit</Label>
         <ListItem title="Lock when I leave" trail={<Switch on={lock} onChange={setLock} />} />
         <ListItem title="Notifications" sub={notif ? "On, no content shown" : "Off, nothing shows"} trail={<Switch on={notif} onChange={setNotif} />} />
         {/* The same two ways in as setup's "Your private way in", each with its practice. */}
         <Label>Practice</Label>
         <ListItem title="Press the progress bar" sub={`Press the progress bar in ${cover} 3 times`} trail={<Chevron />} onClick={onPracticeTap} />
-        <ListItem title={`Hold the ${cover} icon`} sub="Press and hold the icon on the loading screen for 3 seconds" trail={<Chevron />} onClick={onPracticeHold} />
+        <ListItem title={WAY_IN[secret].title} sub={WAY_IN[secret].text(cover)} trail={<Chevron />} onClick={onPracticeLoading} />
         <Label>Backup</Label>
         <ListItem title="Safe email backup" sub="Optional" trail={<Switch on={backup} onChange={setBackup} />} />
       </Body>

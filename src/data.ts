@@ -34,41 +34,19 @@ export const COVERS = [
   { name: "Fitness", sub: "Workouts" },
 ];
 
-export type HomeLayout = "A" | "B" | "C";
-// bottom = fixed spot above the nav bar, content stops above it. float = floats over the content and moves up to clear each screen's buttons.
-export type ExitPlace = "top" | "bottom" | "float" | "nav";
-export type CaptureDesign = "1" | "2";
-// 1 = tap Record to start, tap again to stop. 2 = starts recording as soon as the screen opens, big Stop button.
-export type VoiceDesign = "1" | "2";
 export type Sim = "off" | "mic" | "upload" | "password";
-// Resources tab. current = the original single list. grouped = the places listed under headings by kind of help,
-// like Settings. expand = one list as before, each card opens to show more about that place.
-export const RESOURCE_DESIGNS = ["current", "grouped", "expand"] as const;
-export type ResourceDesign = (typeof RESOURCE_DESIGNS)[number];
-// Case tab with no entries yet. current = illustration + "Add the first entry" (goes to Home).
-// preview = empty summary and faint rows where entries will go. add = the three capture buttons right on the screen.
-export const CASE_EMPTY_DESIGNS = ["current", "preview", "add"] as const;
-export type CaseEmptyDesign = (typeof CASE_EMPTY_DESIGNS)[number];
-// What someone sees when they open the app, before Nura. Never says "Nura": it looks like the cover app.
-// padlock = the cover app asks for a passcode. 1234 opens Nura, any other 4 digits open the cover app.
-// loading = the cover app's loading screen, then the cover app, unless the secret way in (below) is done while it loads.
-export const LOCK_DESIGNS = ["padlock", "loading"] as const;
-export type LockDesign = (typeof LOCK_DESIGNS)[number];
-// The secret way into Nura on the fake loading screen. hold = hold the icon 3 s. rhythm = tap short, short, long, short
-// anywhere. pattern = draw an L on an invisible 3×3 grid. Details and timings live in screens/lock.tsx.
-export const SECRET_DESIGNS = ["hold", "rhythm", "pattern"] as const;
+// The secret way into Nura on the cover app's loading screen (the lock screen). taps = tap the cover app's logo 3 times
+// within 3 s, the same rule as the cover app's own way in. pattern = draw an L on an invisible 3x3 grid. Details in screens/lock.tsx.
+export const SECRET_DESIGNS = ["taps", "pattern"] as const;
 export type SecretDesign = (typeof SECRET_DESIGNS)[number];
-// Demo only: shows on the loading screen what it detects (touch times, grid cells, loading speed).
-export const HINT_DESIGNS = ["off", "on"] as const;
-export type HintDesign = (typeof HINT_DESIGNS)[number];
 // The recording dot. fake = the wireframe's own "● rec" in the drawn status bar (desktop phone frame only).
 // real = the actual microphone is opened while Nura records, so the phone shows its own dot (orange on iPhone).
 // Nothing is saved or sent either way.
 export const MIC_DESIGNS = ["fake", "real"] as const;
 export type MicDesign = (typeof MIC_DESIGNS)[number];
-export type Options = { home: HomeLayout; exit: ExitPlace; capture: CaptureDesign; voice: VoiceDesign; sim: Sim; resources: ResourceDesign; caseEmpty: CaseEmptyDesign; lock: LockDesign; secret: SecretDesign; hints: HintDesign; micDot: MicDesign };
+export type Options = { sim: Sim; secret: SecretDesign; micDot: MicDesign };
 
-export const DEFAULT_OPTIONS: Options = { home: "A", exit: "top", capture: "1", voice: "1", sim: "off", resources: "current", caseEmpty: "current", lock: "padlock", secret: "hold", hints: "off", micDot: "fake" };
+export const DEFAULT_OPTIONS: Options = { sim: "off", secret: "taps", micDot: "fake" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 
