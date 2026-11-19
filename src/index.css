@@ -97,8 +97,9 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
    --c-on-primary      text and icons on primary
    --c-primary-container, --c-on-primary-container   a soft tint of the brand: active tab, "Done"
    --c-highlight       highlighted cards (case summary, setup message, note date)
-   --c-action          filled buttons and outlined-button labels: where you can act
-   --c-on-action, --c-action-hover
+   --c-action          filled buttons: where you can act        --c-on-action (their text), --c-action-hover
+   --c-action-ink      outlined-button labels and field focus: the action colour where it sits on the background,
+                       so it must read as text (for a pale action colour, like a peach, this is a dark tone)
    --c-error           the panic button (Call 112) only           --c-on-error
    --c-inverse         snackbar and practice tooltips              --c-on-inverse */
 
@@ -120,6 +121,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   --c-action: #1A1A1A;
   --c-on-action: #FFFFFF;
   --c-action-hover: #333333;
+  --c-action-ink: #1A1A1A;
   --c-error: #1A1A1A;
   --c-on-error: #FFFFFF;
   --c-inverse: #2E2E2E;
@@ -145,10 +147,115 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   --c-action: #3F6690;           /* Muted Deep Blue (action, buttons) */
   --c-on-action: #FFFFFF;
   --c-action-hover: #375A80;
+  --c-action-ink: #3F6690;
   --c-error: #B23A3A;            /* Muted Red (alerts: panic button only) */
   --c-on-error: #FFFFFF;
   --c-inverse: #26343A;
   --c-on-inverse: #F5F1EA;
+}
+
+/* C to F: schemes taken from services for survivors of abuse, to compare in user testing. Values marked "site" were
+   measured on that service's homepage (Nov 2026); the rest are shades derived from them for roles the site does not
+   show (hover steps, outlines, a darker tone where a pale colour has to read as text or a progress mark). */
+
+/* C · Chayn (chayn.co): warm cream, peach and sage, soft peach buttons with dark text, red only for leaving. */
+[data-phone][data-scheme="chayn"] {
+  --c-bg: #FFFAF2;               /* site: cream background */
+  --c-surface: #FFFFFF;          /* site */
+  --c-container: #FFEAE1;        /* site: peach blocks */
+  --c-container-high: #FCDED2;   /* site */
+  --c-on-surface: #333333;       /* site: text */
+  --c-on-surface-var: #5E554F;
+  --c-outline: #9A8C84;
+  --c-outline-var: #F0E0D6;
+  --c-primary: #4F7350;          /* a deeper tone of the site's sage, for progress and checks */
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #D5E4D2; /* site: sage */
+  --c-on-primary-container: #2E4A2F;
+  --c-highlight: #D5E4D2;        /* site: sage */
+  --c-action: #FFBFA4;           /* site: peach button */
+  --c-on-action: #16100D;        /* site: dark text on it */
+  --c-action-hover: #FFAE8C;
+  --c-action-ink: #16100D;       /* site: links */
+  --c-error: #E0213F;            /* the site's "Leave this site" red #F0244D, a touch darker so white text on it passes contrast */
+  --c-on-error: #FFFFFF;
+  --c-inverse: #333333;
+  --c-on-inverse: #FFFAF2;
+}
+
+/* D · Bloom by Chayn (bloom.chayn.co): blush background, raspberry brand, apricot buttons. */
+[data-phone][data-scheme="bloom"] {
+  --c-bg: #FAF1F2;               /* site: blush background */
+  --c-surface: #FFFCFA;          /* site */
+  --c-container: #F6E4E6;
+  --c-container-high: #F0D6D9;
+  --c-on-surface: #000000;       /* site: text */
+  --c-on-surface-var: #424242;   /* site: secondary text */
+  --c-outline: #9C8789;
+  --c-outline-var: #EBD7D9;
+  --c-primary: #EA0050;          /* site: raspberry brand */
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #FFEAE1; /* site: peach */
+  --c-on-primary-container: #8A1C3A;
+  --c-highlight: #FFEAE1;        /* site: peach */
+  --c-action: #FF976A;           /* site: apricot button */
+  --c-on-action: #000000;
+  --c-action-hover: #FF864F;
+  --c-action-ink: #B03A0C;
+  --c-error: #EA0050;            /* site: "Leave this site" (the same raspberry as the brand) */
+  --c-on-error: #FFFFFF;
+  --c-inverse: #424242;
+  --c-on-inverse: #FAF1F2;
+}
+
+/* E · Veilig Thuis (veiligthuis.nl): warm greys, navy buttons, lilac and light blue accents. */
+[data-phone][data-scheme="veiligthuis"] {
+  --c-bg: #FCFBFA;               /* site */
+  --c-surface: #FFFFFF;          /* site */
+  --c-container: #F0EBE7;        /* site: warm grey */
+  --c-container-high: #E5DED8;
+  --c-on-surface: #1C1C1C;       /* site: text */
+  --c-on-surface-var: #565B68;
+  --c-outline: #8A8F9C;
+  --c-outline-var: #E3DDD8;
+  --c-primary: #7E62B8;          /* a deeper tone of the site's lilac, for progress and checks */
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #E4DBF4; /* a light tint of the site's lilac */
+  --c-on-primary-container: #3E2E6B;
+  --c-highlight: #D1E7FB;        /* site: light blue */
+  --c-action: #2E3A59;           /* site: navy button */
+  --c-on-action: #FFFFFF;
+  --c-action-hover: #232D46;
+  --c-action-ink: #2E3A59;       /* site */
+  --c-error: #DD2140;            /* site: "Sluit website" */
+  --c-on-error: #FFFFFF;
+  --c-inverse: #2E3A59;          /* site */
+  --c-on-inverse: #FFFFFF;
+}
+
+/* F · Refuge (refuge.org.uk): deep aubergine text, magenta buttons, blush and pink backgrounds. */
+[data-phone][data-scheme="refuge"] {
+  --c-bg: #FEF6FA;               /* site: blush */
+  --c-surface: #FFFFFF;          /* site */
+  --c-container: #FCE6EF;
+  --c-container-high: #F9D5E3;
+  --c-on-surface: #241A3D;       /* site: aubergine text */
+  --c-on-surface-var: #5B5170;
+  --c-outline: #8E8399;
+  --c-outline-var: #F2DAE5;
+  --c-primary: #241A3D;          /* site: aubergine */
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #FBB5C8; /* site: pink */
+  --c-on-primary-container: #241A3D;
+  --c-highlight: #FCE1EB;
+  --c-action: #DE2185;           /* site: magenta button */
+  --c-on-action: #FFFFFF;
+  --c-action-hover: #C21A73;
+  --c-action-ink: #B0176A;
+  --c-error: #B3123E;            /* the site has no red; a deep red, so Call 112 still stands apart from magenta */
+  --c-on-error: #FFFFFF;
+  --c-inverse: #241A3D;          /* site */
+  --c-on-inverse: #FFFFFF;
 }
 
 /* ---------- Material 3, the app's design system ----------
@@ -190,7 +297,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & .bg-\[\#c7c7c7\] { background-color: var(--c-outline-var); }
   /* Small solid dark marks (tooltips, the rec dot, wireframe squares) take the inverse colour */
   & .bg-\[\#1a1a1a\] { background-color: var(--c-inverse); }
-  & .bg-\[\#1a1a1a\].text-white { color: var(--c-on-inverse); }
+  & .bg-\[\#1a1a1a\].text-white:not([data-t]) { color: var(--c-on-inverse); }   /* components (data-t) set their own */
   & .border-\[\#1a1a1a\] { border-color: var(--c-on-surface); }
   & .border-\[\#c7c7c7\] { border-color: var(--c-outline-var); }
   & .border-t-\[\#1a1a1a\] { border-top-color: var(--c-inverse); }
@@ -209,6 +316,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   /* Marks that carry a colour on purpose (data-fill on the element): progress bars, the recording dot, Stop */
   & [data-fill="primary"] { background-color: var(--c-primary); }
   & [data-fill="action"] { background-color: var(--c-action); }
+  & [data-fill="action"] > .bg-white { background-color: var(--c-on-action); }   /* the square on Stop */
 
   /* ===== Step 2: Material 3 components ===== */
 
@@ -238,7 +346,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & [data-t^="btn-"] { border-radius: 9999px; border-width: 1px; font-size: 15px; font-weight: 500; letter-spacing: 0.1px; }
   & [data-t="btn-primary"] { background: var(--c-action); border-color: var(--c-action); color: var(--c-on-action); }
   & [data-t="btn-primary"]:hover { background: var(--c-action-hover); border-color: var(--c-action-hover); }
-  & :is([data-t="btn-secondary"], [data-t="btn-outline"], [data-t="btn-small"]) { background: transparent; border: 1px solid var(--c-outline); color: var(--c-action); }
+  & :is([data-t="btn-secondary"], [data-t="btn-outline"], [data-t="btn-small"]) { background: transparent; border: 1px solid var(--c-outline); color: var(--c-action-ink); }
   & :is([data-t="btn-secondary"], [data-t="btn-outline"], [data-t="btn-small"]):hover { background: var(--c-container); }
   & [data-t="btn-small"] { font-size: 13px; }
   /* The panic button is the only red thing in the app */
@@ -254,7 +362,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
 
   /* Outlined text fields: 4 px corners, the label sits in a notch on the outline */
   & [data-t="field"] { background: transparent; border: 1px solid var(--c-outline); border-radius: 4px; box-shadow: none; color: var(--c-on-surface); }
-  & [data-t="field"]:is(:focus, :focus-within) { border-color: var(--c-action); box-shadow: inset 0 0 0 1px var(--c-action); }
+  & [data-t="field"]:is(:focus, :focus-within) { border-color: var(--c-action-ink); box-shadow: inset 0 0 0 1px var(--c-action-ink); }
   & label[data-t="field"] { position: relative; }
   & label[data-t="field"] > span.uppercase { position: absolute; top: -9px; left: 12px; padding: 0 4px; background: var(--c-bg); font-size: 12px; line-height: 16px; }
 
@@ -294,8 +402,10 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   /* Navigation bar: docked and tonal. Each icon sits in a pill; the active tab's pill is the brand-tinted indicator. */
   & nav, & nav.bg-white { background: var(--c-container); }
   & nav > .bg-\[\#c7c7c7\] { display: none; }
-  & nav > div:last-child { padding: 12px 8px 16px; }
-  & nav button { gap: 4px; min-height: 64px; }
+  /* 12 px above the icons and below the labels. The tabs fit their content (32 px pill + 4 px + label), with at least
+     a 48 px tap area, so no extra space builds up around them. */
+  & nav > div:last-child { padding: 12px 8px; }
+  & nav button { gap: 4px; min-height: 48px; }
   & nav button:not([data-quick-exit]) > span:first-child {
     display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; border: 0; border-radius: 16px; background: transparent;
   }

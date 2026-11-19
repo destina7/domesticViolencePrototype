@@ -42,7 +42,8 @@ export const MIC_DESIGNS = ["fake", "real"] as const;
 export type MicDesign = (typeof MIC_DESIGNS)[number];
 // Colour schemes. none = no colour, the greyscale look the prototype was tested in until now. recommended = the palette
 // from the trauma-informed colour research. The colours live in index.css (Colour schemes); add a name here to add a scheme.
-export const SCHEME_DESIGNS = ["none", "recommended"] as const;
+// chayn, bloom, veiligthuis, refuge = taken from those services' websites, to compare in user testing.
+export const SCHEME_DESIGNS = ["none", "recommended", "chayn", "bloom", "veiligthuis", "refuge"] as const;
 export type SchemeDesign = (typeof SCHEME_DESIGNS)[number];
 export type Options = { sim: Sim; micDot: MicDesign; scheme: SchemeDesign };
 

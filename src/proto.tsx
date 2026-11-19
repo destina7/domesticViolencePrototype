@@ -7,7 +7,7 @@ export type Jump = "warn" | "signin" | "lock" | "coverApp" | "home" | "case" | "
 type Row<K extends keyof Options> = { key: K; title: string; choices: [Options[K], string][] };
 
 const ROWS: Row<keyof Options>[] = [
-  { key: "scheme", title: "Colour scheme", choices: [["none", "A · None"], ["recommended", "B · Recommended"]] },
+  { key: "scheme", title: "Colour scheme", choices: [["none", "A · None"], ["recommended", "B · Recommended"], ["chayn", "C · Chayn"], ["bloom", "D · Bloom"], ["veiligthuis", "E · Veilig Thuis"], ["refuge", "F · Refuge"]] },
   { key: "micDot", title: "Mic Toggle", choices: [["fake", "Fake dot"], ["real", "Real dot"]] },
   { key: "sim", title: "Show next failure", choices: [["off", "Off"], ["mic", "Mic denied"], ["upload", "Not saved"], ["password", "Wrong password"]] },
 ] as Row<keyof Options>[];
@@ -62,7 +62,7 @@ export function HiddenMenu({ opt, setOpt, jump, reset }: {
         <div key={r.key} className="flex flex-col gap-[6px]">
           <Label>{r.title}</Label>
           {r.key === "sim" && <p className="f-r text-[11px] text-[#666]">A failure shows once, the next time the participant triggers it, then switches itself off.</p>}
-          {r.key === "scheme" && <p className="f-r text-[11px] text-[#666]">A: no colour, the greyscale look tested so far. B: the palette from the trauma-informed colour research (oatmeal background, muted green, blue for buttons, red only for Call 112).</p>}
+          {r.key === "scheme" && <p className="f-r text-[11px] text-[#666]">A: no colour, the greyscale look tested so far. B: the palette from the trauma-informed colour research (oatmeal background, muted green, blue for buttons, red only for Call 112). C to F: the colours of Chayn, Bloom by Chayn, Veilig Thuis and Refuge, as used on their websites.</p>}
           {r.key === "micDot" && <p className="f-r text-[11px] text-[#666]">The dot that shows while Nura records (also the hidden recording from holding Bloom's progress bar). Fake: a drawn "● rec" in the status bar, only in the desktop phone frame. Real: opens the actual microphone so the phone shows its own dot (orange on iPhone). Nothing is saved. The browser asks for the mic the first time: allow it before the participant starts. Kept on Reset.</p>}
           <div className="flex flex-wrap gap-[6px]">
             {r.choices.map(([v, l]) => (
