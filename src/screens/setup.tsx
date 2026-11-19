@@ -4,7 +4,6 @@ import { Body, Button, Card, Chip, DangerCard, Dock, Foot, Heading, Label, ListI
 import { COVERS } from "../data";
 import { LoadingWayArt, TapRingArt } from "./illustrations";
 import { WAY_IN } from "./lock";
-import type { SecretDesign } from "../data";
 
 // Setup screens only collect choices for the test. Nothing is saved or applied.
 
@@ -71,19 +70,19 @@ function WayCard({ text, on, onTry, media }: { text: string; on: boolean; onTry:
       <div className="flex items-center gap-[12px] px-[16px] py-[8px]">
         <p className="flex-1 min-w-0 f-r text-[13px] leading-[18px] text-[#1a1a1a]">{text}</p>
         {/* M3 outlined button, small: 32 px tall, full pill, 1 px outline, medium-weight label. */}
-        <button onClick={onTry} className="shrink-0 h-[32px] px-[14px] rounded-full border border-[#767676] f-m text-[13px] text-[#1a1a1a] hover:bg-[#f2f2f2]">Try now</button>
+        <button data-t="btn-small" onClick={onTry} className="shrink-0 h-[32px] px-[14px] rounded-full border border-[#767676] f-m text-[13px] text-[#1a1a1a] hover:bg-[#f2f2f2]">Try now</button>
       </div>
     </div>
   );
 }
 
 /**
- * Card 1 is the cover app's way in, card 2 the loading screen's (in the version picked in the hidden menu, `secret`).
+ * Card 1 is the cover app's way in (tap its progress bar 3 times), card 2 the loading screen's (tap the logo 3 times).
  * Each card's Try now opens its practice (`onTryTap`, `onTryLoading`); `tapTried` / `loadingTried` mark a card once
  * round 1 is done.
  */
-export function WayIn({ cover, secret, onContinue, onTryTap, tapTried, onTryLoading, loadingTried }: {
-  cover: string; secret: SecretDesign; onContinue: () => void; onTryTap: () => void; tapTried: boolean; onTryLoading: () => void; loadingTried: boolean;
+export function WayIn({ cover, onContinue, onTryTap, tapTried, onTryLoading, loadingTried }: {
+  cover: string; onContinue: () => void; onTryTap: () => void; tapTried: boolean; onTryLoading: () => void; loadingTried: boolean;
 }) {
   // The texts name the cover app chosen on the previous screen (Bloom unless another was picked).
   return (
@@ -94,7 +93,7 @@ export function WayIn({ cover, secret, onContinue, onTryTap, tapTried, onTryLoad
         {/* The two cards share the space left on the screen, one above the other. */}
         <div className="flex-1 flex flex-col gap-[10px]">
           <WayCard text={`Press the progress bar in ${cover} 3 times`} on={tapTried} onTry={onTryTap} media={<TapRingArt cover={cover} />} />
-          <WayCard text={WAY_IN[secret].text(cover)} on={loadingTried} onTry={onTryLoading} media={<LoadingWayArt key={secret} cover={cover} secret={secret} />} />
+          <WayCard text={WAY_IN.text(cover)} on={loadingTried} onTry={onTryLoading} media={<LoadingWayArt cover={cover} />} />
         </div>
       </Body>
       <Dock>

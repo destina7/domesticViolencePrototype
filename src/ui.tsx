@@ -115,7 +115,7 @@ export function ListItem({ title, sub, lead, symbol, trail, selected, onClick }:
     <>
       {/* 24 px set inline, like the other icons: the icon font's own size rule beats Tailwind's text size classes. */}
       {symbol && <span data-symbol aria-hidden style={{ fontSize: 24 }} className="material-symbols-outlined flex items-center justify-center size-[24px] leading-none shrink-0 text-[#1a1a1a]">{symbol}</span>}
-      {!symbol && lead === "round" && <span className={`border-[#1a1a1a] border-[1.5px] rounded-[10px] size-[20px] shrink-0 ${selected ? "bg-[#1a1a1a] shadow-[inset_0_0_0_3px_#fff]" : ""}`} />}
+      {!symbol && lead === "round" && <span data-t="radio" className={`border-[#1a1a1a] border-[1.5px] rounded-[10px] size-[20px] shrink-0 ${selected ? "bg-[#1a1a1a] shadow-[inset_0_0_0_3px_#fff]" : ""}`} />}
       {!symbol && lead === "square" && <span className="border-[#1a1a1a] border-[1.5px] rounded-[6px] size-[20px] shrink-0" />}
       {!symbol && lead === "image" && <Placeholder className="size-[40px]" />}
       <span className="flex flex-1 flex-col gap-[2px] min-w-0">
@@ -161,7 +161,7 @@ export function TextLine({ w }: { w: number }) {
 
 export function CheckMark({ size = 84 }: { size?: number }) {
   return (
-    <div className="border-[#1a1a1a] border-[2.5px] flex items-center justify-center rounded-full shrink-0" style={{ width: size, height: size }}>
+    <div data-check className="border-[#1a1a1a] border-[2.5px] flex items-center justify-center rounded-full shrink-0" style={{ width: size, height: size }}>
       <svg width={size * 0.45} height={size * 0.45} viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
     </div>
   );

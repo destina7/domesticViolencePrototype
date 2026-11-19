@@ -68,7 +68,7 @@ export function Voice({ rec, onStart, onPause, onResume, onBack, onDone }: Commo
       <Body center>
         <Spacer />
         <span className="border-[#1a1a1a] border-[1.5px] rounded-full px-[10px] py-[2px] flex items-center gap-[6px] f-m text-[12px]">
-          <span className={`size-[8px] rounded-full bg-[#1a1a1a] ${paused ? "opacity-30" : ""}`} />{paused ? "Paused" : "Recording"}
+          <span data-fill="primary" className={`size-[8px] rounded-full bg-[#1a1a1a] ${paused ? "opacity-30" : ""}`} />{paused ? "Paused" : "Recording"}
         </span>
         <p className="f-b text-[40px] tabular-nums">{fmtTime(sec)}</p>
         <div className="flex items-center gap-[4px] h-[52px]" aria-hidden>
@@ -92,7 +92,7 @@ export function Voice({ rec, onStart, onPause, onResume, onBack, onDone }: Commo
             <span className="f-m text-[11px]">{paused ? "Resume" : "Pause"}</span>
           </button>
           <button onClick={() => onDone(sec)} aria-label="Stop" className="flex flex-col items-center gap-[4px] active:scale-95 transition-transform">
-            <span className="bg-[#1a1a1a] rounded-full size-[84px] flex items-center justify-center">
+            <span data-fill="action" className="bg-[#1a1a1a] rounded-full size-[84px] flex items-center justify-center">
               <span className="bg-white size-[16px] rounded-[3px]" />
             </span>
             <span className="f-s text-[12px]">Stop</span>

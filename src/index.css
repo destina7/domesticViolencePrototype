@@ -36,35 +36,7 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   50% { transform: scaleY(1); }
 }
 
-/* "Draw the L" illustration (LoadingWayArt in screens/illustrations.tsx, pattern version). One 7 s loop:
-   0-0.8 s finger moves in at the top left · 0.8-2.4 s down the left side · 2.4-3.2 s along the bottom (the trail
-   follows) · 3.5 s Nura opens · finger leaves · restart. The L is 198 units long: 132 down, 66 across. */
-.pi-anim .pi-finger { animation: pi-finger 7s ease-in-out infinite; }
-.pi-anim .pi-trail { animation: pi-trail 7s linear infinite; }
-.pi-anim .pi-nura { animation: pi-nura 7s ease-in-out infinite; }
-@keyframes pi-finger {
-  0%, 5% { transform: translate(47px, 44px) rotate(-45deg); opacity: 0; }
-  11% { transform: translate(47px, 44px) rotate(-45deg); opacity: 1; }
-  34% { transform: translate(47px, 176px) rotate(-45deg); }
-  46% { transform: translate(113px, 176px) rotate(-45deg); opacity: 1; }
-  54%, 100% { transform: translate(113px, 176px) rotate(-45deg); opacity: 0; }
-}
-@keyframes pi-trail {
-  0%, 11% { stroke-dashoffset: 198; opacity: 0.55; }
-  34% { stroke-dashoffset: 66; }
-  46%, 92% { stroke-dashoffset: 0; opacity: 0.55; }
-  98%, 100% { stroke-dashoffset: 0; opacity: 0; }
-}
-@keyframes pi-nura {
-  0%, 48% { opacity: 0; }
-  53%, 92% { opacity: 1; }
-  98%, 100% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pi-anim * { animation: none !important; }
-}
-
-/* "Tap the progress bar 3 times" illustration (screens/illustrations.tsx). One 7 s loop:
+/* The two "tap 3 times" illustrations (TapRingArt and LoadingWayArt in screens/illustrations.tsx). One 7 s loop:
    0–0.8 s finger moves in · taps at 1.1 s, 1.6 s, 2.1 s (ripple + a dot each) · 2.8 s Nura opens · finger leaves · restart. */
 .ti-anim .ti-finger { animation: ti-finger 7s ease-in-out infinite; }
 .ti-anim .ti-ripple { transform-box: fill-box; transform-origin: center; animation: ti-ripple 7s ease-out infinite; }
@@ -108,32 +80,95 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   .ti-anim * { animation: none !important; }
 }
 
+/* ---------- Colour schemes (hidden menu → Colour scheme) ----------
+   Every colour inside the phone comes from these role tokens, named after Material 3's colour roles. A scheme is just
+   a set of values for them: App puts data-scheme="…" on the phone frame and the Material 3 rules below do the rest,
+   so no component knows about colour. To add a scheme for an A/B test: copy a block, rename it, change the values,
+   and add the name to SCHEME_DESIGNS in data.ts and to the Colour scheme row in proto.tsx.
+
+   --c-bg              app background                  --c-surface            cards, rows, fields (a step lighter)
+   --c-container       filled areas: nav bar, filled rows, placeholders, tracks
+   --c-container-high  hover on those, the darker step of a filled area
+   --c-on-surface      main text, dark lines, drawn icons
+   --c-on-surface-var  secondary text: captions, hints, labels
+   --c-outline         outlined buttons, text fields, chips
+   --c-outline-var     card borders, dividers, quiet lines
+   --c-primary         the brand colour: progress, checked and switched-on states, selected items, status chips
+   --c-on-primary      text and icons on primary
+   --c-primary-container, --c-on-primary-container   a soft tint of the brand: active tab, "Done"
+   --c-highlight       highlighted cards (case summary, setup message, note date)
+   --c-action          filled buttons and outlined-button labels: where you can act
+   --c-on-action, --c-action-hover
+   --c-error           the panic button (Call 112) only           --c-on-error
+   --c-inverse         snackbar and practice tooltips              --c-on-inverse */
+
+/* A · None: no colour. The greyscale look the prototype was tested in until now, kept to compare against. */
+[data-phone][data-scheme="none"] {
+  --c-bg: #FAFAFA;
+  --c-surface: #FAFAFA;
+  --c-container: #F0F0F0;
+  --c-container-high: #E3E3E3;
+  --c-on-surface: #1A1A1A;
+  --c-on-surface-var: #454545;
+  --c-outline: #777777;
+  --c-outline-var: #C7C7C7;
+  --c-primary: #1A1A1A;
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #D4D4D4;
+  --c-on-primary-container: #1A1A1A;
+  --c-highlight: #E3E3E3;
+  --c-action: #1A1A1A;
+  --c-on-action: #FFFFFF;
+  --c-action-hover: #333333;
+  --c-error: #1A1A1A;
+  --c-on-error: #FFFFFF;
+  --c-inverse: #2E2E2E;
+  --c-on-inverse: #FFFFFF;
+}
+
+/* B · Recommended: the palette from the trauma-informed colour research. Muted and cool, warm neutrals instead of
+   pure white, one brand green, one contrasting action blue, and red only for the panic button. */
+[data-phone][data-scheme="recommended"] {
+  --c-bg: #F5F1EA;               /* Soft Oatmeal (background) */
+  --c-surface: #FBF9F5;          /* Warm Off-White (cards) */
+  --c-container: #EEE8DE;
+  --c-container-high: #E4DDD1;
+  --c-on-surface: #26343A;       /* Deep Slate (text) */
+  --c-on-surface-var: #55676A;   /* Grey Teal (secondary text) */
+  --c-outline: #7E8B8C;
+  --c-outline-var: #DDD5C9;
+  --c-primary: #3E7A63;          /* Muted Green (primary, brand) */
+  --c-on-primary: #FFFFFF;
+  --c-primary-container: #D3E6DA;
+  --c-on-primary-container: #1F4A3B;
+  --c-highlight: #E4EEE7;
+  --c-action: #3F6690;           /* Muted Deep Blue (action, buttons) */
+  --c-on-action: #FFFFFF;
+  --c-action-hover: #375A80;
+  --c-error: #B23A3A;            /* Muted Red (alerts: panic button only) */
+  --c-on-error: #FFFFFF;
+  --c-inverse: #26343A;
+  --c-on-inverse: #F5F1EA;
+}
+
 /* ---------- Material 3, the app's design system ----------
-   Material 3 (m3.material.io), outlined take: thin outlines, 12 px corners, small top bar, outlined text fields with
-   a notch label. It won the A/B against the plain wireframe and the filled and elevated M3 takes, which were removed.
-   App puts data-ds="m3" on the phone frame. The rules are split into a block of component wiring and a block that
-   sets the tokens it uses. The facilitator menu is outside the phone frame, so it keeps the wireframe look.
+   Material 3 (m3.material.io), outlined take: thin outlines, 12 px corners, small top app bar, pill buttons, outlined
+   text fields with a notch label, a docked tonal navigation bar. It won the A/B against the plain wireframe and the
+   filled and elevated M3 takes, which were removed. App puts data-ds="m3" on the phone frame. The facilitator menu is
+   outside the phone frame, so it keeps the wireframe look.
    Components carry a data-t="…" hook (row, card, chip, field, …) so each kind of element can be styled on purpose.
 
-   There is NO colour in it. Material's own docs and sample palette are purple; here the whole tonal palette
-   is a neutral grey ramp (--n10 near black to --n100 white), so colour cannot sway the participant's choices.
-   These rules own every colour. They sit outside Tailwind's layers, so they win over the utility classes without !important.
-   Note: unlayered `background` also beats Tailwind's hover: utilities, so hover states are set here as well. */
-
-/* ===== Material 3: component wiring ===== */
+   All colours come from the scheme's role tokens above. The components themselves are still drawn in the wireframe's
+   black and greys (Tailwind classes like text-[#666]); step 1 below maps each of those to a role, step 2 styles the
+   components. These rules sit outside Tailwind's layers, so they win over the utility classes without !important.
+   Unlayered `background` also beats Tailwind's hover: utilities, so hover states are set here as well.
+   Order matters: step 2 comes after step 1, so a component rule wins over the plain mapping at the same weight. */
 
 [data-phone][data-ds="m3"] {
-  /* Neutral tonal palette: tone 10 = near black ... tone 100 = white */
-  --n10: #1a1a1a; --n20: #2e2e2e; --n30: #454545; --n50: #777777; --n80: #c7c7c7; --n87: #d4d4d4;
-  --n90: #e3e3e3; --n92: #ebebeb; --n94: #f0f0f0; --n96: #f5f5f5; --n98: #fafafa; --n100: #ffffff;
-  /* Elevation levels 1 and 2 (grey shadows) */
-  --sh1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --sh2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
-  --on: var(--n10);          /* text on surfaces */
-  --on-var: var(--n30);      /* secondary text */
-  --ind: var(--n87);         /* active indicator in the navigation bar */
-  background: var(--m-bg);
-  color: var(--on);
+  /* Elevation level 2, for an opened card */
+  --sh2: 0 1px 2px rgba(38, 52, 58, 0.25), 0 2px 6px 2px rgba(38, 52, 58, 0.12);
+  background: var(--c-bg);
+  color: var(--c-on-surface);
   font-family: Roboto, "Segoe UI", system-ui, sans-serif;
 
   /* Type: Roboto, regular and medium weights */
@@ -141,124 +176,151 @@ body { font-family: "Inter:Regular", sans-serif; color: #1a1a1a; background: #ff
   & .f-r { font-weight: 400; }
   & :is(.f-m, .f-s, .f-b) { font-weight: 500; }
   & .uppercase { text-transform: none; letter-spacing: 0.1px; }
-  & p.uppercase { font-size: 14px; font-weight: 500; color: var(--on-var); }
-  & .text-\[\#1a1a1a\] { color: var(--on); }
-  & :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--on-var); }
-  & .placeholder\:text-\[\#666\]::placeholder { color: var(--on-var); }
-  & .bg-\[\#ebebeb\] { background-color: var(--n90); }
+  & p.uppercase { font-size: 14px; font-weight: 500; color: var(--c-on-surface-var); }
 
-  /* Shapes (each variant sets the --r-* tokens) */
-  & [data-t="card"], & [data-t="danger"] { border-radius: var(--r-card); }
-  & [data-t="card-strong"] { border-radius: var(--r-strong); }
-  & :is([data-t="row"], [data-t="choice"]) { border-radius: var(--r-row); }
-  & [data-t="placeholder"]:not(.rounded-none) { border-radius: var(--r-card); border-style: solid; border-color: transparent; }
-  & [data-t^="chip"] { border-radius: var(--r-chip); }
-  & [data-t^="btn-"] { border-radius: var(--r-btn); font-size: 15px; font-weight: 500; letter-spacing: 0.1px; }
-  & [data-quick-exit] { border-radius: var(--r-exit); }
+  /* ===== Step 1: the wireframe's black and greys, mapped to colour roles ===== */
 
-  /* Cards, list rows, selectable cards. Outlined / filled / elevated come from the --card-* tokens. */
+  & .text-\[\#1a1a1a\] { color: var(--c-on-surface); }
+  & :is(.text-\[\#666\], .text-\[\#999\], .text-\[\#444\]) { color: var(--c-on-surface-var); }
+  & .placeholder\:text-\[\#666\]::placeholder { color: var(--c-on-surface-var); }
+  & .text-\[\#ebebeb\] { color: var(--c-container-high); }
+  & .bg-white { background-color: var(--c-surface); }
+  & :is(.bg-\[\#ebebeb\], .bg-\[\#f5f5f5\], .bg-\[\#f7f7f7\]) { background-color: var(--c-container); }
+  & :is(.hover\:bg-\[\#f5f5f5\], .hover\:bg-\[\#ebebeb\], .hover\:bg-\[\#f7f7f7\], .hover\:bg-\[\#f2f2f2\]):hover { background-color: var(--c-container-high); }
+  & .bg-\[\#c7c7c7\] { background-color: var(--c-outline-var); }
+  /* Small solid dark marks (tooltips, the rec dot, wireframe squares) take the inverse colour */
+  & .bg-\[\#1a1a1a\] { background-color: var(--c-inverse); }
+  & .bg-\[\#1a1a1a\].text-white { color: var(--c-on-inverse); }
+  & .border-\[\#1a1a1a\] { border-color: var(--c-on-surface); }
+  & .border-\[\#c7c7c7\] { border-color: var(--c-outline-var); }
+  & .border-t-\[\#1a1a1a\] { border-top-color: var(--c-inverse); }
+  & .border-b-\[\#1a1a1a\] { border-bottom-color: var(--c-inverse); }
+  /* Drawn icons and the how-to animations (SVG colours) */
+  & [stroke="#1a1a1a"] { stroke: var(--c-on-surface); }
+  & [fill="#1a1a1a"] { fill: var(--c-on-surface); }
+  & [stroke="#c7c7c7"] { stroke: var(--c-outline-var); }
+  & [fill="#c7c7c7"] { fill: var(--c-outline-var); }
+  & [stroke="#ebebeb"] { stroke: var(--c-container-high); }
+  & [fill="#ebebeb"] { fill: var(--c-container-high); }
+  & [fill="#fff"] { fill: var(--c-surface); }
+  & :is([fill="#666"], [fill="#999"]) { fill: var(--c-on-surface-var); }
+  /* In the how-to animations, the Nura that opens has the action-coloured capture buttons, like the real one */
+  & .ti-nura rect[fill="#1a1a1a"] { fill: var(--c-action); }
+  /* Marks that carry a colour on purpose (data-fill on the element): progress bars, the recording dot, Stop */
+  & [data-fill="primary"] { background-color: var(--c-primary); }
+  & [data-fill="action"] { background-color: var(--c-action); }
+
+  /* ===== Step 2: Material 3 components ===== */
+
+  /* Cards, list rows, selectable cards: outlined. Surface fill, thin quiet outline, 12 px corners. */
   & :is([data-t="row"], [data-t="card"], [data-t="danger"], [data-t="choice"]) {
-    background: var(--card-bg); border-color: var(--card-border); box-shadow: var(--card-shadow);
+    background: var(--c-surface); border-color: var(--c-outline-var); box-shadow: none;
   }
-  & [data-t="row"][role="button"]:hover { background: var(--card-hover); box-shadow: var(--card-shadow-hover, var(--card-shadow)); }
-  & :is([data-t="row"], [data-t="choice"]).border-\[\#1a1a1a\] {
-    background: var(--sel-bg); border-color: var(--sel-border); box-shadow: var(--sel-shadow);
-  }
-  /* An opened card (Resources, option C) is an elevated card: white, no outline, level 2 shadow, so it sits in front
-     of the outlined cards around it. Picked options above keep the filled "selected" look. */
-  & [data-t="row"][data-open] { background: var(--n100); border-color: transparent; box-shadow: var(--sh2); }  /* Highlighted cards (setup message, case summary, date and time, error) */
-  & [data-t="card-strong"] { background: var(--strong-bg); border-color: transparent; box-shadow: var(--strong-shadow, none); }
+  & [data-t="card"], & [data-t="danger"] { border-radius: 12px; }
+  & :is([data-t="row"], [data-t="choice"]) { border-radius: 12px; }
+  & [data-t="row"][role="button"]:hover { background: var(--c-container); }
+  /* A picked option (cover app in setup, photo or video): highlighted fill, brand outline */
+  & :is([data-t="row"], [data-t="choice"]).border-\[\#1a1a1a\] { background: var(--c-highlight); border-color: var(--c-primary); }
+  /* An opened card (Resources) is elevated: no outline, level 2 shadow, so it sits in front of the cards around it */
+  & [data-t="row"][data-open] { background: var(--c-surface); border-color: transparent; box-shadow: var(--sh2); }
+  /* Highlighted cards (setup message, case summary, note date, error): a soft brand-tinted fill, no outline */
+  & [data-t="card-strong"] { background: var(--c-highlight); border-color: transparent; border-radius: 16px; }
   & [data-t="card-strong"] .bg-\[\#ebebeb\] { background: rgba(255, 255, 255, 0.6); }
+  /* Filled rows (Bloom's habits): an M3 filled card, tonal fill and no outline */
+  & [data-t="row"][data-filled] { background: var(--c-container); border-color: transparent; }
+  & [data-t="row"][data-filled]:hover { background: var(--c-container-high); }
+  /* Placeholders (illustrations, camera view, photo preview) */
+  & [data-t="placeholder"] { background: var(--c-container); border-color: var(--c-outline-var); }
+  & [data-t="placeholder"]:not(.rounded-none) { border-radius: 12px; border-style: solid; border-color: transparent; }
 
-  /* Buttons: primary stays the filled near-black pill. All three actions in a run stay equal on purpose, so the
-     look of a button never nudges which capture method the participant picks. */
-  & :is([data-t="btn-secondary"], [data-t="btn-outline"]) { background: var(--btn2-bg); border: var(--btn2-border); box-shadow: var(--btn2-shadow, none); color: var(--on); }
-  & :is([data-t="btn-secondary"], [data-t="btn-outline"]):hover { background: var(--btn2-hover); }
+  /* Buttons: pills. Filled = the action colour. All three capture buttons in a run stay equal on purpose, so the
+     look of a button never nudges which capture method the participant picks. Outlined = outline + action label. */
+  & [data-t^="btn-"] { border-radius: 9999px; border-width: 1px; font-size: 15px; font-weight: 500; letter-spacing: 0.1px; }
+  & [data-t="btn-primary"] { background: var(--c-action); border-color: var(--c-action); color: var(--c-on-action); }
+  & [data-t="btn-primary"]:hover { background: var(--c-action-hover); border-color: var(--c-action-hover); }
+  & :is([data-t="btn-secondary"], [data-t="btn-outline"], [data-t="btn-small"]) { background: transparent; border: 1px solid var(--c-outline); color: var(--c-action); }
+  & :is([data-t="btn-secondary"], [data-t="btn-outline"], [data-t="btn-small"]):hover { background: var(--c-container); }
+  & [data-t="btn-small"] { font-size: 13px; }
+  /* The panic button is the only red thing in the app */
+  & [data-t="danger"] [data-t="btn-primary"] { background: var(--c-error); border-color: var(--c-error); color: var(--c-on-error); }
+  & [data-t="danger"] [data-t="btn-primary"]:hover { background: var(--c-error); filter: brightness(0.92); }
+
+  /* Chips: "Saved"-style status = outlined with a brand label; quiet = outlined, grey; solid = filled */
+  & [data-t^="chip"] { border-radius: 8px; }
+  & [data-t="chip"] { background: transparent; border: 1px solid var(--c-outline); color: var(--c-primary); }
+  & [data-t="chip-quiet"] { background: transparent; border: 1px solid var(--c-outline-var); color: var(--c-on-surface-var); }
+  & [data-t="chip-solid"] { background: var(--c-container-high); border: 1px solid var(--c-container-high); color: var(--c-on-surface); }
+  & [data-t="row"][data-filled] [data-t="chip-solid"] { background: var(--c-primary-container); border-color: var(--c-primary-container); color: var(--c-on-primary-container); }
+
+  /* Outlined text fields: 4 px corners, the label sits in a notch on the outline */
+  & [data-t="field"] { background: transparent; border: 1px solid var(--c-outline); border-radius: 4px; box-shadow: none; color: var(--c-on-surface); }
+  & [data-t="field"]:is(:focus, :focus-within) { border-color: var(--c-action); box-shadow: inset 0 0 0 1px var(--c-action); }
+  & label[data-t="field"] { position: relative; }
+  & label[data-t="field"] > span.uppercase { position: absolute; top: -9px; left: 12px; padding: 0 4px; background: var(--c-bg); font-size: 12px; line-height: 16px; }
 
   /* Switch: 52 x 32 track, thumb grows from 16 to 24 px when on */
-  & [role="switch"] { width: 52px; height: 32px; border-radius: 16px; border: 2px solid var(--n50); background: var(--n92); }
-  & [role="switch"] > span { top: 6px; width: 16px; height: 16px; left: 6px; background: var(--n50); }
-  & [role="switch"][aria-checked="true"] { background: var(--n10); border-color: var(--n10); }
-  & [role="switch"][aria-checked="true"] > span { top: 2px; left: 22px; width: 24px; height: 24px; background: #fff; }
+  & [role="switch"] { width: 52px; height: 32px; border-radius: 16px; border: 2px solid var(--c-outline); background: var(--c-container-high); }
+  & [role="switch"] > span { top: 6px; width: 16px; height: 16px; left: 6px; background: var(--c-outline); }
+  & [role="switch"][aria-checked="true"] { background: var(--c-primary); border-color: var(--c-primary); }
+  & [role="switch"][aria-checked="true"] > span { top: 2px; left: 22px; width: 24px; height: 24px; background: var(--c-on-primary); }
 
-  /* Back button: the keyboard_backspace icon (ui.tsx) in a 40 px round tap area, grey circle on hover */
+  /* Checkbox (Bloom's habits): 18 px box, 2 px corners, 2 px outline; checked = brand fill with a white tick */
+  & [data-t="checkbox"] { width: 18px; height: 18px; border-radius: 2px; border: 2px solid var(--c-on-surface-var); background: transparent; margin: 0 3px; }
+  & [data-t="checkbox"][data-on] { background: var(--c-primary); border-color: var(--c-primary); }
+  & [data-t="checkbox"] svg { width: 14px; height: 14px; }
+  /* Radio (choosing the cover app in setup): brand fill when picked */
+  & [data-t="radio"] { border-color: var(--c-on-surface-var); }
+  & [data-t="radio"].bg-\[\#1a1a1a\] { background: var(--c-primary); border-color: var(--c-primary); box-shadow: inset 0 0 0 3px var(--c-surface); }
+
+  /* Progress: Bloom's ring and the check marks ("All safe and saved", Saved) take the brand colour */
+  & [data-ring] svg .text-\[\#1a1a1a\] { color: var(--c-primary); }
+  & [data-check] { border-color: var(--c-primary); }
+  & [data-check] svg { stroke: var(--c-primary); }
+  /* Entry icons at the start of a row (mic, camera, note) take the brand colour, like the "Saved" chip next to them */
+  & [data-t="row"] [data-symbol] { color: var(--c-primary); }
+  /* Waveform bars while recording */
+  & .w-\[4px\].bg-\[\#c7c7c7\] { background-color: var(--c-primary); opacity: 0.5; }
+
+  /* Small top app bar: back arrow, title on the left */
+  & header > div { min-height: 64px; }
+  & header p.f-b { font-size: 22px; line-height: 28px; font-weight: 400; }
+  & .f-b.text-\[22px\] { font-size: 24px; line-height: 32px; font-weight: 400; }
   & header button[aria-label="Back"] {
     width: 40px; height: 40px; border: 0; border-radius: 9999px; background: transparent; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  & header button[aria-label="Back"]:hover { background: var(--n90); }
+  & header button[aria-label="Back"]:hover { background: var(--c-container-high); }
 
-  /* Navigation bar: the icon square sits in a pill; the active tab gets a filled pill (the indicator) */
+  /* Navigation bar: docked and tonal. Each icon sits in a pill; the active tab's pill is the brand-tinted indicator. */
+  & nav, & nav.bg-white { background: var(--c-container); }
   & nav > .bg-\[\#c7c7c7\] { display: none; }
   & nav > div:last-child { padding: 12px 8px 16px; }
   & nav button { gap: 4px; min-height: 64px; }
   & nav button:not([data-quick-exit]) > span:first-child {
     display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; border: 0; border-radius: 16px; background: transparent;
   }
-  & nav button:not([data-quick-exit]) > span:first-child::before { content: ""; width: 20px; height: 20px; border: 1.5px solid var(--on-var); border-radius: 5px; }
-  & nav button:not([data-quick-exit]) > span:is(.bg-\[\#1a1a1a\], [data-on]):first-child { background: var(--ind); }
-  & nav button:not([data-quick-exit]) > span.bg-\[\#1a1a1a\]:first-child::before { border-color: var(--on); }
-  /* Real icons (Material Symbols) replace the wireframe square: no square, 24 px glyph in the same pill */
+  /* Wireframe square for tabs without an icon yet */
+  & nav button:not([data-quick-exit]) > span:first-child::before { content: ""; width: 20px; height: 20px; border: 1.5px solid var(--c-on-surface-var); border-radius: 5px; }
+  & nav button:not([data-quick-exit]) > span.bg-\[\#1a1a1a\]:first-child::before { border-color: var(--c-on-primary-container); }
+  /* Real icons (Material Symbols) replace the square: no square, 24 px glyph in the same pill */
   & nav button:not([data-quick-exit]) > span[data-icon]::before { display: none; }
-  & nav button:not([data-quick-exit]) > span[data-icon] { font-size: 24px; color: var(--on); }
+  & nav button:not([data-quick-exit]) > span[data-icon] { font-size: 24px; color: var(--c-on-surface-var); }
   & nav .text-\[11px\] { font-size: 12px; }
-
-  /* Hide (quick exit) tab: no black fill and no border, dark text and icon only. */
-  & nav [data-quick-exit] { background: transparent; border: 0; color: var(--on); }
-  & nav [data-quick-exit] .text-white { color: var(--on); }
-  & nav [data-quick-exit] .border-white { border-color: var(--on); }
-  /* Same icon pill as the other tabs, so all the labels line up. */
-  & nav [data-quick-exit] > span[data-icon] { display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; font-size: 24px; border-radius: 16px; }
-  /* Hover and keyboard focus light up only the icon pill (never the whole button), the same on every tab. */
-  & nav [data-quick-exit]:hover { background: transparent; }
-  & nav button:is(:hover, :focus-visible) > span:first-child { background: var(--ind); }
+  & nav .text-\[11px\].f-r { color: var(--c-on-surface-var); }
+  & nav .text-\[11px\].f-s { color: var(--c-on-surface); }
+  /* Hover and keyboard focus light up only the icon pill (never the whole button), the same on every tab */
+  & nav button:is(:hover, :focus-visible) > span:first-child { background: var(--c-container-high); }
   & nav button:focus-visible { outline: none; }
+  /* The active tab: brand-tinted indicator, icon in its dark tone */
+  & nav button:not([data-quick-exit]) > span:is(.bg-\[\#1a1a1a\], [data-on]):first-child { background: var(--c-primary-container); }
+  & nav button:not([data-quick-exit]) > span[data-on] { color: var(--c-on-primary-container); }
+  /* Hide (quick exit) tab: no fill and no border, the same icon pill as the other tabs, so all the labels line up */
+  & nav [data-quick-exit] { background: transparent; border: 0; border-radius: 16px; color: var(--c-on-surface); }
+  & nav [data-quick-exit]:hover { background: transparent; }
+  & nav [data-quick-exit] .text-white { color: var(--c-on-surface); }
+  & nav [data-quick-exit] .border-white { border-color: var(--c-on-surface); }
+  & nav [data-quick-exit] > span[data-icon] { display: flex; align-items: center; justify-content: center; width: 64px; height: 32px; font-size: 24px; border-radius: 16px; }
 
   /* Snackbar */
-  & .bg-\[\#1a1a1a\].text-white.rounded-full.shadow-lg { background: var(--n20); }
-
-  /* Filled rows (Bloom's habits): an M3 filled card, tonal fill and no outline. The Done chip goes one step darker
-     so it still shows on the fill. */
-  & [data-t="row"][data-filled] { background: var(--n94); border-color: transparent; box-shadow: none; }
-  & [data-t="row"][data-filled]:hover { background: var(--n90); }
-  & [data-t="row"][data-filled] [data-t="chip-solid"] { background: var(--n87); border-color: var(--n87); }
-
-  /* Checkbox (Bloom's habits): 18 px box, 2 px corners, 2 px outline; checked = filled with a white tick */
-  & [data-t="checkbox"] { width: 18px; height: 18px; border-radius: 2px; border: 2px solid var(--on-var); background: transparent; margin: 0 3px; }
-  & [data-t="checkbox"][data-on] { background: var(--on); border-color: var(--on); }
-  & [data-t="checkbox"] svg { width: 14px; height: 14px; }
-}
-
-/* ===== Material 3: outlined tokens ===== */
-
-[data-phone][data-ds="m3"] {
-  --m-bg: var(--n98);
-  --r-card: 12px; --r-strong: 16px; --r-row: 12px; --r-chip: 8px; --r-btn: 9999px; --r-exit: 16px;
-  --card-bg: transparent; --card-border: var(--n80); --card-shadow: none; --card-hover: var(--n94);
-  --sel-bg: var(--n92); --sel-border: var(--n10); --sel-shadow: none;
-  --strong-bg: var(--n90);
-  --btn2-bg: transparent; --btn2-border: 1px solid var(--n50); --btn2-hover: var(--n94);
-
-  & [data-t^="btn-"] { border-width: 1px; }
-  & [data-t="btn-primary"] { border-color: var(--n10); }
-
-  /* Chips: outlined; the selected one is filled */
-  & [data-t="chip"] { background: transparent; border: 1px solid var(--n50); color: var(--on); }
-  & [data-t="chip-quiet"] { background: transparent; border: 1px solid var(--n80); color: var(--on-var); }
-  & [data-t="chip-solid"] { background: var(--n90); border: 1px solid var(--n90); color: var(--on); }
-
-  /* Outlined text fields: 4 px corners, the label sits in a notch on the outline */
-  & [data-t="field"] { background: transparent; border: 1px solid var(--n50); border-radius: 4px; box-shadow: none; }
-  & [data-t="field"]:is(:focus, :focus-within) { border-color: var(--n10); box-shadow: inset 0 0 0 1px var(--n10); }
-  & label[data-t="field"] { position: relative; }
-  & label[data-t="field"] > span.uppercase { position: absolute; top: -9px; left: 12px; padding: 0 4px; background: var(--n98); font-size: 12px; line-height: 16px; }
-
-  /* Small top app bar: back arrow, title on the left */
-  & header > div { min-height: 64px; }
-  & header p.f-b { font-size: 22px; line-height: 28px; font-weight: 400; }
-  & .f-b.text-\[22px\] { font-size: 24px; line-height: 32px; font-weight: 400; }
-
-  /* Navigation bar, docked, tonal */
-  & nav { background: var(--n94); }
-  & nav [data-quick-exit] { border-radius: 16px; }
+  & .bg-\[\#1a1a1a\].text-white.rounded-full.shadow-lg { background: var(--c-inverse); color: var(--c-on-inverse); }
 }

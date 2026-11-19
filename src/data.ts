@@ -35,18 +35,18 @@ export const COVERS = [
 ];
 
 export type Sim = "off" | "mic" | "upload" | "password";
-// The secret way into Nura on the cover app's loading screen (the lock screen). taps = tap the cover app's logo 3 times
-// within 3 s, the same rule as the cover app's own way in. pattern = draw an L on an invisible 3x3 grid. Details in screens/lock.tsx.
-export const SECRET_DESIGNS = ["taps", "pattern"] as const;
-export type SecretDesign = (typeof SECRET_DESIGNS)[number];
 // The recording dot. fake = the wireframe's own "● rec" in the drawn status bar (desktop phone frame only).
 // real = the actual microphone is opened while Nura records, so the phone shows its own dot (orange on iPhone).
 // Nothing is saved or sent either way.
 export const MIC_DESIGNS = ["fake", "real"] as const;
 export type MicDesign = (typeof MIC_DESIGNS)[number];
-export type Options = { sim: Sim; secret: SecretDesign; micDot: MicDesign };
+// Colour schemes. none = no colour, the greyscale look the prototype was tested in until now. recommended = the palette
+// from the trauma-informed colour research. The colours live in index.css (Colour schemes); add a name here to add a scheme.
+export const SCHEME_DESIGNS = ["none", "recommended"] as const;
+export type SchemeDesign = (typeof SCHEME_DESIGNS)[number];
+export type Options = { sim: Sim; micDot: MicDesign; scheme: SchemeDesign };
 
-export const DEFAULT_OPTIONS: Options = { sim: "off", secret: "taps", micDot: "fake" };
+export const DEFAULT_OPTIONS: Options = { sim: "off", micDot: "fake", scheme: "none" };
 
 export type Draft = { kind: Kind; seconds: number; incident: string | null };
 

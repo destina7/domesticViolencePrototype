@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Body, Chevron, Chip, DangerCard, Label, ListItem, Switch, TextLine, TopBar } from "../ui";
-import type { SecretDesign } from "../data";
 import { WAY_IN } from "./lock";
 
 const SOON = "Not part of this test";
@@ -117,10 +116,9 @@ export function Resources({ toast }: { toast: (t: string) => void }) {
   );
 }
 
-/** `onPracticeTap` and `onPracticeLoading` open the guided practices for the two ways in (the same ones as in setup).
- *  `secret` is the loading screen's way in, as picked in the hidden menu. */
-export function Settings({ cover, secret, toast, onPracticeTap, onPracticeLoading }: {
-  cover: string; secret: SecretDesign; toast: (t: string) => void; onPracticeTap: () => void; onPracticeLoading: () => void;
+/** `onPracticeTap` and `onPracticeLoading` open the guided practices for the two ways in (the same ones as in setup). */
+export function Settings({ cover, toast, onPracticeTap, onPracticeLoading }: {
+  cover: string; toast: (t: string) => void; onPracticeTap: () => void; onPracticeLoading: () => void;
 }) {
   const [lock, setLock] = useState(true);
   const [notif, setNotif] = useState(false);
@@ -132,14 +130,14 @@ export function Settings({ cover, secret, toast, onPracticeTap, onPracticeLoadin
       <Body fade>
         <Label>How Nura stays hidden</Label>
         <ListItem title="Cover app" sub={cover} trail={<Chevron />} onClick={go} />
-        <ListItem title="Way in" sub={WAY_IN[secret].text(cover)} trail={<Chevron />} onClick={go} />
+        <ListItem title="Way in" sub={WAY_IN.text(cover)} trail={<Chevron />} onClick={go} />
         <Label>Quick exit</Label>
         <ListItem title="Lock when I leave" trail={<Switch on={lock} onChange={setLock} />} />
         <ListItem title="Notifications" sub={notif ? "On, no content shown" : "Off, nothing shows"} trail={<Switch on={notif} onChange={setNotif} />} />
         {/* The same two ways in as setup's "Your private way in", each with its practice. */}
         <Label>Practice</Label>
         <ListItem title="Press the progress bar" sub={`Press the progress bar in ${cover} 3 times`} trail={<Chevron />} onClick={onPracticeTap} />
-        <ListItem title={WAY_IN[secret].title} sub={WAY_IN[secret].text(cover)} trail={<Chevron />} onClick={onPracticeLoading} />
+        <ListItem title={WAY_IN.title} sub={WAY_IN.text(cover)} trail={<Chevron />} onClick={onPracticeLoading} />
         <Label>Backup</Label>
         <ListItem title="Safe email backup" sub="Optional" trail={<Switch on={backup} onChange={setBackup} />} />
       </Body>

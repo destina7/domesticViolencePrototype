@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { BottomNav, StatusBar, Toast, useToast } from "./ui";
-import { DEFAULT_OPTIONS, MIC_DESIGNS, SECRET_DESIGNS, SEED } from "./data";
+import { DEFAULT_OPTIONS, MIC_DESIGNS, SCHEME_DESIGNS, SEED } from "./data";
 import type { Draft, Entry, Kind, Options } from "./data";
 import { HiddenMenu } from "./proto";
 import type { Jump } from "./proto";
@@ -37,13 +37,13 @@ function loadOptions(): Options {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      // Only the way in and the Mic Toggle are remembered. Choices for options that user testing settled (Resources,
-      // Case empty, lock screen, demo hints, themes, design system) are ignored, and so is an old "hold" or "rhythm" way in.
-      const { secret, micDot } = JSON.parse(raw);
+      // Only the Mic Toggle and the colour scheme are remembered. Choices for options that user testing settled (Resources,
+      // Case empty, lock screen, the loading screen's way in, demo hints, themes, design system) are ignored.
+      const { micDot, scheme } = JSON.parse(raw);
       return {
         ...DEFAULT_OPTIONS,
-        secret: (SECRET_DESIGNS as readonly string[]).includes(secret) ? secret : DEFAULT_OPTIONS.secret,
         micDot: (MIC_DESIGNS as readonly string[]).includes(micDot) ? micDot : DEFAULT_OPTIONS.micDot,
+        scheme: (SCHEME_DESIGNS as readonly string[]).includes(scheme) ? scheme : DEFAULT_OPTIONS.scheme,
       };
     }
   } catch { /* storage unavailable: fall back to defaults */ }
@@ -162,13 +162,11 @@ export default function App() {
     case "warn": view = <Welcome onContinue={() => go("cover")} toast={toast} />; break;
     case "cover": view = <CoverChoice cover={cover} setCover={setCover} onContinue={() => go("way")} />; break;
     case "way": view = <WayIn cover={cover} onContinue={() => go("signin")}
-      secret={opt.secret}
       tapTried={tapTried} onTryTap={() => go("practiceTap")} loadingTried={loadingTried} onTryLoading={() => go("practiceLoading")} />; break;
     // Guided practice (two rounds), from setup or Settings. Back, or finishing, returns to where it was opened;
     // the setup card is marked once round 1 is done.
     case "practiceLoading":
-      // Keyed on the way in, so changing it in the menu starts the practice over in the new version.
-      view = <LoadingPractice key={opt.secret} cover={cover} secret={opt.secret} onExit={(learned) => { if (learned) setLoadingTried(true); back(); }} />;
+      view = <LoadingPractice cover={cover} onExit={(learned) => { if (learned) setLoadingTried(true); back(); }} />;
       break;
     case "practiceTap":
       view = <TapPractice cover={cover} toast={toast} onExit={(learned) => { if (learned) setTapTried(true); back(); }} />;
@@ -177,8 +175,7 @@ export default function App() {
       view = <SignIn failOnce={opt.sim === "password"} onFailed={clearSim} onSignIn={() => { setHistory([]); setScreen("home"); }} />;
       break;
     case "lock":
-      // Keyed on the way in too, so changing it in the menu restarts the loading screen.
-      view = <FakeLoading key={`${visit}-${opt.secret}`} cover={cover} secret={opt.secret}
+      view = <FakeLoading key={visit} cover={cover}
         onUnlock={openNura} onDone={() => setScreen("coverApp")} />;
       break;
     case "coverApp": view = <CoverApp cover={cover} toast={toast} onUnlock={openNura} onRecord={() => { startRec(true); resumeRec(); }} />; break;
@@ -186,7 +183,7 @@ export default function App() {
     case "case": view = <Case entries={entries} open={openEntry} onAdd={homeToAdd} />; break;
     case "entry": view = <EntryDetail entry={entries.find((e) => e.id === detailId) ?? entries[0]} onBack={back} />; break;
     case "resources": view = <Resources toast={toast} />; break;
-    case "settings": view = <Settings cover={cover} secret={opt.secret} toast={toast} onPracticeTap={() => go("practiceTap")} onPracticeLoading={() => go("practiceLoading")} />; break;
+    case "settings": view = <Settings cover={cover} toast={toast} onPracticeTap={() => go("practiceTap")} onPracticeLoading={() => go("practiceLoading")} />; break;
     case "note": view = <Note onBack={back} onSave={() => finish("Written note")} />; break;
     case "voice":
       view = <Voice rec={rec} onStart={() => startRec(false)} onPause={pauseRec} onResume={resumeRec} onBack={back}
@@ -206,8 +203,8 @@ export default function App() {
   return (
     <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#f2f2f2] sm:py-[24px]">
       <HiddenMenu opt={opt} setOpt={setOpt} jump={jump} reset={reset} />
-      {/* Material 3 (outlined, grays only) styles everything inside the phone frame: see index.css. */}
-      <div data-phone data-ds="m3" className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
+      {/* Material 3 (outlined) styles everything inside the phone frame, in the colours of the picked scheme: see index.css. */}
+      <div data-phone data-ds="m3" data-scheme={opt.scheme} className="w-full h-[100dvh] sm:w-[360px] sm:h-[800px] sm:max-h-[calc(100dvh-48px)] sm:border-2 sm:border-[#1a1a1a] sm:rounded-[28px] flex flex-col bg-white relative overflow-hidden">
         {/* The drawn dot: Fake dot mode, or Real dot mode while the real mic is not open (yet). */}
         <StatusBar mic={recording && (opt.micDot === "fake" || !realMic)} />
         {view}
